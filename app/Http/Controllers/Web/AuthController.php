@@ -23,7 +23,7 @@ class AuthController extends Controller
         $fieldType = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember') )) {
             $request->session()->regenerate();
-            return redirect()->intended('/account')->with('message', 'Login successfuly');
+            return redirect()->intended('/admin')->with('message', 'Login successfuly');
         }
 
         return back()->withErrors([
