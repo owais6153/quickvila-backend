@@ -20,5 +20,7 @@ class UserSeeder extends Seeder
         $user->email = 'admin@trikaro.com';
         $user->email_verified_at = date("Y-m-d",time());
         $user->save();
+
+        $user->assign('Admin');
     }
 }

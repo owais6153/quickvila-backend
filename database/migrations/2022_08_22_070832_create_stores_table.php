@@ -19,8 +19,9 @@ class CreateStoresTable extends Migration
             $table->longText('icon')->nullable();
             $table->longText('description')->nullable();
             $table->longText('url')->nullable();
+            $table->boolean('sync')->nullable();
             $table->timestamps();
-            $table->softdelete();
+            $table->softDeletes();
         });
     }
 

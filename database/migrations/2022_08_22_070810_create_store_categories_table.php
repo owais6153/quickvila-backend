@@ -18,7 +18,7 @@ class CreateStoreCategoriesTable extends Migration
             $table->string('name');
             $table->longText('icon')->nullable();
             $table->timestamps();
-            $table->softdelete();
+            $table->softDeletes();
         });
     }
 
