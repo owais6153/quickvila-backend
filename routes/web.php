@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\Admin\StoreController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,7 +13,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::group(['namespace' => 'App\Http\Controllers\Web'], function(){
+
+
+
     // Static Pages
     Route::get('/', function () {
         return redirect()->route('/admin');
@@ -43,13 +46,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Web'], function(){
 
 
     // Admin Area
-    Route::middleware(['auth', 'verified', 'permission:admin-area'])->namespace('Admin')->group(function(){
         Route::get('/', function(){
             return view('admin.index');
         })->name('admin.dashboard');
         Route::resource('store', StoreController::class);
-    });
 
-});
 
 
