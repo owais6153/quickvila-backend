@@ -4,9 +4,11 @@
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Edit Store</h1>
-            <a href="{{route('store.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> All Stores</a>
+            <a href="{{ route('store.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> All
+                Stores</a>
         </div>
-        <form class="row" action="{{route('store.update', ['store' => $store->id])}}" method="POST">
+        <form class="row" action="{{ route('store.update', ['store' => $store->id]) }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="col-md-9">
@@ -19,42 +21,48 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Store Name</label>
-                                    <input type="text" name="name"  placeholder="Store Name" class="form-control" value="{{old('name', $store->name)}}">
+                                    <input type="text" name="name" placeholder="Store Name" class="form-control"
+                                        value="{{ old('name', $store->name) }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Url</label>
-                                    <input type="url" name="url"  placeholder="Store URL" class="form-control" value="{{old('url', $store->url)}}">
+                                    <input type="url" name="url" placeholder="Store URL" class="form-control"
+                                        value="{{ old('url', $store->url) }}">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Address</label>
-                                    <input type="text" name="address"  placeholder="Store Address" class="form-control" value="{{old('address', $store->address)}}">
+                                    <input type="text" name="address" placeholder="Store Address" class="form-control"
+                                        value="{{ old('address', $store->address) }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Latitude</label>
-                                    <input type="text" name="latitude"  placeholder="Store Latitude" class="form-control" value="{{old('latitude', $store->latitude)}}">
+                                    <input type="text" name="latitude" placeholder="Store Latitude" class="form-control"
+                                        value="{{ old('latitude', $store->latitude) }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Longitude</label>
-                                    <input type="text" name="longitude"  placeholder="Store Longitude" class="form-control" value="{{old('longitude', $store->longitude)}}">
+                                    <input type="text" name="longitude" placeholder="Store Longitude"
+                                        class="form-control" value="{{ old('longitude', $store->longitude) }}">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Store Description</label>
-                                    <textarea name="description" class="form-control" placeholder="Description">{{old('description', $store->description)}}</textarea>
+                                    <textarea name="description" class="form-control" placeholder="Description">{{ old('description', $store->description) }}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="submit" name="" value="Save"  placeholder="Store Name" class="btn btn-primary btn-block">
+                                    <input type="submit" name="" value="Save" placeholder="Store Name"
+                                        class="btn btn-primary btn-block">
                                 </div>
                             </div>
                         </div>
@@ -68,10 +76,20 @@
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
-                            <div class="form-group">
-                                <div class="custom-control custom-checkbox small">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck">
-                                    <label class="custom-control-label" for="customCheck">Auto Sync</label>
+                            <div class="form-group uploader">
+                                <label>Upload Logo</label>
+                                <input type="file" name="logo" />
+                                <div class="image-uploader"
+                                    style="background-image: url('{{ asset('images/camera.png') }}')">
+                                    <img src={{ asset($store->logo) }} />
+                                </div>
+                            </div>
+                            <div class="form-group uploader">
+                                <label>Upload Cover</label>
+                                <input type="file" name="cover" />
+                                <div class="image-uploader"
+                                    style="background-image: url('{{ asset('images/camera.png') }}')">
+                                    <img src={{ asset($store->cover) }} />
                                 </div>
                             </div>
                         </div>

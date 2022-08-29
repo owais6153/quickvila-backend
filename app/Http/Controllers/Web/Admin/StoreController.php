@@ -8,9 +8,11 @@ use App\Models\Store;
 use App\Http\Requests\Admin\StoreRequest;
 use DataTables;
 use Bouncer;
+
 class StoreController extends Controller
 {
-    function __construct(){
+    function __construct()
+    {
         $this->middleware('permission:view-store', ['index', 'getList']);
         $this->middleware('permission:create-store', ['create', 'store']);
         $this->middleware('permission:edit-store', ['edit', 'update']);
@@ -26,25 +28,25 @@ class StoreController extends Controller
     {
         $model = Store::query();
         return DataTables::eloquent($model)
-        ->addColumn('action', function($row){
-             $actionBtn = '';
-                if(Bouncer::can('edit-store')){
-                    $actionBtn .='<a href="' . route('store.edit', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
+            ->addColumn('action', function ($row) {
+                $actionBtn = '';
+                if (Bouncer::can('edit-store')) {
+                    $actionBtn .= '<a href="' . route('store.edit', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
                 }
-                if(Bouncer::can('delete-store')){
-                $actionBtn .= '
-                <form class="delete" method="DELETE" action="'.route('store.destroy', ['store' => $row->id]).'">
-                    <input type="hidden" name="_token" value="'.csrf_token().'/>
-                    <input type="hidden" name="_method" value="DELETE">
-                <button class="btn-circle btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button></form>';
+                if (Bouncer::can('delete-store')) {
+                    $actionBtn .= '
+                <form style="display:inline-block" method="POST" action="' . route('store.destroy', ['store' => $row->id]) . '">
+                    <input type="hidden" name="_token" value="' . csrf_token() . '"/>
+                    <input type="hidden" name="_method" value="DELETE" />
+                <button class="btn-circle delete btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button></form>';
                 }
                 return $actionBtn;
-        })
-        ->rawColumns(['action'])
-        ->toJson();
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 
-     public function index()
+    public function index()
     {
         return view($this->dir . 'index');
     }
@@ -67,6 +69,20 @@ class StoreController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        $logo = $cover = "";
+        if ($request->hasFile('logo')) {
+
+            $logoFile = $request->logo;
+            $file_name = uploadFile($logoFile, imagePath());
+            $logo = $file_name;
+        }
+        if ($request->hasFile('cover')) {
+
+            $coverFile = $request->cover;
+            $file_name = uploadFile($coverFile, imagePath());
+            $cover = $file_name;
+        }
+
         $store = Store::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -74,13 +90,12 @@ class StoreController extends Controller
             'address' => $request->address,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
+            'logo' => ($logo != '') ? $logo : null,
+            'cover' => ($cover != '') ? $cover : null,
         ]);
         return redirect()->route('store.index')->with('success', 'Store Created');
     }
-    public function show()
-    {
-        # code...
-    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -102,6 +117,21 @@ class StoreController extends Controller
      */
     public function update(StoreRequest $request, Store $store)
     {
+
+        $logo = $cover = "";
+        if ($request->hasFile('logo')) {
+
+            $logoFile = $request->logo;
+            $file_name = uploadFile($logoFile, imagePath());
+            $logo = $file_name;
+        }
+        if ($request->hasFile('cover')) {
+
+            $coverFile = $request->cover;
+            $file_name = uploadFile($coverFile, imagePath());
+            $cover = $file_name;
+        }
+
         $store->update([
             'name' => $request->name,
             'description' => $request->description,
@@ -109,6 +139,8 @@ class StoreController extends Controller
             'address' => $request->address,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
+            'logo' => ($logo != '') ? $logo : $store->logo,
+            'cover' => ($cover != '') ? $cover : $store->cover,
         ]);
         return redirect()->route('store.index')->with('success', 'Store Updated');
     }
