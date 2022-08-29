@@ -91,6 +91,29 @@
                         </div>
                     </div>
                 </div>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Categories</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12">
+                            <div class="form-group uploader">
+                                <div class="custom-control custom-checkbox small">
+                                    @php
+                                        $old_categories = old('categories') ? old('categories') : [];
+                                    @endphp
+                                    @foreach ($categories as $cat)
+                                        <input type="checkbox" class="custom-control-input" name="categories[]"
+                                            value="{{ $cat->id }}" id="customCheck{{ $cat->id }}"
+                                            {{ in_array($cat->id, $old_categories) ? 'checked=checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="customCheck{{ $cat->id }}">{{ $cat->name }}</label>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>

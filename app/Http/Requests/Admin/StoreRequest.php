@@ -32,7 +32,7 @@ class StoreRequest extends FormRequest
             'address' => 'nullable|min:3',
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
-            'category' => 'nullable|numeric',
+            'category.*' => 'nullable|numeric',
         ];
     }
     public function messages()

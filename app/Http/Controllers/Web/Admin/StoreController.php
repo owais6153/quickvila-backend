@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Store;
+use App\Models\Category;
 use App\Http\Requests\Admin\StoreRequest;
 use DataTables;
 use Bouncer;
@@ -42,6 +43,9 @@ class StoreController extends Controller
                 }
                 return $actionBtn;
             })
+            ->addColumn('products', function ($row) {
+                return $row->products->count();
+            })
             ->rawColumns(['action'])
             ->toJson();
     }
@@ -58,7 +62,8 @@ class StoreController extends Controller
      */
     public function create()
     {
-        return view($this->dir . 'create');
+        $categories = Category::where('type', 'store')->get();
+        return view($this->dir . 'create', compact('categories'));
     }
 
     /**
@@ -93,6 +98,10 @@ class StoreController extends Controller
             'logo' => ($logo != '') ? $logo : null,
             'cover' => ($cover != '') ? $cover : null,
         ]);
+
+        if ($request->has('categories'))
+            $store->categories()->attach($request->categories, ['type' => 'store']);
+
         return redirect()->route('store.index')->with('success', 'Store Created');
     }
 
@@ -105,7 +114,8 @@ class StoreController extends Controller
      */
     public function edit(Store $store)
     {
-        return view($this->dir . 'edit', compact('store'));
+        $categories = Category::where('type', 'store')->get();
+        return view($this->dir . 'edit', compact('store', 'categories'));
     }
 
     /**
@@ -142,6 +152,14 @@ class StoreController extends Controller
             'logo' => ($logo != '') ? $logo : $store->logo,
             'cover' => ($cover != '') ? $cover : $store->cover,
         ]);
+
+        if ($request->has('categories')) {
+            $categories  = (array) $request->get('categories'); // related ids
+            $pivotData = array_fill(0, count($categories), ['type' => 'hotel']);
+            $syncData  = array_combine($categories, $pivotData);
+            $skatepark->categories()->sync($syncData);
+        }
+
         return redirect()->route('store.index')->with('success', 'Store Updated');
     }
 

@@ -18,4 +18,12 @@ class Store extends Model
         'latitude',
         'longitude',
     ];
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'pivot_categories', 'pivot_id', 'category_id')->withPivot('type')->wherePivot('type', 'store');
+    }
 }
