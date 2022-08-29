@@ -3,52 +3,53 @@
 @section('content')
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Create Store</h1>
+            <h1 class="h3 mb-0 text-gray-800">Edit Store</h1>
             <a href="{{route('store.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> All Stores</a>
         </div>
-        <form class="row" action="{{route('store.store')}}" method="POST">
+        <form class="row" action="{{route('store.update', ['store' => $store->id])}}" method="POST">
             @csrf
+            @method('PUT')
             <div class="col-md-9">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Add Store</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Edit Store</h6>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Store Name</label>
-                                    <input type="text" name="name"  placeholder="Store Name" class="form-control" value="{{old('name')}}">
+                                    <input type="text" name="name"  placeholder="Store Name" class="form-control" value="{{old('name', $store->name)}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Url</label>
-                                    <input type="url" name="url"  placeholder="Store URL" class="form-control" value="{{old('url')}}">
+                                    <input type="url" name="url"  placeholder="Store URL" class="form-control" value="{{old('url', $store->url)}}">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Address</label>
-                                    <input type="text" name="address"  placeholder="Store Address" class="form-control" value="{{old('address')}}">
+                                    <input type="text" name="address"  placeholder="Store Address" class="form-control" value="{{old('address', $store->address)}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Latitude</label>
-                                    <input type="text" name="latitude"  placeholder="Store Latitude" class="form-control" value="{{old('latitude')}}">
+                                    <input type="text" name="latitude"  placeholder="Store Latitude" class="form-control" value="{{old('latitude', $store->latitude)}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Longitude</label>
-                                    <input type="text" name="longitude"  placeholder="Store Longitude" class="form-control" value="{{old('longitude')}}">
+                                    <input type="text" name="longitude"  placeholder="Store Longitude" class="form-control" value="{{old('longitude', $store->longitude)}}">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Store Description</label>
-                                    <textarea name="description" class="form-control" placeholder="Description">{{old('description')}}</textarea>
+                                    <textarea name="description" class="form-control" placeholder="Description">{{old('description', $store->description)}}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12">

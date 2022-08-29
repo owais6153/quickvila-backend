@@ -16,7 +16,6 @@ class CreateStoreCategoriesTable extends Migration
         Schema::create('store_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->longText('icon')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

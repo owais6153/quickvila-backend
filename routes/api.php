@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProductController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,14 +15,13 @@ use App\Http\Controllers\Api\AuthController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-// Route::namespace('App\Http\Controllers\Api')->group(function () {
+    Route::get('/products', [ProductController::class, 'index']);
     Route::post('/authenticate', [AuthController::class, 'authenticate']);
 
-    Route::get('check', function(){
-         return response()->json(['not work'], 200);
-    })->middleware('auth:sanctum');
-// });
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('check', function(){
+             return response()->json(['not work'], 200);
+        });
+    });
+
+

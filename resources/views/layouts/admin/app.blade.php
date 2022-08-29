@@ -57,7 +57,8 @@
         <script src="{{asset('js/jquery-easing/jquery.easing.min.js')}}"></script>
         <!-- Custom scripts for all pages-->
         <script src="{{asset('js/sb-admin-2.min.js')}}"></script>
-
+        <script src="{{asset('js/datatable.min.js')}}"></script>
+        <script src="{{asset('js/dataTables.bootstrap4.min.js')}}"></script>
         <!-- Page Level Script -->
         @stack('afterScripts')
     </body>

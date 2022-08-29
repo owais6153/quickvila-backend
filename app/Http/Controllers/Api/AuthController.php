@@ -21,6 +21,7 @@ class AuthController extends Controller
 
             if ($validator->fails()) {
                 $error['errors'] = $validator->messages();
+                $error['status'] = 400;
                 return response()->json($error,400);
             }
             $credentials = [];
@@ -32,17 +33,61 @@ class AuthController extends Controller
                 $user = User::where('email', $request->email)->first();
 
                 return response()->json([
+                    'status' => 200,
                     'message' => 'User Logged In Successfully',
-                    'token' => $user->createToken("API TOKEN")->plainTextToken
+                    'token' => $user->getToken(env("API_TOKEN", "API TOKEN"))->plainTextToken
                 ], 200);
             }
 
-            $error['errors'] = ['login' => ['Credentials do not match our records.']];
+            $error['errors'] = ['login' => ['Credentials do not match our records.'], 'status' => 400];
             return response()->json($error, 404);
         }
         catch(\Throwable $th){
             $error['errors'] = ['error' => [$th->getMessage()]];
-            return response()->json($error, 404);
+            $error['status'] = 500;
+
+            return response()->json($error, 500);
+        }
+    }
+    public function register(Request $request)
+    {
+        try{
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required|min:3',
+                'email' => 'required|exists:users,email|email',
+                'password' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                $error['errors'] = $validator->messages();
+                $error['status'] = 400;
+                return response()->json($error,400);
+            }
+
+
+            $user = new User;
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+
+            if(env('APP_ENV') == 'local')
+                $user->email_verified_at = date("Y-m-d",time());
+
+            $user->save();
+
+            if(env('APP_ENV') != 'local')
+                $user->sendEmailVerificationNotification();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'User Register Successfully',
+                    'token' => $user->createToken(env("API_TOKEN", "API TOKEN"))->plainTextToken
+                ], 200);
+        }
+        catch(\Throwable $th){
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+
+            return response()->json($error, 500);
         }
     }
 }

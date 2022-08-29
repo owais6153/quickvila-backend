@@ -46,10 +46,15 @@ use App\Http\Controllers\Web\Admin\StoreController;
 
 
     // Admin Area
+    Route::middleware(['auth', 'permission:admin-area'])->group(function () {
         Route::get('/', function(){
             return view('admin.index');
         })->name('admin.dashboard');
+
+    // Stores
         Route::resource('store', StoreController::class);
+        Route::get('store-list', [StoreController::class, 'getList'])->name('store.list');
+    });
 
 
 
