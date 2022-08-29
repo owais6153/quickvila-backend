@@ -3,52 +3,52 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">{{env('APP_NAME')}}</div>
+        <div class="sidebar-brand-text mx-3">{{ env('APP_NAME') }}</div>
     </a>
     <hr class="sidebar-divider ">
     <div class="sidebar-heading">
-        {{auth()->user()->name}}
+        {{ auth()->user()->name }}
     </div>
     <li class="nav-item active">
-        <a class="nav-link" href="{{route('admin.dashboard')}}">
+        <a class="nav-link" href="{{ route('admin.dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
     <hr class="sidebar-divider">
     <div class="sidebar-heading">
-            CATALOG
+        CATALOG
     </div>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#store"
-            aria-expanded="true" aria-controls="store">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#store" aria-expanded="true"
+            aria-controls="store">
             <i class="fas fa-fw fa-cog"></i>
             <span>Stores</span>
         </a>
         <div id="store" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Stores</h6>
-                <a class="collapse-item" href="{{route('store.create')}}">Add New Store</a>
-                <a class="collapse-item" href="{{route('store.index')}}">All Stores</a>
+                <a class="collapse-item" href="{{ route('store.create') }}">Add New Store</a>
+                <a class="collapse-item" href="{{ route('store.index') }}">All Stores</a>
                 <h6 class="collapse-header">Categories</h6>
-                <a class="collapse-item" href="{{route('store.create')}}">Add New Category</a>
-                <a class="collapse-item" href="{{route('store.create')}}">All Categories</a>
+                <a class="collapse-item" href="{{ route('store.create') }}">Add New Category</a>
+                <a class="collapse-item" href="{{ route('store.create') }}">All Categories</a>
             </div>
         </div>
     </li>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#product"
-            aria-expanded="true" aria-controls="product">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#product" aria-expanded="true"
+            aria-controls="product">
             <i class="fas fa-fw fa-cog"></i>
             <span>Products</span>
         </a>
         <div id="product" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Products</h6>
-                <a class="collapse-item" href="{{route('store.create')}}">Add New Product</a>
-                <a class="collapse-item" href="{{route('store.index')}}">All Products</a>
+                <a class="collapse-item" href="{{ route('product.create') }}">Add New Product</a>
+                <a class="collapse-item" href="{{ route('product.index') }}">All Products</a>
                 <h6 class="collapse-header">Categories</h6>
-                <a class="collapse-item" href="{{route('store.create')}}">Add New Category</a>
-                <a class="collapse-item" href="{{route('store.create')}}">All Categories</a>
+                <a class="collapse-item" href="{{ route('product.create') }}">Add New Category</a>
+                <a class="collapse-item" href="{{ route('product.create') }}">All Categories</a>
             </div>
         </div>
     </li>
@@ -93,4 +93,3 @@
 
 
 </ul>
-

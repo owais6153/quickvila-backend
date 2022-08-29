@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\Admin\StoreController;
+use App\Http\Controllers\Web\Admin\ProductController;
+/*
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,45 +18,33 @@ use App\Http\Controllers\Web\Admin\StoreController;
 
 
 
-    // Static Pages
+// Static Pages
+Route::get('/', function () {
+    return redirect()->route('/admin');
+});
+Route::get('/login', function () {
+    return view('auth.login');
+})->middleware('guest')->name('login');
+
+
+
+// Authentication
+Route::post('authenticate', [AuthController::class, 'authenticate'])->name('authenticate')->middleware('guest');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// Admin Area
+Route::middleware(['auth', 'permission:admin-area'])->group(function () {
     Route::get('/', function () {
-        return redirect()->route('/admin');
-    });
-    Route::get('/login', function(){
-        return view('auth.login');
-    })->middleware('guest')->name('login');
-
-    Route::get('/register', function(){
-        return view('auth.register');
-    })->middleware('guest')->name('register');
-
-    // Authentication
-    Route::post('authenticate', [AuthController::class, 'authenticate'])->name('authenticate')->middleware('guest');
-    Route::post('/forget-password', [AuthController::class, 'forgetPasswordEmail'])->name('forget-password')->middleware('guest');
-    Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
-    Route::get('/reset-password/{token}', [AuthController::class, 'resetPaassword'])->middleware(['guest'])->name('password.reset');
-    Route::post('/reset-password',[AuthController::class, 'paasswordUpdate'])->middleware(['guest'])->name('password.update');
-    Route::post('/register',[AuthController::class, 'register'])->middleware(['guest'])->name('signup');
-    Route::get('/verification', [AuthController::class, 'verificationNotice'])->name('verification.notice')->middleware(['auth']);
-    Route::get('/email/verify/{id}/{hash}', [AuthController::class, '__invoke'])
-        ->middleware(['throttle:6,1'])
-        ->name('verification.verify');
-    Route::post('/email/verification-notification', function (Request $request) {
-        $request->user()->sendEmailVerificationNotification();
-        return back()->with('message', 'Verification link sent!');
-    })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-
-
-    // Admin Area
-    Route::middleware(['auth', 'permission:admin-area'])->group(function () {
-        Route::get('/', function(){
-            return view('admin.index');
-        })->name('admin.dashboard');
+        return view('admin.index');
+    })->name('admin.dashboard');
 
     // Stores
-        Route::resource('store', StoreController::class);
-        Route::get('store-list', [StoreController::class, 'getList'])->name('store.list');
-    });
+    Route::resource('store', StoreController::class);
+    Route::get('store-list', [StoreController::class, 'getList'])->name('store.list');
+    // StoreCategory
+    Route::resource('storecategory', CategoryController::class);
 
-
-
+    // Products
+    Route::resource('product', ProductController::class);
+    Route::get('product-list', [ProductController::class, 'getList'])->name('product.list');
+});

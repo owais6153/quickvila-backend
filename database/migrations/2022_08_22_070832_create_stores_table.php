@@ -16,8 +16,8 @@ class CreateStoresTable extends Migration
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->longText('logo')->nullable();
-            $table->longText('cover')->nullable();
+            $table->longText('logo')->default('images/no-image.png')->nullable();
+            $table->longText('cover')->default('images/no-image.png')->nullable();
             $table->longText('description')->nullable();
             $table->longText('url')->nullable();
             $table->longText('address')->nullable();

@@ -155,9 +155,9 @@ class StoreController extends Controller
 
         if ($request->has('categories')) {
             $categories  = (array) $request->get('categories'); // related ids
-            $pivotData = array_fill(0, count($categories), ['type' => 'hotel']);
+            $pivotData = array_fill(0, count($categories), ['type' => 'store']);
             $syncData  = array_combine($categories, $pivotData);
-            $skatepark->categories()->sync($syncData);
+            $store->categories()->sync($syncData);
         }
 
         return redirect()->route('store.index')->with('success', 'Store Updated');

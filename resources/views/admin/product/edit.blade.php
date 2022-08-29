@@ -3,65 +3,55 @@
 @section('content')
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Edit Store</h1>
-            <a href="{{ route('store.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> All
-                Stores</a>
+            <h1 class="h3 mb-0 text-gray-800">Edit Product</h1>
+            <a href="{{ route('product.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> All
+                Products</a>
         </div>
-        <form class="row" action="{{ route('store.update', ['store' => $store->id]) }}" method="POST"
+        <form class="row" action="{{ route('product.update', ['product' => $product->id]) }}" method="POST"
             enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="col-md-9">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Edit Store</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Update Product</h6>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Store Name</label>
-                                    <input type="text" name="name" placeholder="Store Name" class="form-control"
-                                        value="{{ old('name', $store->name) }}">
+                                    <label>Product Name</label>
+                                    <input type="text" name="name" placeholder="Product Name" class="form-control"
+                                        value="{{ old('name', $product->name) }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Url</label>
-                                    <input type="url" name="url" placeholder="Store URL" class="form-control"
-                                        value="{{ old('url', $store->url) }}">
+                                    <label>Store</label>
+                                    <select name="store" class="form-control">
+                                        @foreach ($stores as $store)
+                                            <option
+                                                {{ old('store', $product->store_id) == $store->id ? 'selected=selected' : '' }}
+                                                value="{{ $store->id }}">{{ $store->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Address</label>
-                                    <input type="text" name="address" placeholder="Store Address" class="form-control"
-                                        value="{{ old('address', $store->address) }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Latitude</label>
-                                    <input type="text" name="latitude" placeholder="Store Latitude" class="form-control"
-                                        value="{{ old('latitude', $store->latitude) }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Longitude</label>
-                                    <input type="text" name="longitude" placeholder="Store Longitude"
-                                        class="form-control" value="{{ old('longitude', $store->longitude) }}">
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Store Description</label>
+                                    <label>Product Description</label>
                                     <textarea name="description" class="form-control" placeholder="Description">{{ old('description', $store->description) }}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="submit" name="" value="Save" placeholder="Store Name"
+                                    <label>Product Short Description</label>
+                                    <textarea name="short_description" class="form-control" placeholder="Description">{{ old('short_description', $store->short_description) }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input type="submit" name="" value="Save" placeholder="Product Name"
                                         class="btn btn-primary btn-block">
                                 </div>
                             </div>
@@ -72,35 +62,23 @@
             <div class="col-md-3">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Additional Store Info</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Additional Product Info</h6>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
                             <div class="form-group uploader">
                                 <label>Upload Logo</label>
-                                <input type="file" name="logo" />
+                                <input type="file" name="image" />
                                 <div class="image-uploader"
                                     style="background-image: url('{{ asset('images/camera.png') }}')">
-                                    @if ($store->logo)
-                                        <img src={{ asset($store->logo) }} />
-                                    @endif
-
-                                </div>
-                            </div>
-                            <div class="form-group uploader">
-                                <label>Upload Cover</label>
-                                <input type="file" name="cover" />
-                                <div class="image-uploader"
-                                    style="background-image: url('{{ asset('images/camera.png') }}')">
-                                    @if ($store->cover)
-                                        <img src={{ asset($store->cover) }} />
+                                    @if ($product->image)
+                                        <img src={{ asset($product->image) }} />
                                     @endif
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 @if ($categories->count())
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
@@ -112,11 +90,6 @@
                                     <div class="custom-control custom-checkbox small">
                                         @php
                                             $old_categories = old('categories') ? old('categories') : [];
-                                            if (empty($old_categories)) {
-                                                foreach ($store->categories as $oldcat) {
-                                                    $old_categories[] = $oldcat->id;
-                                                }
-                                            }
                                         @endphp
                                         @foreach ($categories as $cat)
                                             <input type="checkbox" class="custom-control-input" name="categories[]"

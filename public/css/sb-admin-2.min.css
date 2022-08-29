@@ -28,3 +28,7 @@
     object-fit: scale-down;
     background: #fff;
 }
+.scrollable-card-body {
+    max-height: 200px;
+    overflow-y: scroll;
+}
