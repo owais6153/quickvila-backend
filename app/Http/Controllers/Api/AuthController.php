@@ -34,16 +34,18 @@ class AuthController extends Controller
                 $user = User::where('email', $request->email)->first();
 
                 return response()->json([
+                    'userId' => $user->id,
                     'status' => 200,
                     'message' => 'User Logged In Successfully',
-                    'token' => $user->getToken(env("API_TOKEN", "API TOKEN"))->plainTextToken
+                    'token' => $user->createToken(env("API_TOKEN", "API TOKEN"))->plainTextToken
                 ], 200);
             }
 
-            $error['errors'] = ['login' => ['Credentials do not match our records.'], 'status' => 400];
+            $error['errors'] = ['login' => ['Credentials do not match our records.']];
+            $error['status'] = 400;
             return response()->json($error, 404);
         } catch (\Throwable $th) {
-            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['errors'] = ['Server error' => [$th->getMessage()]];
             $error['status'] = 500;
 
             return response()->json($error, 500);
