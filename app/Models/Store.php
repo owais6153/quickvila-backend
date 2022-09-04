@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Casts\Image;
 
 class Store extends Model
 {
@@ -17,6 +19,10 @@ class Store extends Model
         'address',
         'latitude',
         'longitude',
+    ];
+    protected $casts = [
+        'logo' => Image::class,
+        'cover' => Image::class,
     ];
     public function products()
     {

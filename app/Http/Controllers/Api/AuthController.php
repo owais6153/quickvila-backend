@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Auth\LoginRequest;
 use Auth;
 use Hash;
+use Str;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -35,9 +36,10 @@ class AuthController extends Controller
 
                 return response()->json([
                     'userId' => $user->id,
+                    'verified' => $user->email_verified_at,
                     'status' => 200,
                     'message' => 'User Logged In Successfully',
-                    'token' => $user->createToken(env("API_TOKEN", "API TOKEN"))->plainTextToken
+                    'token' => $user->createToken(Str::random(30))->plainTextToken
                 ], 200);
             }
 
@@ -56,8 +58,9 @@ class AuthController extends Controller
         try {
             $validator = \Validator::make($request->all(), [
                 'name' => 'required|min:3',
-                'email' => 'required|exists:users,email|email',
-                'password' => 'required'
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required',
+                'confirm_password' => 'required|same:password',
             ]);
 
             if ($validator->fails()) {
@@ -76,13 +79,17 @@ class AuthController extends Controller
                 $user->email_verified_at = date("Y-m-d", time());
 
             $user->save();
+            $user->assign('Customer');
 
             if (env('APP_ENV') != 'local')
                 $user->sendEmailVerificationNotification();
+
             return response()->json([
+                'userId' => $user->id,
+                'verified' => $user->email_verified_at,
                 'status' => 200,
                 'message' => 'User Register Successfully',
-                'token' => $user->createToken(env("API_TOKEN", "API TOKEN"))->plainTextToken
+                'token' => $user->createToken(Str::random(30))->plainTextToken
             ], 200);
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
@@ -95,8 +102,9 @@ class AuthController extends Controller
     {
         auth()->user()->tokens()->delete();
 
-        return [
-            'message' => 'Tokens Revoked'
-        ];
+
+        $data['status'] = 200;
+        $data['message'] = 'Cart is empty';
+        return  response()->json($data, 200);
     }
 }
