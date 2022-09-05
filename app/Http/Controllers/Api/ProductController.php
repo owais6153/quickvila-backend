@@ -20,9 +20,6 @@ class ProductController extends Controller
         if($request->has('limit')){
             $data['products'] = $data['products']->limit($request->limit);
         }
-        if($request->has('search')){
-            $data['products'] = $data['products']->where('name', 'LIKE', "%$request->search%");
-        }
 
         $data['products'] = $data['products']->get();
         if(!$data['products']->count()){

@@ -74,6 +74,7 @@ class AuthController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
+            $user->code = rand(100000,999999);
 
             if (env('APP_ENV') == 'local')
                 $user->email_verified_at = date("Y-m-d", time());
@@ -106,5 +107,155 @@ class AuthController extends Controller
         $data['status'] = 200;
         $data['message'] = 'Cart is empty';
         return  response()->json($data, 200);
+    }
+    public function verify(Request $request)
+    {
+        try{
+            $validator = \Validator::make($request->all(), [
+                'code' => 'required|min:6|max:6|exists:users,code',
+            ]);
+            if ($validator->fails()) {
+                $error['errors'] = $validator->messages();
+                $error['status'] = 400;
+                $error['request'] = $request;
+                return response()->json($error, 400);
+            }
+            if($request->user()->code == $request->code){
+                $user = $request->user();
+                $user->update([
+                    'email_verified_at' => date("Y-m-d", time()),
+                    'code' => null
+                ]);
+                return response()->json([
+                    'userId' =>$user->id,
+                    'verified' => $user->email_verified_at,
+                    'status' => 200,
+                    'message' => 'User Verified Successfully',
+                ], 200);
+            }
+            $error['errors'] = ['code' => ['Code is invalid']];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+        catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
+    public function resend(Request $request)
+    {
+        try{
+            $user = $request->user();
+            $user->update([
+                'code' => rand(100000,999999)
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Code resend successfully',
+            ], 200);
+        }
+        catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
+    public function forget(Request $request){
+        try{
+            $validator = \Validator::make($request->all(), [
+                'email' => 'required|email|exists:users,email',
+            ]);
+            if ($validator->fails()) {
+                $error['errors'] = $validator->messages();
+                $error['status'] = 400;
+                $error['request'] = $request;
+                return response()->json($error, 400);
+            }
+            $user = User::where('email', $request->email)->first();
+            $user->update([
+                'code' => rand(100000,999999)
+            ]);
+            return response()->json([
+                'status' => 200,
+                'message' => 'Code send to email',
+            ], 200);
+        }
+        catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
+    public function forgetCodeVerify(Request $request){
+        try{
+            $validator = \Validator::make($request->all(), [
+                'email' => 'required|email|exists:users,email',
+                'code' => 'required|min:6|max:6|exists:users,code',
+            ]);
+            if ($validator->fails()) {
+                $error['errors'] = $validator->messages();
+                $error['status'] = 400;
+                $error['request'] = $request;
+                return response()->json($error, 400);
+            }
+            $user = User::where('email', $request->email)->where('code', $request->code)->first();
+            if(empty($user)){
+                $error['errors'] = ['code' => ['Code is invalid']];
+                $error['status'] = 500;
+                return response()->json($error, 500);
+            }
+            return response()->json([
+                'token' => $user->createToken(Str::random(30))->plainTextToken,
+                'status' => 200,
+                'message' => 'User verified successfully',
+            ], 200);
+
+        }
+        catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
+    public function forgetUpdatePwd(Request $request){
+        try{
+            $validator = \Validator::make($request->all(), [
+                'email' => 'required|email|exists:users,email',
+                'new_password' => 'required',
+                'confirm_password' => 'required|same:new_password',
+            ]);
+            if ($validator->fails()) {
+                $error['errors'] = $validator->messages();
+                $error['status'] = 400;
+                $error['request'] = $request;
+                return response()->json($error, 400);
+            }
+            $user = $request->user();
+            if(!empty($user)){
+                $user->update([
+                    'password' => Hash::make($request->password)
+                ]);
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Password Updated',
+                ], 200);
+            }
+            $error['errors'] = ['code' => ['Code is invalid']];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'User verified successfully',
+            ], 200);
+
+        }
+        catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
     }
 }
