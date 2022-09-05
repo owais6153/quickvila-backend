@@ -18,12 +18,16 @@ use App\Http\Controllers\Api\CartController;
 */
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/search/{term}', [HomeController::class, 'search']);
+    Route::get('/stores', [ProductController::class, 'index']);
+    Route::get('/stores/{store:id}', [ProductController::class, 'index']);
+    Route::get('/stores/{store:id}/products', [ProductController::class, 'index']);
+    Route::get('/stores/{store:id}/products/{product:id}', [ProductController::class, 'index']);
     Route::get('/products', [ProductController::class, 'index']);
 
     // Auth
     Route::post('/authenticate', [AuthController::class, 'authenticate']);
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/forget', [AuthController::class, 'forget'])->middleware('throttle:3,10');;
+    Route::post('/forget', [AuthController::class, 'forget'])->middleware('throttle:3,10');
     Route::post('/forget/code-verify', [AuthController::class, 'forgetCodeVerify'])->middleware('throttle:3,10');
 
 
@@ -40,6 +44,16 @@ use App\Http\Controllers\Api\CartController;
         Route::put('/cart/update/{cartProduct:id}/{operation}', [CartController::class, 'update']);
         Route::delete('/cart/remove/{cartProduct:id}', [CartController::class, 'remove']);
         Route::delete('/cart/empty', [CartController::class, 'emptyCart']);
+        // Checkout
+        Route::post('/checkout', [CartController::class, 'index']);
+        Route::post('/orders/{order:id}/', [CartController::class, 'index']);
+        //Account
+        Route::get('/account', [CartController::class, 'index']);
+        Route::get('/account/password/update', [CartController::class, 'index']);
+        Route::get('/account/profile/update', [CartController::class, 'index']);
+        Route::get('/account/orders', [CartController::class, 'index']);
+        Route::get('/stores/{store:id}/follow', [ProductController::class, 'index']);
+        Route::get('/account/following', [CartController::class, 'index']);
     });
 
 
