@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\CartController;
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,7 @@ use App\Http\Controllers\Api\CartController;
 */
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/search/{term}', [HomeController::class, 'search']);
-    Route::get('/stores', [ProductController::class, 'index']);
+    Route::get('/stores', [StoreController::class, 'index']);
     Route::get('/stores/{store:id}', [ProductController::class, 'index']);
     Route::get('/stores/{store:id}/products', [ProductController::class, 'index']);
     Route::get('/stores/{store:id}/products/{product:id}', [ProductController::class, 'index']);
