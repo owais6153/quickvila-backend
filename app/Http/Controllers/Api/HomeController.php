@@ -13,7 +13,7 @@ class HomeController extends Controller
     public function index()
     {
         $data['products'] = Product::limit(10)->get();
-        $data['stores'] = Store::withCount(['products'])->limit(1)->get();
+        $data['stores'] = Store::withCount(['products'])->limit(10)->get();
         $data['status'] = 200;
         return response()->json($data, $data['status']);
     }
@@ -23,15 +23,10 @@ class HomeController extends Controller
         if($term){
             $data['products'] = $data['products']->where('name', 'LIKE', "%$term%");
         }
-        $data['products'] = $data['products']->get();
-        $data['stores'] = Store::query();
-        if($term){
-            $data['stores'] = $data['stores']->where('name', 'LIKE', "%$term%");
-        }
-        $data['stores'] = $data['stores']->get();
-        if(!$data['products']->count() && !$data['stores']->count()){
+        $data['products'] = $data['products']->paginate(20)->get();
+        if(!$data['products']->count()){
             $data['status'] = 404;
-            $data['message'] = 'No Product & Store Found';
+            $data['message'] = 'No Product Found';
         }
         else{
             $data['status'] = 200;

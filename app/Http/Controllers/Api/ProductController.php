@@ -13,23 +13,13 @@ class ProductController extends Controller
     }
     public function index(Request $request)
     {
-        $data['products'] = $this->model->query();
-        if($request->has('offset')){
-            $data['products'] = $data['products']->offset($request->offset);
-        }
-        if($request->has('limit')){
-            $data['products'] = $data['products']->limit($request->limit);
-        }
 
-        $data['products'] = $data['products']->get();
-        if(!$data['products']->count()){
-            $data['status'] = 404;
-            $data['message'] = 'No Product Found';
-        }
-        else{
-            $data['status'] = 200;
-        }
-
+        $products = $this->model->query();
+        $paginate = ($request->has('paginate')) ? $request->paginate : 20;
+        $products = $products->paginate($paginate);
+        $data['products'] = $products;
+        $data['status'] = 200;
+        return response()->json($data, $data['status']);
         return response()->json($data, $data['status']);
     }
 }

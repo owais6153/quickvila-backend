@@ -15,7 +15,7 @@ class StoreController extends Controller
     public function index(Request $request)
     {
         $stores = $this->model->query();
-        $paginate = ($request->has('paginate')) ? $request->paginate : 1;
+        $paginate = ($request->has('paginate')) ? $request->paginate : 15;
         $stores = $stores->withCount(['products'])->paginate($paginate);
         $data['stores'] = $stores;
         $data['status'] = 200;

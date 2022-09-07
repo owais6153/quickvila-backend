@@ -235,7 +235,7 @@ class AuthController extends Controller
             $user = $request->user();
             if(!empty($user)){
                 $user->update([
-                    'password' => Hash::make($request->password)
+                    'password' => Hash::make($request->new_password)
                 ]);
                 return response()->json([
                     'status' => 200,
