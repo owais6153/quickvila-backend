@@ -15,6 +15,13 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->integer('count')->default(0);
+            $table->integer('tax')->nullable();
+            $table->integer('delivery_charges')->nullable();
+            $table->string('total');
+            $table->enum('status', ['completed', 'canceled', 'in process', 'refunded'])->defaul('in progress');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
