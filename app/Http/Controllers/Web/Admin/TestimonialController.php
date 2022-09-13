@@ -125,7 +125,7 @@ class TestimonialController extends Controller
         $testimonial->update([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
-            'image' => ($image != '') ? $image :  $testimonial->image,
+            'image' => ($image != '') ? $image :  str_replace(env('FILE_URL'),'',$testimonial->image),
             'description' => $request->description,
             'sort' => $request->sort,
         ]);

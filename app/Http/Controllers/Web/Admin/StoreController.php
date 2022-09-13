@@ -9,6 +9,7 @@ use App\Models\StoreCategory;
 use App\Http\Requests\Admin\StoreRequest;
 use DataTables;
 use Bouncer;
+use Auth;
 
 class StoreController extends Controller
 {
@@ -27,7 +28,7 @@ class StoreController extends Controller
      */
     public function getList(Request $request)
     {
-        $model = Store::query();
+        $model = (Bouncer::can('all-store')) ? Store::query() : Store::where('user_id', Auth::id());
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';
@@ -150,8 +151,8 @@ class StoreController extends Controller
             'address' => $request->address,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-            'logo' => ($logo != '') ? $logo : $store->logo,
-            'cover' => ($cover != '') ? $cover : $store->cover,
+            'logo' => ($logo != '') ? $logo : str_replace(env('FILE_URL'),'',$store->logo),
+            'cover' => ($cover != '') ? $cover : str_replace(env('FILE_URL'),'',$store->cover),
             'user_id' => $request->user_id,
         ]);
 

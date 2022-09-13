@@ -9,13 +9,24 @@ use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
-use Hash;
-use Str;
 use App\Models\User;
+use App\Models\Store;
+use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Verified;
+use Hash;
+use Str;
+use Bouncer;
 class AuthController extends Controller
 {
+    public function index()
+    {
+        $data = [];
+        $data['store'] = Bouncer::can('all-store') ? Store::count() : Store::where('user_id', Auth::id())->count() ;
+        $data['product'] = Bouncer::can('all-product') ? Product::count() : Product::where('user_id', Auth::id())->count() ;
+        return view('admin.index')->with($data);
+    }
+
     public function authenticate(LoginRequest $request)
     {
         $credentials = $request->getCredentials();

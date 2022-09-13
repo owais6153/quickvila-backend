@@ -18,42 +18,72 @@
     <div class="sidebar-heading">
         CATALOG
     </div>
+
+    @if(Bouncer::can('view-store') || Bouncer::can('create-store') || Bouncer::can('view-store-category') || Bouncer::can('edit-store-category'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#store" aria-expanded="true"
             aria-controls="store">
-            <i class="fas fa-fw fa-cog"></i>
+            <i class="fas fa-store"></i>
             <span>Stores</span>
         </a>
         <div id="store" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
+              @if(Bouncer::can('view-store') || Bouncer::can('create-store'))
                 <h6 class="collapse-header">Stores</h6>
-                <a class="collapse-item" href="{{ route('store.create') }}">Add New Store</a>
-                <a class="collapse-item" href="{{ route('store.index') }}">All Stores</a>
+                @can('create-store')
+                    <a class="collapse-item" href="{{ route('store.create') }}">Add New Store</a>
+                @endcan
+                @can('view-store')
+                    <a class="collapse-item" href="{{ route('store.index') }}">All Stores</a>
+                @endcan
+              @endif
+
+              @if(Bouncer::can('view-store-category') || Bouncer::can('create-store-category'))
                 <h6 class="collapse-header">Categories</h6>
-                <a class="collapse-item" href="{{ route('storecategory.create') }}">Add New Category</a>
-                <a class="collapse-item" href="{{ route('storecategory.index') }}">All Categories</a>
+                @can('create-store-category')
+                    <a class="collapse-item" href="{{ route('storecategory.create') }}">Add New Category</a>
+                @endcan
+                @can('view-store-category')
+                    <a class="collapse-item" href="{{ route('storecategory.index') }}">All Categories</a>
+                @endcan
+              @endif
             </div>
         </div>
     </li>
+    @endif
+    @if(Bouncer::can('view-product') || Bouncer::can('create-product') || Bouncer::can('view-product-category') || Bouncer::can('edit-product-category'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#product" aria-expanded="true"
             aria-controls="product">
-            <i class="fas fa-fw fa-cog"></i>
+            <i class="fa fa-archive"></i>
             <span>Products</span>
         </a>
         <div id="product" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Products</h6>
-                <a class="collapse-item" href="{{ route('product.create') }}">Add New Product</a>
-                <a class="collapse-item" href="{{ route('product.index') }}">All Products</a>
-                <h6 class="collapse-header">Categories</h6>
-                <a class="collapse-item" href="{{ route('productcategory.create') }}">Add New Category</a>
-                <a class="collapse-item" href="{{ route('productcategory.index') }}">All Categories</a>
+                @if(Bouncer::can('view-product') || Bouncer::can('create-product'))
+                    <h6 class="collapse-header">Products</h6>
+                    @can('create-product')
+                    <a class="collapse-item" href="{{ route('product.create') }}">Add New Product</a>
+                    @endcan
+                    @can('view-product')
+                    <a class="collapse-item" href="{{ route('product.index') }}">All Products</a>
+                    @endcan
+                @endif
+                @if(Bouncer::can('view-product-category') || Bouncer::can('create-product-category'))
+                    <h6 class="collapse-header">Categories</h6>
+
+                    @can('create-product-category')
+                        <a class="collapse-item" href="{{ route('productcategory.create') }}">Add New Category</a>
+                    @endcan
+                    @can('view-product-category')
+                        <a class="collapse-item" href="{{ route('productcategory.index') }}">All Categories</a>
+                    @endcan
+                @endif
             </div>
         </div>
     </li>
-
-
+    @endif
+    @if(Bouncer::can('view-testimonial') || Bouncer::can('create-testimonial') || Bouncer::can('view-video') || Bouncer::can('edit-video'))
     <!-- Divider -->
     <hr class="sidebar-divider">
     <div class="sidebar-heading">
@@ -67,42 +97,29 @@
         </a>
         <div id="testimonial" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Testimnonials</h6>
-                <a class="collapse-item" href="{{ route('testimonial.create') }}">Add New Testimnonials</a>
-                <a class="collapse-item" href="{{ route('testimonial.index') }}">All Testimnonial</a>
 
-                <h6 class="collapse-header">Videos</h6>
-                <a class="collapse-item" href="{{ route('video.create') }}">Add New Videos</a>
-                <a class="collapse-item" href="{{ route('video.index') }}">All Video</a>
+                @if(Bouncer::can('view-testimonial') || Bouncer::can('create-testimonial'))
+                    <h6 class="collapse-header">Testimnonials</h6>
+                    @can('create-testimonial')
+                        <a class="collapse-item" href="{{ route('testimonial.create') }}">Add New Testimnonials</a>
+                    @endcan
+                    @can('view-testimonial')
+                        <a class="collapse-item" href="{{ route('testimonial.index') }}">All Testimnonial</a>
+                    @endcan
+                @endif
+                @if(Bouncer::can('view-video') || Bouncer::can('create-video'))
+                    <h6 class="collapse-header">Videos</h6>
+                    @can('create-video')
+                    <a class="collapse-item" href="{{ route('video.create') }}">Add New Videos</a>
+                    @endcan
+                    @can('create-video')
+                    <a class="collapse-item" href="{{ route('video.index') }}">All Video</a>
+                    @endcan
+                @endif
             </div>
         </div>
     </li>
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Addons
-    </div>
-
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-            aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-fw fa-folder"></i>
-            <span>Pages</span>
-        </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Login Screens:</h6>
-                <a class="collapse-item" href="login.html">Login</a>
-                <a class="collapse-item" href="register.html">Register</a>
-                <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Other Pages:</h6>
-                <a class="collapse-item" href="404.html">404 Page</a>
-                <a class="collapse-item" href="blank.html">Blank Page</a>
-            </div>
-        </div>
-    </li>
-
+    @endif
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

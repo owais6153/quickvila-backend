@@ -132,8 +132,8 @@ class VideoController extends Controller
         }
         $video->update([
             'title' => $request->title,
-            'video' => ($videoF != '') ? $videoF :  $video->video,
-            'thumbnail' => ($thumbnail != '') ? $thumbnail :  $video->thumbnail,
+            'video' => ($videoF != '') ? $videoF :  str_replace(env('FILE_URL'),'',$video->video),
+            'thumbnail' => ($thumbnail != '') ? $thumbnail :  str_replace(env('FILE_URL'),'',$video->thumbnail),
             'sort' => $request->sort,
         ]);
 
@@ -148,6 +148,7 @@ class VideoController extends Controller
      */
     public function destroy(Video $video)
     {
+        deleteFile(str_replace(env('FILE_URL'),'',$video->thumbnail) );
         deleteFile(str_replace(env('FILE_URL'),'',$video->video) );
         $video->delete();
         return redirect()->route('video.index')->with('success', 'Video Deleted');

@@ -10,6 +10,7 @@ use App\Models\Store;
 use App\Http\Requests\Admin\ProductRequest;
 use DataTables;
 use Bouncer;
+use Auth;
 
 class ProductController extends Controller
 {
@@ -23,7 +24,7 @@ class ProductController extends Controller
     }
     public function getList(Request $request)
     {
-        $model = Product::query();
+        $model = Bouncer::can('all-product') ? Product::query() : Product::where('user_id', Auth::id());
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';
@@ -63,7 +64,7 @@ class ProductController extends Controller
     public function create()
     {
         $categories = ProductCategory::all();
-        $stores = Store::all();
+        $stores = Bouncer::can('all-store') ? Store::all() : Store::where('user_id', Auth::id())->get();
         return view($this->dir . 'create', compact('categories', 'stores'));
     }
 
@@ -121,7 +122,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = ProductCategory::all();
-        $stores = Store::all();
+        $stores = Bouncer::can('all-store') ? Store::all() : Store::where('user_id', Auth::id())->get();
         return view($this->dir . 'edit', compact('product', 'categories', 'stores'));
     }
 
@@ -151,7 +152,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'sale_price' => $request->sale_price,
             'user_id' => $request->user_id,
-            'image' => ($image != '') ? $image : $product->image,
+            'image' => ($image != '') ? $image : str_replace(env('FILE_URL'),'',$product->image),
         ]);
 
         if ($request->has('categories')) {

@@ -12,7 +12,7 @@ use App\Http\Controllers\Web\Admin\VideoController;
 
 // Static Pages
 Route::get('/', function () {
-    return redirect()->route('/admin');
+    return redirect()->route('login');
 });
 Route::get('/login', function () {
     return view('auth.login');
@@ -24,9 +24,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middle
 
 // Admin Area
 Route::middleware(['auth', 'permission:admin-area'])->group(function () {
-    Route::get('/', function () {
-        return view('admin.index');
-    })->name('admin.dashboard');
+    Route::get('/', [AuthController::class, 'index'])->name('admin.dashboard');
 
     // Stores
     Route::resource('store', StoreController::class);
