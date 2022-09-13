@@ -10,6 +10,7 @@ class ProductCategory extends Model
     use HasFactory;
 
     public $fillable = [
-        'name'
+        'name',
+        'user_id'
     ];
 }

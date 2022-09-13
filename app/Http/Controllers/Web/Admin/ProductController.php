@@ -148,11 +148,11 @@ class ProductController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'short_description' => $request->short_description,
-            'store_id' => $request->store,
-            'price' => $request->price,
-            'sale_price' => $request->sale_price,
+            'store_id' => $product->manage_able ? $request->store :  $product->store_id,
+            'price' => $product->manage_able ? $request->price : $product->price,
+            'sale_price' => $product->manage_able ? $request->sale_price :  $product->sale_price,
             'user_id' => $request->user_id,
-            'image' => ($image != '') ? $image : str_replace(env('FILE_URL'),'',$product->image),
+            'image' => ($image != '') ? $image : str_replace(env('FILE_URL'), '', $product->image),
         ]);
 
         if ($request->has('categories')) {
@@ -178,7 +178,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         if ($product->manage_able) {
-            deleteFile(str_replace(env('FILE_URL'),'',$product->image) );
+            deleteFile(str_replace(env('FILE_URL'), '', $product->image));
             $product->delete();
             return redirect()->route('product.index')->with('success', 'Product Deleted');
         }
