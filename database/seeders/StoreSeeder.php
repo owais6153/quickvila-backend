@@ -22,6 +22,8 @@ class StoreSeeder extends Seeder
             'longitude' => 34,
             'logo' => 'images/no-image.png',
             'cover' => 'images/no-image.png',
+            'manage_able' => false,
+            'user_id' => 1
         ]);
     }
 }

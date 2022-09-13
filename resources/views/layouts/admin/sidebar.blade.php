@@ -30,8 +30,8 @@
                 <a class="collapse-item" href="{{ route('store.create') }}">Add New Store</a>
                 <a class="collapse-item" href="{{ route('store.index') }}">All Stores</a>
                 <h6 class="collapse-header">Categories</h6>
-                <a class="collapse-item" href="{{ route('store.create') }}">Add New Category</a>
-                <a class="collapse-item" href="{{ route('store.create') }}">All Categories</a>
+                <a class="collapse-item" href="{{ route('storecategory.create') }}">Add New Category</a>
+                <a class="collapse-item" href="{{ route('storecategory.index') }}">All Categories</a>
             </div>
         </div>
     </li>
@@ -47,8 +47,8 @@
                 <a class="collapse-item" href="{{ route('product.create') }}">Add New Product</a>
                 <a class="collapse-item" href="{{ route('product.index') }}">All Products</a>
                 <h6 class="collapse-header">Categories</h6>
-                <a class="collapse-item" href="{{ route('product.create') }}">Add New Category</a>
-                <a class="collapse-item" href="{{ route('product.create') }}">All Categories</a>
+                <a class="collapse-item" href="{{ route('productcategory.create') }}">Add New Category</a>
+                <a class="collapse-item" href="{{ route('productcategory.index') }}">All Categories</a>
             </div>
         </div>
     </li>

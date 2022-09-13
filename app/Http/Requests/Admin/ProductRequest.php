@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Auth;
 
 class ProductRequest extends FormRequest
 {
@@ -15,7 +16,14 @@ class ProductRequest extends FormRequest
     {
         return true;
     }
+    public function validationData()
+    {
+        $this->merge([
+            'user_id' => Auth::user()->id,
+        ]);
 
+        return $this->all();
+    }
     /**
      * Get the validation rules that apply to the request.
      *

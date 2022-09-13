@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Hash;
+
 class UserSeeder extends Seeder
 {
     /**
@@ -18,9 +19,20 @@ class UserSeeder extends Seeder
         $user->name = 'Admin';
         $user->password = Hash::make('secret');
         $user->email = 'admin@trikaro.com';
-        $user->email_verified_at = date("Y-m-d",time());
+        $user->email_verified_at = date("Y-m-d", time());
         $user->save();
 
         $user->assign('Admin');
+
+
+
+        $user = new User();
+        $user->name = 'Manager';
+        $user->password = Hash::make('secret');
+        $user->email = 'manager@trikaro.com';
+        $user->email_verified_at = date("Y-m-d", time());
+        $user->save();
+
+        $user->assign('Manager');
     }
 }

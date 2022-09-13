@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\Admin\StoreController;
 use App\Http\Controllers\Web\Admin\ProductController;
+use App\Http\Controllers\Web\Admin\StoreCategoryController;
+use App\Http\Controllers\Web\Admin\ProductCategoryController;
 /*
 /*
 |--------------------------------------------------------------------------
@@ -42,9 +44,13 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
     Route::resource('store', StoreController::class);
     Route::get('store-list', [StoreController::class, 'getList'])->name('store.list');
     // StoreCategory
-    Route::resource('storecategory', CategoryController::class);
+    Route::resource('storecategory', StoreCategoryController::class);
+    Route::get('storecategory-list', [StoreCategoryController::class, 'getList'])->name('storecategory.list');
 
     // Products
     Route::resource('product', ProductController::class);
     Route::get('product-list', [ProductController::class, 'getList'])->name('product.list');
+    // ProductCategory
+    Route::resource('productcategory', ProductCategoryController::class);
+    Route::get('productcategory-list', [ProductCategoryController::class, 'getList'])->name('productcategory.list');
 });

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\Category;
+use App\Models\ProductCategory;
 use App\Models\Store;
 use App\Http\Requests\Admin\ProductRequest;
 use DataTables;
@@ -30,12 +30,12 @@ class ProductController extends Controller
                 if (Bouncer::can('edit-product')) {
                     $actionBtn .= '<a href="' . route('product.edit', ['product' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
                 }
-                if (Bouncer::can('delete-product')) {
+                if (Bouncer::can('delete-product') && $row->manage_able) {
                     $actionBtn .= '
-                <form style="display:inline-block" method="POST" action="' . route('product.destroy', ['product' => $row->id]) . '">
-                    <input type="hidden" name="_token" value="' . csrf_token() . '"/>
-                    <input type="hidden" name="_method" value="DELETE" />
-                <button class="btn-circle delete btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button></form>';
+                    <form style="display:inline-block" method="POST" action="' . route('product.destroy', ['product' => $row->id]) . '">
+                        <input type="hidden" name="_token" value="' . csrf_token() . '"/>
+                        <input type="hidden" name="_method" value="DELETE" />
+                    <button class="btn-circle delete btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button></form>';
                 }
                 return $actionBtn;
             })
@@ -62,7 +62,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('type', 'product')->get();
+        $categories = ProductCategory::all();
         $stores = Store::all();
         return view($this->dir . 'create', compact('categories', 'stores'));
     }
@@ -89,6 +89,9 @@ class ProductController extends Controller
             'description' => $request->description,
             'short_description' => $request->short_description,
             'store_id' => $request->store,
+            'price' => $request->price,
+            'sale_price' => $request->sale_price,
+            'user_id' => $request->user_id,
             'image' => ($image != '') ? $image : null,
         ]);
 
@@ -106,7 +109,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -117,7 +120,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $categories = Category::where('type', 'product')->get();
+        $categories = ProductCategory::all();
         $stores = Store::all();
         return view($this->dir . 'edit', compact('product', 'categories', 'stores'));
     }
@@ -131,6 +134,7 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
+
         $image = "";
         if ($request->hasFile('image')) {
 
@@ -144,6 +148,9 @@ class ProductController extends Controller
             'description' => $request->description,
             'short_description' => $request->short_description,
             'store_id' => $request->store,
+            'price' => $request->price,
+            'sale_price' => $request->sale_price,
+            'user_id' => $request->user_id,
             'image' => ($image != '') ? $image : $product->image,
         ]);
 
@@ -152,7 +159,11 @@ class ProductController extends Controller
             $pivotData = array_fill(0, count($categories), ['type' => 'product']);
             $syncData  = array_combine($categories, $pivotData);
             $product->categories()->sync($syncData);
+        } else {
+            $product->categories()->sync(array(), ['type' => 'product']);
         }
+
+
 
         return redirect()->route('product.index')->with('success', 'Product Updated');
     }
@@ -165,7 +176,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->delete();
-        return redirect()->route('product.index')->with('success', 'Product Deleted');
+        if ($product->manage_able) {
+            $product->delete();
+            return redirect()->route('product.index')->with('success', 'Product Deleted');
+        }
+        abort(404);
     }
 }

@@ -24,6 +24,9 @@ class CreateProductsTable extends Migration
             $table->string('gallery')->nullable();
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');
+            $table->boolean('manage_able')->default(true);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });

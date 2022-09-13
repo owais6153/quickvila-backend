@@ -37,6 +37,20 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Product Price</label>
+                                    <input type="text" name="price" placeholder="Product Price" class="form-control"
+                                        value="{{ old('price', $product->price) }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Product Sale Price</label>
+                                    <input type="text" name="sale_price" placeholder="Sale Price" class="form-control"
+                                        value="{{ old('sale_price', $product->sale_price) }}">
+                                </div>
+                            </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Product Description</label>
@@ -87,18 +101,23 @@
                         <div class="card-body scrollable-card-body">
                             <div class="col-md-12">
                                 <div class="form-group uploader">
-                                    <div class="custom-control custom-checkbox small">
-                                        @php
-                                            $old_categories = old('categories') ? old('categories') : [];
-                                        @endphp
-                                        @foreach ($categories as $cat)
+                                    @php
+                                        $old_categories = old('categories') ? old('categories') : [];
+                                        if (empty($old_categories)) {
+                                            foreach ($product->categories as $oldcat) {
+                                                $old_categories[] = $oldcat->id;
+                                            }
+                                        }
+                                    @endphp
+                                    @foreach ($categories as $cat)
+                                        <div class="custom-control custom-checkbox small">
                                             <input type="checkbox" class="custom-control-input" name="categories[]"
                                                 value="{{ $cat->id }}" id="customCheck{{ $cat->id }}"
                                                 {{ in_array($cat->id, $old_categories) ? 'checked=checked' : '' }}>
                                             <label class="custom-control-label"
                                                 for="customCheck{{ $cat->id }}">{{ $cat->name }}</label>
-                                        @endforeach
-                                    </div>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

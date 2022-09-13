@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Bouncer;
+
 class RolePermissionSeeder extends Seeder
 {
     /**
@@ -13,15 +14,24 @@ class RolePermissionSeeder extends Seeder
      */
     public function run()
     {
-        $permissions = config('trikaro.permissions');
+        $adminPermissions = config('trikaro.permissions.all');
 
-        foreach($permissions as $per){
-           foreach($per as $permission){
-               Bouncer::allow('Admin')->to($permission);
-           }
+        foreach ($adminPermissions as $adminPer) {
+            foreach ($adminPer as $adminPermission) {
+                Bouncer::allow('Admin')->to($adminPermission);
+            }
         }
 
-        Bouncer::allow('Manager')->to('');
+        $managerPermissions = config('trikaro.permissions.manager');
+
+        foreach ($managerPermissions as $managerPer) {
+            foreach ($managerPer as $managerPermission) {
+                Bouncer::allow('Manager')->to($managerPermission);
+            }
+        }
+
+
+
         Bouncer::allow('Customer')->to('');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePivotCategoriesTable extends Migration
+class CategoryPivot extends Migration
 {
     /**
      * Run the migrations.
@@ -15,12 +15,9 @@ class CreatePivotCategoriesTable extends Migration
     {
         Schema::create('pivot_categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
-            $table->unsignedBigInteger('pivot_id');
-            $table->enum('type', ['store', 'product']);
-            $table->timestamps();
-            $table->softDeletes();
+            $table->bigInteger('category_id')->unsigned()->nullable()->index();
+            $table->bigInteger('pivot_id')->unsigned()->nullable()->index();
+            $table->enum('type', ['store', 'product'])->index();
         });
     }
 
@@ -31,6 +28,6 @@ class CreatePivotCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('store_categories');
+        Schema::dropIfExists('pivot_categories');
     }
 }

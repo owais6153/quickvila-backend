@@ -19,6 +19,8 @@ class Store extends Model
         'address',
         'latitude',
         'longitude',
+        'manage_able',
+        'user_id'
     ];
     protected $casts = [
         'logo' => Image::class,
@@ -30,6 +32,6 @@ class Store extends Model
     }
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'pivot_categories', 'pivot_id', 'category_id')->withPivot('type')->wherePivot('type', 'store');
+        return $this->belongsToMany(StoreCategory::class, 'pivot_categories', 'pivot_id', 'category_id')->withPivot('type')->wherePivot('type', 'store');
     }
 }

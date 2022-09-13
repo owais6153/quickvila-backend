@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\Auth\LoginRequest;
 use Auth;
 use Hash;
 use Str;
@@ -74,7 +73,7 @@ class AuthController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
-            $user->code = rand(100000,999999);
+            $user->code = rand(100000, 999999);
 
             if (env('APP_ENV') == 'local')
                 $user->email_verified_at = date("Y-m-d", time());
@@ -110,7 +109,7 @@ class AuthController extends Controller
     }
     public function verify(Request $request)
     {
-        try{
+        try {
             $validator = \Validator::make($request->all(), [
                 'code' => 'required|min:6|max:6|exists:users,code',
             ]);
@@ -120,14 +119,14 @@ class AuthController extends Controller
                 $error['request'] = $request;
                 return response()->json($error, 400);
             }
-            if($request->user()->code == $request->code){
+            if ($request->user()->code == $request->code) {
                 $user = $request->user();
                 $user->update([
                     'email_verified_at' => date("Y-m-d", time()),
                     'code' => null
                 ]);
                 return response()->json([
-                    'userId' =>$user->id,
+                    'userId' => $user->id,
                     'verified' => $user->email_verified_at,
                     'status' => 200,
                     'message' => 'User Verified Successfully',
@@ -136,8 +135,7 @@ class AuthController extends Controller
             $error['errors'] = ['code' => ['Code is invalid']];
             $error['status'] = 500;
             return response()->json($error, 500);
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
             return response()->json($error, 500);
@@ -145,25 +143,25 @@ class AuthController extends Controller
     }
     public function resend(Request $request)
     {
-        try{
+        try {
             $user = $request->user();
             $user->update([
-                'code' => rand(100000,999999)
+                'code' => rand(100000, 999999)
             ]);
 
             return response()->json([
                 'status' => 200,
                 'message' => 'Code resend successfully',
             ], 200);
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
             return response()->json($error, 500);
         }
     }
-    public function forget(Request $request){
-        try{
+    public function forget(Request $request)
+    {
+        try {
             $validator = \Validator::make($request->all(), [
                 'email' => 'required|email|exists:users,email',
             ]);
@@ -175,21 +173,21 @@ class AuthController extends Controller
             }
             $user = User::where('email', $request->email)->first();
             $user->update([
-                'code' => rand(100000,999999)
+                'code' => rand(100000, 999999)
             ]);
             return response()->json([
                 'status' => 200,
                 'message' => 'Code send to email',
             ], 200);
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
             return response()->json($error, 500);
         }
     }
-    public function forgetCodeVerify(Request $request){
-        try{
+    public function forgetCodeVerify(Request $request)
+    {
+        try {
             $validator = \Validator::make($request->all(), [
                 'email' => 'required|email|exists:users,email',
                 'code' => 'required|min:6|max:6|exists:users,code',
@@ -201,7 +199,7 @@ class AuthController extends Controller
                 return response()->json($error, 400);
             }
             $user = User::where('email', $request->email)->where('code', $request->code)->first();
-            if(empty($user)){
+            if (empty($user)) {
                 $error['errors'] = ['code' => ['Code is invalid']];
                 $error['status'] = 500;
                 return response()->json($error, 500);
@@ -211,16 +209,15 @@ class AuthController extends Controller
                 'status' => 200,
                 'message' => 'User verified successfully',
             ], 200);
-
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
             return response()->json($error, 500);
         }
     }
-    public function forgetUpdatePwd(Request $request){
-        try{
+    public function forgetUpdatePwd(Request $request)
+    {
+        try {
             $validator = \Validator::make($request->all(), [
                 'email' => 'required|email|exists:users,email',
                 'new_password' => 'required',
@@ -233,7 +230,7 @@ class AuthController extends Controller
                 return response()->json($error, 400);
             }
             $user = $request->user();
-            if(!empty($user)){
+            if (!empty($user)) {
                 $user->update([
                     'password' => Hash::make($request->new_password)
                 ]);
@@ -250,9 +247,7 @@ class AuthController extends Controller
                 'status' => 200,
                 'message' => 'User verified successfully',
             ], 200);
-
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
             return response()->json($error, 500);

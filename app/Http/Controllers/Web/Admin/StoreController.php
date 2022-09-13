@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Store;
-use App\Models\Category;
+use App\Models\StoreCategory;
 use App\Http\Requests\Admin\StoreRequest;
 use DataTables;
 use Bouncer;
@@ -34,7 +34,7 @@ class StoreController extends Controller
                 if (Bouncer::can('edit-store')) {
                     $actionBtn .= '<a href="' . route('store.edit', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
                 }
-                if (Bouncer::can('delete-store')) {
+                if (Bouncer::can('delete-store')  && $row->manage_able) {
                     $actionBtn .= '
                 <form style="display:inline-block" method="POST" action="' . route('store.destroy', ['store' => $row->id]) . '">
                     <input type="hidden" name="_token" value="' . csrf_token() . '"/>
@@ -62,7 +62,7 @@ class StoreController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('type', 'store')->get();
+        $categories = StoreCategory::all();
         return view($this->dir . 'create', compact('categories'));
     }
 
@@ -97,6 +97,7 @@ class StoreController extends Controller
             'longitude' => $request->longitude,
             'logo' => ($logo != '') ? $logo : null,
             'cover' => ($cover != '') ? $cover : null,
+            'user_id' => $request->user_id,
         ]);
 
         if ($request->has('categories'))
@@ -114,7 +115,7 @@ class StoreController extends Controller
      */
     public function edit(Store $store)
     {
-        $categories = Category::where('type', 'store')->get();
+        $categories = StoreCategory::all();
         return view($this->dir . 'edit', compact('store', 'categories'));
     }
 
@@ -151,14 +152,18 @@ class StoreController extends Controller
             'longitude' => $request->longitude,
             'logo' => ($logo != '') ? $logo : $store->logo,
             'cover' => ($cover != '') ? $cover : $store->cover,
+            'user_id' => $request->user_id,
         ]);
 
         if ($request->has('categories')) {
-            $categories  = (array) $request->get('categories'); // related ids
+            $categories  = (array) $request->get('categories');
             $pivotData = array_fill(0, count($categories), ['type' => 'store']);
             $syncData  = array_combine($categories, $pivotData);
             $store->categories()->sync($syncData);
+        } else {
+            $store->categories()->sync(array(), ['type' => 'store']);
         }
+
 
         return redirect()->route('store.index')->with('success', 'Store Updated');
     }
@@ -171,7 +176,10 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
-        $store->delete();
-        return redirect()->route('store.index')->with('success', 'Store Deleted');
+        if ($store->manage_able) {
+            $store->delete();
+            return redirect()->route('store.index')->with('success', 'Store Deleted');
+        }
+        abort(404);
     }
 }

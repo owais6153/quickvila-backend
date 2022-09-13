@@ -23,6 +23,9 @@ class CreateStoresTable extends Migration
             $table->longText('address')->nullable();
             $table->integer('latitude');
             $table->integer('longitude');
+            $table->boolean('manage_able')->default(true);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });

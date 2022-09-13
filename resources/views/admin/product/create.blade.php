@@ -33,6 +33,20 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Product Price</label>
+                                    <input type="text" name="price" placeholder="Product Price" class="form-control"
+                                        value="{{ old('price') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Product Sale Price</label>
+                                    <input type="text" name="sale_price" placeholder="Sale Price" class="form-control"
+                                        value="{{ old('sale_price') }}">
+                                </div>
+                            </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Product Description</label>
