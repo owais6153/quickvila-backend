@@ -95,8 +95,8 @@ class StoreController extends Controller
             'address' => $request->address,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-            'logo' => ($logo != '') ? $logo : null,
-            'cover' => ($cover != '') ? $cover : null,
+            'logo' => ($logo != '') ? $logo :  noImage(),
+            'cover' => ($cover != '') ? $cover :  noImage(),
             'user_id' => $request->user_id,
         ]);
 
@@ -177,6 +177,8 @@ class StoreController extends Controller
     public function destroy(Store $store)
     {
         if ($store->manage_able) {
+            deleteFile(str_replace(env('FILE_URL'),'',$store->logo) );
+            deleteFile(str_replace(env('FILE_URL'),'',$store->cover) );
             $store->delete();
             return redirect()->route('store.index')->with('success', 'Store Deleted');
         }

@@ -88,7 +88,18 @@
                         for (i = 0; i <= input.files.length; i++) {
                             var reader = new FileReader();
                             reader.onload = function(e) {
-                                $(preview).append($('<img src="' + e.target.result + '">'));
+                                if(e.target.result.includes("video")){
+
+                                    $(preview).append($(`<video width="320" height="240" controls>
+                                        <source src="${e.target.result}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                        </video>`));
+                                }
+                                else{
+
+                                    $(preview).append($('<img src="' + e.target.result + '">'));
+                                }
+
                                 $(preview).hide();
                                 $(preview).fadeIn(650);
                             }
@@ -100,7 +111,17 @@
                 if (input.files && input.files[0]) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        $(preview).html($('<img src="' + e.target.result + '">'));
+                        if(e.target.result.includes("video")){
+
+$(preview).append($(`<video width="320" height="240" controls>
+    <source src="${e.target.result}" type="video/mp4">
+    Your browser does not support the video tag.
+    </video>`));
+}
+else{
+
+$(preview).append($('<img src="' + e.target.result + '">'));
+}
                         $(preview).hide();
                         $(preview).fadeIn(650);
                     }

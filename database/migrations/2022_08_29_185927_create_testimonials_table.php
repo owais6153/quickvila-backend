@@ -15,7 +15,13 @@ class CreateTestimonialsTable extends Migration
     {
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('subtitle')->nullable();
+            $table->longText('image')->nullable()->default('images/no-image.png');
+            $table->longText('description')->nullable();
+            $table->integer('sort')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

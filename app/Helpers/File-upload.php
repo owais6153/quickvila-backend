@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\File;
 
 function uploadFile(object $file, string $uploadPath, string $oldFile = null)
 {
-    // $files it can be array incase of multi files, and it can be object in case of single file
 
     $fileNameToStore = "";
     $file_path = public_path($oldFile);
@@ -23,9 +22,14 @@ function uploadFile(object $file, string $uploadPath, string $oldFile = null)
     return $uploadPath . $fileNameToStore;
 }
 
-function deleteFile(string $fileName, string $uploadPath)
+function deleteFile(string $fileName)
 {
+    if(strpos($fileName, 'http') !== false ){
+        return;
+    }
+
     $file_path = public_path($fileName);
+    // dd($file_path);
     if ($file_path) {
         if (file_exists($file_path)) {
             unlink($file_path);
@@ -33,7 +37,15 @@ function deleteFile(string $fileName, string $uploadPath)
     }
 }
 
-function imagePath()
+function imagePath(string $name = '')
 {
-    return 'storage/uploads/images/';
+    return 'storage/uploads/images/' . $name;
+}
+function videoPath(string $name = '')
+{
+    return 'storage/uploads/videos/' . $name;
+}
+function noImage()
+{
+    return 'images/no-image.png';
 }

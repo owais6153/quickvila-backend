@@ -56,7 +56,27 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
+    <div class="sidebar-heading">
+        Addons
+    </div>
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#testimonial" aria-expanded="true"
+            aria-controls="testimonial">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Testimnonials & Videos</span>
+        </a>
+        <div id="testimonial" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Testimnonials</h6>
+                <a class="collapse-item" href="{{ route('testimonial.create') }}">Add New Testimnonials</a>
+                <a class="collapse-item" href="{{ route('testimonial.index') }}">All Testimnonial</a>
 
+                <h6 class="collapse-header">Videos</h6>
+                <a class="collapse-item" href="{{ route('video.create') }}">Add New Videos</a>
+                <a class="collapse-item" href="{{ route('video.index') }}">All Video</a>
+            </div>
+        </div>
+    </li>
     <!-- Heading -->
     <div class="sidebar-heading">
         Addons

@@ -6,18 +6,8 @@ use App\Http\Controllers\Web\Admin\StoreController;
 use App\Http\Controllers\Web\Admin\ProductController;
 use App\Http\Controllers\Web\Admin\StoreCategoryController;
 use App\Http\Controllers\Web\Admin\ProductCategoryController;
-/*
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
+use App\Http\Controllers\Web\Admin\TestimonialController;
+use App\Http\Controllers\Web\Admin\VideoController;
 
 
 // Static Pages
@@ -27,8 +17,6 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('auth.login');
 })->middleware('guest')->name('login');
-
-
 
 // Authentication
 Route::post('authenticate', [AuthController::class, 'authenticate'])->name('authenticate')->middleware('guest');
@@ -53,4 +41,11 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
     // ProductCategory
     Route::resource('productcategory', ProductCategoryController::class);
     Route::get('productcategory-list', [ProductCategoryController::class, 'getList'])->name('productcategory.list');
+
+    // Testimonail
+    Route::resource('testimonial', TestimonialController::class);
+    Route::get('testimonial-list', [TestimonialController::class, 'getList'])->name('testimonial.list');    // Testimonail
+    //Video
+    Route::resource('video', VideoController::class);
+    Route::get('video-list', [VideoController::class, 'getList'])->name('video.list');
 });

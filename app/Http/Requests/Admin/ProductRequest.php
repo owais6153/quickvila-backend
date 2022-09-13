@@ -35,6 +35,8 @@ class ProductRequest extends FormRequest
             'name' => 'required|min:3|max:255',
             'image' => 'nullable|file|mimes:png,jpg,jpeg,gif',
             'short_description' => 'nullable|max:255',
+            'price' => 'required|numeric|min:1',
+            'sale_price' => 'required|numeric|min:1',
             'description' => 'nullable',
             'store' => 'required|exists:stores,id',
             'gallery.*' => 'nullable|file|mimes:png,jpg,jpeg,gif',

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Casts\Image;
+use App\Casts\File;
 
 class Product extends Model
 {
@@ -16,11 +16,13 @@ class Product extends Model
         'store_id',
         'image',
         'manage_able',
+        'is_featured',
         'user_id',
-        'price'
+        'price',
+        'sale_price'
     ];
     protected $casts = [
-        'image' => Image::class
+        'image' => File::class
     ];
     public function store()
     {
@@ -29,5 +31,9 @@ class Product extends Model
     public function categories()
     {
         return $this->belongsToMany(ProductCategory::class, 'pivot_categories', 'pivot_id', 'category_id')->withPivot('type')->wherePivot('type', 'product');
+    }
+    public function author()
+    {
+        return $this->belongsTo(User::class);
     }
 }
