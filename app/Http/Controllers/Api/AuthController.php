@@ -35,6 +35,7 @@ class AuthController extends Controller
 
                 return response()->json([
                     'userId' => $user->id,
+                    'user' => $user,
                     'verified' => $user->email_verified_at,
                     'status' => 200,
                     'message' => 'User Logged In Successfully',
@@ -86,6 +87,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'userId' => $user->id,
+                'user' => $user,
                 'verified' => $user->email_verified_at,
                 'status' => 200,
                 'message' => 'User Register Successfully',
@@ -248,6 +250,23 @@ class AuthController extends Controller
                 'message' => 'User verified successfully',
             ], 200);
         } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
+    public function me(Request $request){
+        try{
+            $user = $request->user();
+            $user->transform(function($u) {
+                unset($u->code);
+                return $u;
+            });
+            $data['status'] = 200;
+            $data['me'] = $user;
+            return  response()->json($data, 200);
+        }
+        catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
             return response()->json($error, 500);

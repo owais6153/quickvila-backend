@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Casts\File;
 
 class Product extends Model
 {
@@ -21,9 +20,11 @@ class Product extends Model
         'price',
         'sale_price'
     ];
-    protected $casts = [
-        'image' => File::class
-    ];
+
+    public function getImageAttribute($attr){
+        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+    }
+
     public function store()
     {
         return $this->belongsTo(Store::class);

@@ -23,6 +23,7 @@ class CreateOrderProductsTable extends Migration
             $table->foreign('product_id')->references('id')->on('products');
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');
+            $table->boolean('is_refund')->default(false);
             $table->timestamps();
         });
     }

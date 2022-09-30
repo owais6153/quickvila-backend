@@ -19,6 +19,9 @@ class CreateOrdersTable extends Migration
             $table->integer('tax')->nullable();
             $table->integer('delivery_charges')->nullable();
             $table->string('total');
+            $table->string('address');
+            $table->string('latitude');
+            $table->string('longitude');
             $table->enum('status', ['completed', 'canceled', 'in process', 'refunded'])->defaul('in progress');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

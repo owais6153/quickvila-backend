@@ -17,18 +17,17 @@ class UserSeeder extends Seeder
     {
         $user = new User();
         $user->name = 'Admin';
-        $user->password = Hash::make('secret');
+        $user->password = Hash::make('secret123');
         $user->email = 'admin@trikaro.com';
         $user->email_verified_at = date("Y-m-d", time());
         $user->save();
-
         $user->assign('Admin');
 
 
 
         $user = new User();
         $user->name = 'Manager';
-        $user->password = Hash::make('secret');
+        $user->password = Hash::make('secret123');
         $user->email = 'manager@trikaro.com';
         $user->email_verified_at = date("Y-m-d", time());
         $user->save();

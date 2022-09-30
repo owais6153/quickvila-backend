@@ -10,14 +10,18 @@ use App\Casts\File;
 class Video extends Model
 {
     use HasFactory;
+
     public $fillable = [
         'title',
         'video',
         'thumbnail',
         'sort',
     ];
-    protected $casts = [
-        'thumbnail' => File::class,
-        'video' => File::class
-    ];
+    public function getThumbnailAttribute($attr){
+        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+    }
+    public function getVideoAttribute($attr){
+        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+    }
+
 }

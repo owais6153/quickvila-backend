@@ -49,6 +49,8 @@ use App\Http\Controllers\Api\CartController;
         Route::post('/checkout', [CartController::class, 'index']);
         Route::post('/orders/{order:id}/', [CartController::class, 'index']);
         //Account
+
+        Route::get('/me', [AuthController::class, 'me']);
         Route::get('/account', [CartController::class, 'index']);
         Route::get('/account/password/update', [CartController::class, 'index']);
         Route::get('/account/profile/update', [CartController::class, 'index']);

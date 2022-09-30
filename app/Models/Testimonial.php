@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Casts\File;
 
 class Testimonial extends Model
 {
@@ -16,7 +15,7 @@ class Testimonial extends Model
         'description',
         'sort',
     ];
-    protected $casts = [
-        'image' => File::class
-    ];
+    public function getImageAttribute($attr){
+        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+    }
 }

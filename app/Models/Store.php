@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Casts\File;
 
 class Store extends Model
 {
@@ -21,10 +20,15 @@ class Store extends Model
         'manage_able',
         'user_id'
     ];
-    protected $casts = [
-        'logo' => File::class,
-        'cover' => File::class,
-    ];
+
+    public function getLogoAttribute($attr){
+        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+    }
+
+    public function getCoverAttribute($attr){
+        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);
