@@ -17,13 +17,14 @@ use Illuminate\Auth\Events\Verified;
 use Hash;
 use Str;
 use Bouncer;
+
 class AuthController extends Controller
 {
     public function index()
     {
         $data = [];
-        $data['store'] = Bouncer::can('all-store') ? Store::count() : Store::where('user_id', Auth::id())->count() ;
-        $data['product'] = Bouncer::can('all-product') ? Product::count() : Product::where('user_id', Auth::id())->count() ;
+        $data['store'] = Bouncer::can('all-store') ? Store::count() : Store::where('user_id', Auth::id())->count();
+        $data['product'] = Bouncer::can('all-product') ? Product::count() : Product::where('user_id', Auth::id())->count();
         return view('admin.index')->with($data);
     }
 
@@ -32,9 +33,9 @@ class AuthController extends Controller
         $credentials = $request->getCredentials();
 
         $fieldType = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember') )) {
+        if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('/admin')->with('message', 'Login successfuly');
+            return redirect()->intended('/')->with('message', 'Login successfuly');
         }
 
         return back()->withErrors([
@@ -55,13 +56,13 @@ class AuthController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-                    ? back()->with('message', __($status))
-                    : back()->withErrors(['email' => __($status)]);
+            ? back()->with('message', __($status))
+            : back()->withErrors(['email' => __($status)]);
     }
 
     public function resetPaassword($token)
     {
-       return view('index', ['token' => $token, 'resetPaassword' => true, 'title' => 'Reset Password']);
+        return view('index', ['token' => $token, 'resetPaassword' => true, 'title' => 'Reset Password']);
     }
     public function paasswordUpdate(Request $request)
     {
@@ -85,8 +86,8 @@ class AuthController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('account')->with('message', __($status))
-                    : back()->withErrors(['email' => [__($status)]]);
+            ? redirect()->route('account')->with('message', __($status))
+            : back()->withErrors(['email' => [__($status)]]);
     }
     public function register(RegisterRequest $request)
     {
@@ -96,18 +97,19 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
 
-        if(env('APP_ENV') == 'local')
-            $user->email_verified_at = date("Y-m-d",time());
+        if (env('APP_ENV') == 'local')
+            $user->email_verified_at = date("Y-m-d", time());
 
         $user->save();
 
-        if(env('APP_ENV') != 'local')
+        if (env('APP_ENV') != 'local')
             $user->sendEmailVerificationNotification();
 
         Auth::loginUsingId($user->id);
         return redirect('/')->with('success', 'Regiseter Succesfuuly.');
     }
-    public function verificationNotice(){
+    public function verificationNotice()
+    {
         return redirect()->route('home')->with('verificationpopup', 'true');
     }
     public function __invoke(Request $request): RedirectResponse

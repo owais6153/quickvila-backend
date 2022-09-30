@@ -94,18 +94,18 @@
                         <div class="card-body scrollable-card-body">
                             <div class="col-md-12">
                                 <div class="form-group uploader">
-                                    <div class="custom-control custom-checkbox small">
-                                        @php
-                                            $old_categories = old('categories') ? old('categories') : [];
-                                        @endphp
-                                        @foreach ($categories as $cat)
+                                    @php
+                                        $old_categories = old('categories') ? old('categories') : [];
+                                    @endphp
+                                    @foreach ($categories as $cat)
+                                        <div class="custom-control custom-checkbox small">
                                             <input type="checkbox" class="custom-control-input" name="categories[]"
                                                 value="{{ $cat->id }}" id="customCheck{{ $cat->id }}"
                                                 {{ in_array($cat->id, $old_categories) ? 'checked=checked' : '' }}>
                                             <label class="custom-control-label"
                                                 for="customCheck{{ $cat->id }}">{{ $cat->name }}</label>
-                                        @endforeach
-                                    </div>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

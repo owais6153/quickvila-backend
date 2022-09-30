@@ -28,7 +28,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Store</label>
-                                    <select name="store" class="form-control">
+                                    <select name="store" class="form-control"
+                                        {{ !$product->manage_able ? 'readonly=readonly disabled=disabled' : '' }}>
                                         @foreach ($stores as $store)
                                             <option
                                                 {{ old('store', $product->store_id) == $store->id ? 'selected=selected' : '' }}
@@ -40,7 +41,9 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Product Price</label>
-                                    <input type="text" name="price" placeholder="Product Price" class="form-control"
+                                    <input type="text" name="price"
+                                        {{ !$product->manage_able ? 'readonly=readonly disabled=disabled' : '' }}
+                                        placeholder="Product Price" class="form-control"
                                         value="{{ old('price', $product->price) }}">
                                 </div>
                             </div>
@@ -48,6 +51,7 @@
                                 <div class="form-group">
                                     <label>Product Sale Price</label>
                                     <input type="text" name="sale_price" placeholder="Sale Price" class="form-control"
+                                        {{ !$product->manage_able ? 'readonly=readonly disabled=disabled' : '' }}
                                         value="{{ old('sale_price', $product->sale_price) }}">
                                 </div>
                             </div>
