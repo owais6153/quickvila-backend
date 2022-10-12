@@ -20,9 +20,9 @@ use App\Http\Controllers\Api\CartController;
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/search/{term}', [HomeController::class, 'search']);
     Route::get('/stores', [StoreController::class, 'index']);
-    Route::get('/stores/{store:id}', [ProductController::class, 'index']);
-    Route::get('/stores/{store:id}/products', [ProductController::class, 'index']);
-    Route::get('/stores/{store:id}/products/{product:id}', [ProductController::class, 'index']);
+    Route::get('/stores/{store:id}', [StoreController::class, 'show']);
+    Route::get('/stores/{store:id}/products', [ProductController::class, 'storeProducts']);
+    Route::get('/stores/{store:id}/products/{product:id}', [ProductController::class, 'show']);
     Route::get('/products', [ProductController::class, 'index']);
 
     // Auth

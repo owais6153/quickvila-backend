@@ -59,6 +59,9 @@
                                     <textarea name="short_description" class="form-control" placeholder="Description">{{ old('short_description') }}</textarea>
                                 </div>
                             </div>
+
+                            @include('admin.product.variations')
+
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <input type="submit" name="" value="Save" placeholder="Product Name"

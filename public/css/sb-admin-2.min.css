@@ -10357,3 +10357,21 @@ body.sidebar-toggled footer.sticky-footer {
     max-height: 200px;
     overflow-y: scroll;
 }
+.custom-control-label {
+    font-size: 16px;
+}
+input[type='color'] {
+    padding: 0;
+    width: 150%;
+    height: 150%;
+    margin: -25%;
+  }
+
+  .form-color {
+    overflow: hidden;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    box-shadow: 1px 1px 3px 0px grey;
+
+  }

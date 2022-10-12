@@ -21,4 +21,12 @@ class StoreController extends Controller
         $data['status'] = 200;
         return response()->json($data, $data['status']);
     }
+    public function show($id)
+    {
+        $store = $this->model->where('id', $id);
+        $store = $store->with(['products'])->withCount(['products'])->first();
+        $data['store'] = $store;
+        $data['status'] = 200;
+        return response()->json($data, $data['status']);
+    }
 }

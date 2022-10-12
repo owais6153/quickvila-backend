@@ -37,4 +37,7 @@ class Product extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function variations(){
+        return $this->hasMany(Variation::class, 'product_id', 'id');
+    }
 }

@@ -20,15 +20,12 @@ class Store extends Model
         'manage_able',
         'user_id'
     ];
-
     public function getLogoAttribute($attr){
         return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
     }
-
     public function getCoverAttribute($attr){
         return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
     }
-
     public function products()
     {
         return $this->hasMany(Product::class);

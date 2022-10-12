@@ -76,6 +76,8 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
+
+        dd($request);
         $image = "";
         if ($request->hasFile('image')) {
 

@@ -1,25 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.auth.app')
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 mx-auto">
-                <form action="{{route('authenticate')}}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input class="form-control" type="email" name="email" />
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input class="form-control" type="pasword" name="password" />
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-block btn-primary">Login</button>
-                    </div>
-                </form>
-            </div>
+    <form class="user"  action="{{route('authenticate')}}" method="POST">
+        @csrf
+        <div class="form-group">
+            <input class="form-control form-control-user" type="email" name="email" placeholder="Enter Email*"/>
         </div>
-    </div>
+        <div class="form-group">
+                <input id="password"  class="form-control  form-control-user" placeholder="Password" name="password" type="password" />
+        </div>
+        <button class="btn btn-primary btn-user btn-block">Login</button>
+    </form>
 @endsection
 
