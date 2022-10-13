@@ -18,7 +18,8 @@ class Product extends Model
         'is_featured',
         'user_id',
         'price',
-        'sale_price'
+        'sale_price',
+        'product_type'
     ];
 
     public function getImageAttribute($attr){

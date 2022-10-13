@@ -9,6 +9,8 @@ use App\Models\ProductCategory;
 use App\Models\Store;
 use App\Http\Requests\Admin\ProductRequest;
 use DataTables;
+use App\Models\Variation;
+use App\Models\VariationOption;
 use Bouncer;
 use Auth;
 
@@ -77,7 +79,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
 
-        dd($request);
+
         $image = "";
         if ($request->hasFile('image')) {
 
@@ -92,6 +94,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'short_description' => $request->short_description,
             'store_id' => $request->store,
+            'product_type' => $request->product_type,
             'price' => $request->price,
             'sale_price' => $request->sale_price,
             'user_id' => $request->user_id,
@@ -100,6 +103,27 @@ class ProductController extends Controller
 
         if ($request->has('categories'))
             $product->categories()->attach($request->categories, ['type' => 'product']);
+
+
+        if($request->product_type == 'variation'){
+            foreach($request->variation as $variation){
+                $v = new Variation();
+                $v->name = $variation['name'];
+                $v->is_required = isset($variation['is_required']) ? $variation['is_required'] : 0;
+                $v->type = $variation['type'];
+                $v->product_id = $product->id;
+                $v->save();
+
+                foreach($variation['options'] as $option){
+                    $op = new VariationOption();
+                    $op->value = $option['value'];
+                    $op->price = isset($option['price']) ? $option['price'] : null;
+                    $op->media = isset($option['media']) ? $option['media'] : null;
+                    $op->variation_id = $v->id;
+                    $op->save();
+                }
+            }
+        }
 
         return redirect()->route('product.index')->with('success', 'Product Created');
     }
@@ -150,6 +174,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'short_description' => $request->short_description,
+            'product_type' => $request->product_type,
             'store_id' => $product->manage_able ? $request->store :  $product->store_id,
             'price' => $product->manage_able ? $request->price : $product->price,
             'sale_price' => $product->manage_able ? $request->sale_price :  $product->sale_price,

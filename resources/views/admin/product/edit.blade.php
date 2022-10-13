@@ -58,15 +58,26 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Product Description</label>
-                                    <textarea name="description" class="form-control" placeholder="Description">{{ old('description', $store->description) }}</textarea>
+                                    <textarea name="description" class="form-control" placeholder="Description">{{ old('description', $product->description) }}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Product Short Description</label>
-                                    <textarea name="short_description" class="form-control" placeholder="Description">{{ old('short_description', $store->short_description) }}</textarea>
+                                    <textarea name="short_description" class="form-control" placeholder="Description">{{ old('short_description', $product->short_description) }}</textarea>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Product Type</label>
+                                    <select class="form-control" id="product_type" name="product_type">
+                                        <option {{ old('product_type', $product->product_type) == 'simple' ? 'selected=selected' : '' }} value="simple">Simple</option>
+                                        <option {{ old('product_type', $product->product_type) == 'variation' ? 'selected=selected' : '' }} value="variation">Variation</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            @include('admin.product.variation.edit')
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <input type="submit" name="" value="Save" placeholder="Product Name"

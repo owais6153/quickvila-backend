@@ -16,10 +16,10 @@ class CreateVariationOptionsTable extends Migration
         Schema::create('variation_options', function (Blueprint $table) {
             $table->id();
             $table->string('value');
-            $table->string('price');
+            $table->string('price')->nullable();
             $table->string('media')->nullable();
             $table->unsignedBigInteger('variation_id');
-            $table->foreign('variation_id')->references('id')->on('variations');
+            $table->foreign('variation_id')->references('id')->on('variations')->onDelete('cascade');
             $table->timestamps();
         });
     }

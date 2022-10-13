@@ -60,7 +60,17 @@
                                 </div>
                             </div>
 
-                            @include('admin.product.variations')
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Product Type</label>
+                                    <select class="form-control" id="product_type" name="product_type">
+                                        <option value="simple">Simple</option>
+                                        <option value="variation">Variation</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            @include('admin.product.variation.create')
 
                             <div class="col-md-12">
                                 <div class="form-group">

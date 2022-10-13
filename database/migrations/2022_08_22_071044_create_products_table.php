@@ -23,6 +23,7 @@ class CreateProductsTable extends Migration
             $table->string('sale_price')->nullable();
             $table->string('gallery')->nullable();
             $table->boolean('is_featured')->default(false);
+            $table->enum('product_type', ['simple', 'variation'])->default('simple');
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');
             $table->boolean('manage_able')->default(true);
