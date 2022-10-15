@@ -12,7 +12,7 @@
                         <div class="card variation-parent mb-3 bg-light">
                             <div class="card-body">
                                 <div class="row " >
-                                    <input type="hidden" name="variation[{{$variationKey}}][id]" id="variation_id" value="{{$variation->id}}" />
+                                    <input type="hidden" name="variation[{{$variationKey}}][id]" class="variation_id" value="{{$variation->id}}" />
                                     <div class="col-md-4 mb-3">
                                         <div class="form-group">
                                         <input type="text" class="form-control" name="variation[{{$variationKey}}][name]" placeholder="Variation Name*" value="{{ $variation->name }}"/>
@@ -41,7 +41,7 @@
                                     <div class="col-md-3  mb-3">
                                         <button class="btn  btn-info addOption" type="button">Add Option</button>
                                     </div>
-                                    <div class="col-md-12 variation_options" data-count="{{$variation->options->count()}}">
+                                    <div class="col-md-12 variation_options" data-count="{{$variation->options->count() - 1}}">
                                         @foreach ($variation->options as $optionKey => $option)
                                             @if ($variation->type == 'color')
                                             <div class="card mb-1 variation_options-row">
@@ -108,7 +108,7 @@
 </div>
 @push('afterScripts')
 <script>
-    var variationCount = {{ $product->variations->count() }};
+    var variationCount = {{ $product->variations->count() - 1}};
     $(document).on('click', '#addNewVariation', function(){
         variationCount = variationCount + 1;
         var html = `<div class="card variation-parent mb-3 bg-light">
@@ -154,6 +154,10 @@
     $(document).on('click', '.deleteVariation', function(){
         if(variationCount != 0){
             variationCount = variationCount - 1;
+
+            if($(this).parents('.variation-parent').find('.variation_id').length > 0){
+                $(this).parents('form').append($(`<input type="hidden" name="delete_variation[]" value="${$(this).parents('.variation-parent').find('.variation_id').val()}" />`))
+            }
             $(this).parents('.variation-parent').remove();
         }
     })
@@ -229,7 +233,11 @@
             var variationOptionsCount = $(optionContainer).attr('data-count');
             variationOptionsCount = parseInt(variationOptionsCount) - 1;
             $(optionContainer).attr('data-count', variationOptionsCount);
-            console.log(variationOptionsCount)
+
+            if($(this).parents('.variation_options-row').find('.option_id').length > 0){
+                $(this).parents('form').append($(`<input type="hidden" name="delete_option[]" value="${$(this).parents('.variation_options-row').find('.option_id').val()}" />`))
+            }
+
             if(variationOptionsCount == 0){
                 $(this).parents('.variation-parent').find('.variationtype').removeAttr('readonly');
             }

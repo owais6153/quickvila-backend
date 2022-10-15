@@ -10360,18 +10360,22 @@ body.sidebar-toggled footer.sticky-footer {
 .custom-control-label {
     font-size: 16px;
 }
-input[type='color'] {
+input[type="color"] {
     padding: 0;
     width: 150%;
     height: 150%;
     margin: -25%;
-  }
+}
 
-  .form-color {
+.form-color {
     overflow: hidden;
     width: 2em;
     height: 2em;
     border-radius: 50%;
     box-shadow: 1px 1px 3px 0px grey;
-
-  }
+}
+.form-control:disabled,
+.form-control[readonly] {
+    pointer-events: none;
+    opacity: 70%;
+}
