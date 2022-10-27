@@ -19,10 +19,12 @@ class Product extends Model
         'user_id',
         'price',
         'sale_price',
-        'product_type'
+        'product_type',
+        'product_id'
     ];
 
-    public function getImageAttribute($attr){
+    public function getImageAttribute($attr)
+    {
         return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
     }
 
@@ -38,7 +40,8 @@ class Product extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function variations(){
+    public function variations()
+    {
         return $this->hasMany(Variation::class, 'product_id', 'id');
     }
 }

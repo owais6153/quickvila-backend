@@ -15,8 +15,9 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->longText('product_id')->nullable();
             $table->string('name');
-            $table->longText('image')->nullable()->default('images/no-image.png');
+            $table->longText('image')->nullable();
             $table->longText('description')->nullable();
             $table->string('short_description')->nullable();
             $table->string('price');

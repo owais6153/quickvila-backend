@@ -17,7 +17,7 @@ class CreateTestimonialsTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('subtitle')->nullable();
-            $table->longText('image')->nullable()->default('images/no-image.png');
+            $table->longText('image')->nullable();
             $table->longText('description')->nullable();
             $table->integer('sort')->nullable();
             $table->timestamps();

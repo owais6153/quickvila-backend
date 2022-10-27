@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateCronDetialsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('cron_detials', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('store_id');
+            $table->foreign('store_id')->references('id')->on('stores');
+            $table->string('totalPages');
+            $table->string('currentPage');
+            $table->string('traceId')->nullable();
+            $table->string('totalResources')->nullable();
+            $table->longText('errors')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('cron_detials');
+    }
+}
