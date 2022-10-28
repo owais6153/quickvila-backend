@@ -23,7 +23,7 @@
                                 <div class="col-lg-12 mx-auto">
                                     <div class="p-5">
                                         <div class="text-center mb-4">
-                                            <img src="{{asset('/images/Logo.png')}}">
+                                            <img src="{{asset('/images/Logo.png')}}" style="width: 200px">
                                         </div>
                                         @yield('content')
                                 </div>
