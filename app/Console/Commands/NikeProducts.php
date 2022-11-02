@@ -99,6 +99,7 @@ class NikeProducts extends Command
                             if (!empty($pr)) {
                                 $pr->update([
                                     'name' => $p->title,
+                                    'short_description' => $p->subtitle,
                                     'image' => (isset($p->images) && !empty($p->images)) ? $p->images->portraitURL : 'images/no-image.png',
                                     'manage_able' => false,
                                     'is_featured' => false,
@@ -111,6 +112,7 @@ class NikeProducts extends Command
                                 $product = Product::create([
                                     'product_id' => $p->id,
                                     'name' => $p->title,
+                                    'short_description' => $p->subtitle,
                                     'store_id' => $store->id,
                                     'image' => (isset($p->images) && !empty($p->images)) ? $p->images->portraitURL : 'images/no-image.png',
                                     'manage_able' => false,
