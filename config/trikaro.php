@@ -75,8 +75,12 @@ return [
             ],
         ]
     ],
-    'settings' => [
-        'APP_NAME' => env('APP_NAME', 'Trikaro'),
-        'APP_LOGO' => '',
+    'setting' => [
+        'store' => [
+            'tax' => '20',
+            'default_price' => '0',
+            'default_price_condition' => '0',
+            'default_radius' => '10',
+        ]
     ]
 ];

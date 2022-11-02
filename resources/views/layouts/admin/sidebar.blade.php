@@ -120,6 +120,29 @@
         </div>
     </li>
     @endif
+
+
+    @if(Bouncer::can('view-setting') || Bouncer::can('edit-setting'))
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">
+        Site Settings
+    </div>
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#settings" aria-expanded="true"
+            aria-controls="settings">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Settings</span>
+        </a>
+        <div id="settings" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('setting.index', ['key' => 'store']) }}">Store</a>
+            </div>
+        </div>
+    </li>
+    @endif
+
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

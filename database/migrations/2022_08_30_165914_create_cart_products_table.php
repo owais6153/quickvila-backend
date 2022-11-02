@@ -18,7 +18,7 @@ class CreateCartProductsTable extends Migration
             $table->string('line_total');
             $table->string('qty');
             $table->unsignedBigInteger('cart_id');
-            $table->foreign('cart_id')->references('id')->on('carts');
+            $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();

@@ -8,6 +8,7 @@ use App\Http\Controllers\Web\Admin\StoreCategoryController;
 use App\Http\Controllers\Web\Admin\ProductCategoryController;
 use App\Http\Controllers\Web\Admin\TestimonialController;
 use App\Http\Controllers\Web\Admin\VideoController;
+use App\Http\Controllers\Web\Admin\SettingController;
 
 
 // Static Pages
@@ -46,4 +47,8 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
     //Video
     Route::resource('video', VideoController::class);
     Route::get('video-list', [VideoController::class, 'getList'])->name('video.list');
+
+    // Settings
+    Route::get('setting/{key}', [SettingController::class,  'index'])->name('setting.index');
+    Route::post('setting/store', [SettingController::class,  'store'])->name('setting.store');
 });

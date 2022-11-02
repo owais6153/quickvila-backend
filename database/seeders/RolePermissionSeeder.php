@@ -18,7 +18,7 @@ class RolePermissionSeeder extends Seeder
 
         foreach ($adminPermissions as $adminPer) {
             foreach ($adminPer as $adminPermission) {
-                Bouncer::allow('Admin')->to($adminPermission);
+                Bouncer::allow(Admin())->to($adminPermission);
             }
         }
 
@@ -26,12 +26,8 @@ class RolePermissionSeeder extends Seeder
 
         foreach ($managerPermissions as $managerPer) {
             foreach ($managerPer as $managerPermission) {
-                Bouncer::allow('Manager')->to($managerPermission);
+                Bouncer::allow(Manager())->to($managerPermission);
             }
         }
-
-
-
-        Bouncer::allow('Customer')->to('');
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\CheckoutController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -46,8 +47,7 @@ use App\Http\Controllers\Api\CartController;
         Route::delete('/cart/remove/{cartProduct:id}', [CartController::class, 'remove']);
         Route::delete('/cart/empty', [CartController::class, 'emptyCart']);
         // Checkout
-        Route::post('/checkout', [CartController::class, 'index']);
-        Route::post('/orders/{order:id}/', [CartController::class, 'index']);
+        Route::post('/checkout', [CheckoutController::class, 'checkout']);
         //Account
 
         Route::get('/me', [AuthController::class, 'me']);
@@ -55,6 +55,7 @@ use App\Http\Controllers\Api\CartController;
         Route::get('/account/password/update', [CartController::class, 'index']);
         Route::get('/account/profile/update', [CartController::class, 'index']);
         Route::get('/account/orders', [CartController::class, 'index']);
+        Route::post('/account/orders/{order:id}/', [CartController::class, 'index']);
         Route::get('/stores/{store:id}/follow', [ProductController::class, 'index']);
         Route::get('/account/following', [CartController::class, 'index']);
     });
