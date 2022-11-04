@@ -42,4 +42,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
-          script: "cd public_html/backend/ && ./deployer.sh"
+          script: " |
+            cd public_html/backend/
+            chmod 700 deployer.sh
+           ./deployer.sh
