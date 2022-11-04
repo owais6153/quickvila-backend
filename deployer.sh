@@ -1,6 +1,27 @@
 set -e
-echo "Deployment Start"
+
+echo "Deployment started ..."
+
+# Enter maintenance mode or return true
+# if already is in maintenance mode
+(php artisan down) || true
+
+# Pull the latest version of the app
 GIT_SSH_COMMAND="ssh -i ~/.ssh/backend" git pull origin master
-composer update
-php artisan migrate
-echo "Deployment Finished"
+
+# Install composer dependencies
+composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+# Clear the old cache
+php artisan clear-compiled
+
+# Recreate cache
+php artisan optimize
+
+# Run database migrations
+php artisan migrate --force
+
+# Exit maintenance mode
+php artisan up
+
+echo "Deployment finished!"

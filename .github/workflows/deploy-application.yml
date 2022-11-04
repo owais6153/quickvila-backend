@@ -44,4 +44,4 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           script: cd public_html/backend/
             chmod 700 deployer.sh
-            ./deployer.sh
+            ./deployer.sh"
