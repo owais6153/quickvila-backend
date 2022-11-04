@@ -24,7 +24,12 @@ class SettingRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'key' => 'required|max:100',
+            // Store
+            'setting.default_price' => 'exclude_unless:key,store|required',
+            'setting.default_price_condition' => 'exclude_unless:key,store|required',
+            'setting.tax' => 'exclude_unless:key,store|required',
+            'setting.default_radius' => 'exclude_unless:key,store|required',
         ];
     }
 }

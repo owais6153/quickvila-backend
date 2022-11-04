@@ -22,10 +22,10 @@ class ProductController extends Controller
         return response()->json($data, $data['status']);
     }
     public function show(Store $store, Product $product, Request $request){
-        $data['product'] = $product;
+        $data['product'] = Product::with(['variations', 'variations.options'])->where('id', $product->id)->first();
         $data['status'] = 200;
         $limit = ($request->has('limit')) ? $request->limit : 10;
-        $data['related'] = $this->model->limit($limit)->get();
+        $data['related'] = $this->model->limit($limit)->where('store_id', $product->id)->get();
         return response()->json($data, $data['status']);
     }
     public function storeProducts(Store $store, Request $request){

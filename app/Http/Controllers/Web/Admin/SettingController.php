@@ -21,9 +21,7 @@ class SettingController extends Controller
         if (view()->exists("admin.setting.type.$key" ))
         {
             $setting = Setting::where('key', $key)->first();
-
-            $setting = isset($setting->value) ? unserialize($setting->value) : false;
-
+            $setting = isset($setting->value) ? unserialize($setting->value) : [];
             return view($this->dir, compact('key', 'setting'));
         }
         abort(404);

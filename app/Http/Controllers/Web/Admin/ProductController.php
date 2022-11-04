@@ -70,7 +70,7 @@ class ProductController extends Controller
         return view($this->dir . 'create', compact('categories', 'stores'));
     }
 
-    public function handleVariations(Request $request)
+    public function handleVariations(Request $request, Product $product)
     {
         if($request->has('variation')){
             foreach($request->variation as $variation){
@@ -151,7 +151,7 @@ class ProductController extends Controller
 
 
         if($request->product_type == 'variation'){
-            $this->handleVariations($request);
+            $this->handleVariations($request, $product);
         }
 
         return redirect()->route('product.index')->with('success', 'Product Created');
@@ -220,7 +220,7 @@ class ProductController extends Controller
         }
 
 
-        $this->handleVariations($request);
+        $this->handleVariations($request, $product);
 
 
 

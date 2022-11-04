@@ -108,7 +108,7 @@
 </div>
 @push('afterScripts')
 <script>
-    var variationCount = {{ $product->variations->count() - 1}};
+    var variationCount = {{ $product->variations->count() != 0 ? $product->variations->count() - 1 : 0}};
     $(document).on('click', '#addNewVariation', function(){
         variationCount = variationCount + 1;
         var html = `<div class="card variation-parent mb-3 bg-light">
