@@ -12,6 +12,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use App\Models\User;
 use App\Models\Store;
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Verified;
 use Hash;
@@ -25,6 +26,12 @@ class AuthController extends Controller
         $data = [];
         $data['store'] = Bouncer::can('all-store') ? Store::count() : Store::where('user_id', Auth::id())->count();
         $data['product'] = Bouncer::can('all-product') ? Product::count() : Product::where('user_id', Auth::id())->count();
+
+        $store_ids = Store::where('user_id', auth()->id())->pluck('id');
+        $data['order'] = Bouncer::can('all-orders') ? Order::sum('total') : Order::whereHas('items', function($query) use($store_ids) {
+            $query->whereIn('store_id', $store_ids);
+        })->sum('total');
+
         return view('admin.index')->with($data);
     }
 

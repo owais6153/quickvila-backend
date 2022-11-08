@@ -19,9 +19,9 @@
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
-            <div id="content">
+            <div id="content" class="mt-5">
                 <!-- Topbar -->
-                @include('layouts.admin.topbar')
+                {{-- @include('layouts.admin.topbar') --}}
                 <!-- End of Topbar -->
                 @yield('content')
             </div>

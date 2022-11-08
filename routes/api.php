@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\OrderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,6 +33,9 @@ use App\Http\Controllers\Api\CheckoutController;
     Route::post('/forget', [AuthController::class, 'forget'])->middleware('throttle:3,10');
     Route::post('/forget/code-verify', [AuthController::class, 'forgetCodeVerify'])->middleware('throttle:3,10');
 
+    // Order Detail
+
+    Route::get('/orders/{order:id}', [OrderController::class, 'show']);
 
     // Authenticated Users Only
     Route::middleware(['auth:sanctum'])->group(function () {
@@ -49,15 +53,13 @@ use App\Http\Controllers\Api\CheckoutController;
         // Checkout
         Route::post('/checkout', [CheckoutController::class, 'checkout']);
         //Account
-
         Route::get('/me', [AuthController::class, 'me']);
-        Route::get('/account', [CartController::class, 'index']);
-        Route::get('/account/password/update', [CartController::class, 'index']);
-        Route::get('/account/profile/update', [CartController::class, 'index']);
+        // Route::get('/account', [CartController::class, 'index']);
+        // Route::get('/account/password/update', [CartController::class, 'index']);
+        // Route::get('/account/profile/update', [CartController::class, 'index']);
         Route::get('/account/orders', [CartController::class, 'index']);
-        Route::post('/account/orders/{order:id}/', [CartController::class, 'index']);
-        Route::get('/stores/{store:id}/follow', [ProductController::class, 'index']);
-        Route::get('/account/following', [CartController::class, 'index']);
+        // Route::get('/stores/{store:id}/follow', [ProductController::class, 'index']);
+        // Route::get('/account/following', [CartController::class, 'index']);
     });
 
 

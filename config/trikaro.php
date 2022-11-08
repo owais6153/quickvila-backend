@@ -3,7 +3,7 @@
 return [
     // Type of permission using in whole project
     'permissions' => [
-        'all' => [ //Admin Permission
+        'admin' => [ //Admin Permission
             'Basic Permissions' => [
                 'Admin Area' => 'admin-area',
             ],
@@ -50,6 +50,14 @@ return [
                 'View Settings' => 'view-setting',
                 'Save Settings' => 'edit-setting',
             ],
+            'Order Permissions' => [
+                'All Orders' => 'all-orders',
+                'View Order' => 'view-order',
+            ],
+            'User Permissions' => [
+                'All Users' => 'all-users',
+                'View User' => 'view-user',
+            ],
         ],
         'manager' => [ //Manager Permission
             'Basic Permissions' => [
@@ -73,9 +81,19 @@ return [
                 'Edit Store ' => 'edit-store',
                 'Delete Store' => 'delete-store',
             ],
+            'Order Permissions' => [
+                'View Order' => 'view-order',
+            ],
+            'User Permissions' => [
+                'View User' => 'view-user',
+            ]
         ]
     ],
-    'setting' => [
+    'setting' => [ //Default Settingss
+        'hidden' => [
+            'currency' => 'USD',
+            'currency_symbol' => '$'
+        ],
         'store' => [
             'tax' => '20',
             'default_price' => '0',

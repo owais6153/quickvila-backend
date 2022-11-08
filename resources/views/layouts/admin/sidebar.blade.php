@@ -3,7 +3,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">{{ env('APP_NAME') }}</div>
+        <div class="sidebar-brand-text mx-3">QuickVila</div>
     </a>
     <hr class="sidebar-divider ">
     <div class="sidebar-heading">
@@ -83,6 +83,36 @@
         </div>
     </li>
     @endif
+
+    @if(Bouncer::can('view-order'))
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">
+       Orders
+    </div>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('order.index') }}" ><i class="fas fa-shopping-cart"></i>
+            <span>Orders</span>
+        </a>
+    </li>
+    @endif
+
+    @if(Bouncer::can('view-user'))
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">
+       {{Bouncer::can('all-users') ? 'Users / Customers' : 'Customers'}}
+    </div>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('user.index') }}" ><i class="fas fa-user"></i>
+            <span>
+                {{Bouncer::can('all-users') ? 'Users / Customers' : 'Customers'}}
+            </span>
+        </a>
+    </li>
+    @endif
+
+
     @if(Bouncer::can('view-testimonial') || Bouncer::can('create-testimonial') || Bouncer::can('view-video') || Bouncer::can('edit-video'))
     <!-- Divider -->
     <hr class="sidebar-divider">

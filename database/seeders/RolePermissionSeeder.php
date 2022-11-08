@@ -14,7 +14,7 @@ class RolePermissionSeeder extends Seeder
      */
     public function run()
     {
-        $adminPermissions = config('trikaro.permissions.all');
+        $adminPermissions = config('trikaro.permissions.admin');
 
         foreach ($adminPermissions as $adminPer) {
             foreach ($adminPer as $adminPermission) {

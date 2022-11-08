@@ -20,7 +20,7 @@ class SettingController extends Controller
     {
         if (view()->exists("admin.setting.type.$key" ))
         {
-            $setting = Setting::where('key', $key)->first();
+            $setting = Setting::where('key', $key)->where('key', '!=', 'hidden')->first();
             $setting = isset($setting->value) ? unserialize($setting->value) : [];
             return view($this->dir, compact('key', 'setting'));
         }
@@ -28,19 +28,22 @@ class SettingController extends Controller
     }
     public function store(SettingRequest $request)
     {
-        $setting = Setting::where('key', $request->key)->first();
-        if(empty($setting)){
-            $setting = Setting::create([
-                'key' => $request->key,
-                'value' => serialize($request->setting)
-            ]);
-            return redirect()->back()->with('success', 'Setting Inserted');
+        if( $request->key != 'hidden'){
+            $setting = Setting::where('key', $request->key)->first();
+            if(empty($setting)){
+                $setting = Setting::create([
+                    'key' => $request->key,
+                    'value' => serialize($request->setting)
+                ]);
+                return redirect()->back()->with('success', 'Setting Inserted');
+            }
+            else{
+                $setting->update([
+                    'value' => serialize($request->setting)
+                ]);
+                return redirect()->back()->with('success', 'Setting Updated');
+            }
         }
-        else{
-            $setting->update([
-                'value' => serialize($request->setting)
-            ]);
-            return redirect()->back()->with('success', 'Setting Updated');
-        }
+        abort(404);
     }
 }

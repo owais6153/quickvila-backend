@@ -9,6 +9,8 @@ use App\Http\Controllers\Web\Admin\ProductCategoryController;
 use App\Http\Controllers\Web\Admin\TestimonialController;
 use App\Http\Controllers\Web\Admin\VideoController;
 use App\Http\Controllers\Web\Admin\SettingController;
+use App\Http\Controllers\Web\Admin\OrderController;
+use App\Http\Controllers\Web\Admin\UserController;
 
 
 // Static Pages
@@ -51,4 +53,13 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
     // Settings
     Route::get('setting/{key}', [SettingController::class,  'index'])->name('setting.index');
     Route::post('setting/store', [SettingController::class,  'store'])->name('setting.store');
+
+    // Order
+    Route::resource('order', OrderController::class);
+    Route::get('order-list', [OrderController::class, 'getList'])->name('order.list');
+
+
+    Route::resource('user', UserController::class);
+    Route::get('user-list', [UserController::class, 'getList'])->name('user.list');
+
 });

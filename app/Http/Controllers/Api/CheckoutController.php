@@ -68,7 +68,7 @@ class CheckoutController extends Controller
 
                             $data = array(
                                 'order' => $this->order,
-                                'status' => 'success'
+                                'status' => 200
                             );
                             return response()->json($data, 200);
                        }
