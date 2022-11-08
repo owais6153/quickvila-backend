@@ -27,7 +27,7 @@ class StoreController extends Controller
         $store = $this->model->where('id', $id);
         $store = $store->withCount(['products'])->first();
         $data['store'] = $store;
-        $data['products'] = $store->products()->limit(10);
+        $data['products'] = $store->products()->limit(10)->get();
         $data['status'] = 200;
         return response()->json($data, $data['status']);
     }

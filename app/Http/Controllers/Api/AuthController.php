@@ -31,7 +31,7 @@ class AuthController extends Controller
 
             $fieldType =  'email';
             if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember'))) {
-                $user = User::where('email', $request->email)->first();
+                $user = User::select('id', 'name', 'email', 'code', 'email_verified_at', 'created_at', 'updated_at', 'deleted_at')->where('email', $request->email)->first();
 
                 return response()->json([
                     'userId' => $user->id,
@@ -57,7 +57,7 @@ class AuthController extends Controller
     {
         try {
             $validator = \Validator::make($request->all(), [
-                'name' => 'required|min:3',
+                'name' => 'nullable|min:3',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required',
                 'confirm_password' => 'required|same:password',
@@ -71,7 +71,7 @@ class AuthController extends Controller
 
 
             $user = new User;
-            $user->name = $request->name;
+            $user->name = $request->has('name') ? $request->name : 'No-name';
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
             $user->code = rand(100000, 999999);
@@ -255,18 +255,18 @@ class AuthController extends Controller
             return response()->json($error, 500);
         }
     }
-    public function me(Request $request){
-        try{
+    public function me(Request $request)
+    {
+        try {
             $user = $request->user();
-            $user->transform(function($u) {
+            $user->transform(function ($u) {
                 unset($u->code);
                 return $u;
             });
             $data['status'] = 200;
             $data['me'] = $user;
             return  response()->json($data, 200);
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
             return response()->json($error, 500);
