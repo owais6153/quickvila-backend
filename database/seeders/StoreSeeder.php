@@ -15,9 +15,22 @@ class StoreSeeder extends Seeder
      */
     public function run()
     {
-        $store = Store::create([
+        $store1 = Store::create([
             'name' => 'Nike',
             'url' => 'https://nike.ca/',
+            'address' => 'Karachi',
+            'latitude' => 23,
+            'longitude' => 34,
+            'logo' => 'https://fullstop360.com/blog/wp-content/uploads/2021/11/Nike-Logos-Principles-of-Design.jpg',
+            'cover' => 'https://wallpaperaccess.com/full/545360.jpg',
+            'manage_able' => false,
+            'user_id' => 1
+        ]);
+
+
+        $store2 = Store::create([
+            'name' => 'Mart',
+            'url' => 'https://mart.ca/',
             'address' => 'Karachi',
             'latitude' => 23,
             'longitude' => 34,
@@ -26,12 +39,15 @@ class StoreSeeder extends Seeder
             'manage_able' => false,
             'user_id' => 1
         ]);
+
+
         StoreCategory::create([
             'name' => 'Shoes & Sneakers'
         ]);
         StoreCategory::create([
             'name' => 'Caps'
         ]);
-        $store->categories()->attach([1], ['type' => 'store']);
+        $store1->categories()->attach([1], ['type' => 'store']);
+        $store2->categories()->attach([1], ['type' => 'store']);
     }
 }

@@ -45,6 +45,11 @@
                 ajax: {
                     url: "{{ route('product.list') }}",
                     type: 'GET',
+                    @if(isset($store))
+                        data:{
+                            'store_id': {{$store->id}}
+                        }
+                    @endif
                 },
                 columns: [{
                         data: 'id',

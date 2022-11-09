@@ -39,7 +39,7 @@
               @endif
 
               @if(Bouncer::can('view-store-category') || Bouncer::can('create-store-category'))
-                <h6 class="collapse-header">Categories</h6>
+                <h6 class="collapse-header">Store Categories</h6>
                 @can('create-store-category')
                     <a class="collapse-item" href="{{ route('storecategory.create') }}">Add New Category</a>
                 @endcan
@@ -47,42 +47,22 @@
                     <a class="collapse-item" href="{{ route('storecategory.index') }}">All Categories</a>
                 @endcan
               @endif
-            </div>
-        </div>
-    </li>
-    @endif
-    @if(Bouncer::can('view-product') || Bouncer::can('create-product') || Bouncer::can('view-product-category') || Bouncer::can('edit-product-category'))
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#product" aria-expanded="true"
-            aria-controls="product">
-            <i class="fa fa-archive"></i>
-            <span>Products</span>
-        </a>
-        <div id="product" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                @if(Bouncer::can('view-product') || Bouncer::can('create-product'))
-                    <h6 class="collapse-header">Products</h6>
-                    @can('create-product')
-                    <a class="collapse-item" href="{{ route('product.create') }}">Add New Product</a>
-                    @endcan
-                    @can('view-product')
-                    <a class="collapse-item" href="{{ route('product.index') }}">All Products</a>
-                    @endcan
-                @endif
-                @if(Bouncer::can('view-product-category') || Bouncer::can('create-product-category'))
-                    <h6 class="collapse-header">Categories</h6>
 
-                    @can('create-product-category')
-                        <a class="collapse-item" href="{{ route('productcategory.create') }}">Add New Category</a>
-                    @endcan
-                    @can('view-product-category')
-                        <a class="collapse-item" href="{{ route('productcategory.index') }}">All Categories</a>
-                    @endcan
-                @endif
+              @if(Bouncer::can('view-product-category') || Bouncer::can('create-product-category'))
+              <h6 class="collapse-header">Product Categories</h6>
+
+              @can('create-product-category')
+                  <a class="collapse-item" href="{{ route('productcategory.create') }}">Add New Category</a>
+              @endcan
+              @can('view-product-category')
+                  <a class="collapse-item" href="{{ route('productcategory.index') }}">All Categories</a>
+              @endcan
+          @endif
             </div>
         </div>
     </li>
     @endif
+
 
     @if(Bouncer::can('view-order'))
     <!-- Divider -->

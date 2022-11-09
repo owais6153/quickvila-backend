@@ -35,6 +35,10 @@ class StoreController extends Controller
                 if (Bouncer::can('edit-store')) {
                     $actionBtn .= '<a href="' . route('store.edit', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
                 }
+                if (Bouncer::can('view-product')) {
+                    $actionBtn .= '<a href="' . route('store.products', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-eye"></i></a>';
+                }
+
                 if (Bouncer::can('delete-store')  && $row->manage_able) {
                     $actionBtn .= '
                 <form style="display:inline-block" method="POST" action="' . route('store.destroy', ['store' => $row->id]) . '">
@@ -42,6 +46,7 @@ class StoreController extends Controller
                     <input type="hidden" name="_method" value="DELETE" />
                 <button class="btn-circle delete btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button></form>';
                 }
+
                 return $actionBtn;
             })
             ->addColumn('products', function ($row) {

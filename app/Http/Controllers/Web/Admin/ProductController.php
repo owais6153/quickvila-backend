@@ -27,6 +27,9 @@ class ProductController extends Controller
     public function getList(Request $request)
     {
         $model = Bouncer::can('all-product') ? Product::query() : Product::where('user_id', Auth::id());
+        if($request->has('store_id'))
+            $model = $model->where('store_id', $request->store_id);
+
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';
@@ -57,7 +60,10 @@ class ProductController extends Controller
     {
         return view($this->dir . 'index');
     }
-
+    public function store_products(Store $store)
+    {
+        return view($this->dir . 'index', compact('store'));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -154,7 +160,7 @@ class ProductController extends Controller
             $this->handleVariations($request, $product);
         }
 
-        return redirect()->route('product.index')->with('success', 'Product Created');
+        return redirect()->route('store.products', ['store'=>$product->store_id])->with('success', 'Product Created');
     }
 
     /**
@@ -225,7 +231,7 @@ class ProductController extends Controller
 
 
 
-        return redirect()->route('product.index')->with('success', 'Product Updated');
+        return redirect()->route('store.products', ['store'=>$product->store_id])->with('success', 'Product Updated');
     }
 
     /**
@@ -239,7 +245,7 @@ class ProductController extends Controller
         if ($product->manage_able) {
             deleteFile(str_replace(env('FILE_URL'), '', $product->image));
             $product->delete();
-            return redirect()->route('product.index')->with('success', 'Product Deleted');
+            return redirect()->route('store.products', ['store'=>$product->store_id])->with('success', 'Product Deleted');
         }
         abort(404);
     }

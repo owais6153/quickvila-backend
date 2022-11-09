@@ -38,7 +38,9 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
 
     // Products
     Route::resource('product', ProductController::class);
+    Route::get('store/{store:id}/products', [ProductController::class, 'store_products'])->name('store.products');
     Route::get('product-list', [ProductController::class, 'getList'])->name('product.list');
+
     // ProductCategory
     Route::resource('productcategory', ProductCategoryController::class);
     Route::get('productcategory-list', [ProductCategoryController::class, 'getList'])->name('productcategory.list');
