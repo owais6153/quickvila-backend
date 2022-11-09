@@ -31,7 +31,7 @@ class AuthController extends Controller
 
             $fieldType =  'email';
             if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember'))) {
-                $user = User::select('id', 'name', 'email', 'code', 'email_verified_at', 'created_at', 'updated_at', 'deleted_at')->where('email', $request->email)->first();
+                $user = User::where('email', $request->email)->first();
 
                 return response()->json([
                     'userId' => $user->id,
@@ -57,7 +57,9 @@ class AuthController extends Controller
     {
         try {
             $validator = \Validator::make($request->all(), [
-                'name' => 'nullable|min:3',
+                'first_name' => 'required|min:3',
+                'last_name' => 'required|min:3',
+                'phone' => 'required|numeric|min:10|unique:users,phone',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required',
                 'confirm_password' => 'required|same:password',
@@ -71,8 +73,11 @@ class AuthController extends Controller
 
 
             $user = new User;
-            $user->name = $request->has('name') ? $request->name : 'No-name';
+            $user->name = "$request->first_name $request->last_name";
+            $user->first_name = $request->first_name ;
+            $user->last_name = $request->last_name ;
             $user->email = $request->email;
+            $user->phone = $request->phone;
             $user->password = Hash::make($request->password);
             $user->code = rand(100000, 999999);
 

@@ -17,6 +17,8 @@ class UserSeeder extends Seeder
     {
         $user = new User();
         $user->name = 'Admin';
+        $user->first_name = 'Admin';
+        $user->last_name = 'Admin';
         $user->password = Hash::make('secret123');
         $user->email = 'admin@trikaro.com';
         $user->email_verified_at = date("Y-m-d", time());
@@ -27,6 +29,8 @@ class UserSeeder extends Seeder
 
         $user = new User();
         $user->name = 'Manager';
+        $user->first_name = 'Manager';
+        $user->last_name = 'Manager';
         $user->password = Hash::make('secret123');
         $user->email = 'manager@trikaro.com';
         $user->email_verified_at = date("Y-m-d", time());

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Store;
+use App\Models\StoreCategory;
 
 class StoreSeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class StoreSeeder extends Seeder
      */
     public function run()
     {
-        Store::create([
+        $store = Store::create([
             'name' => 'Nike',
             'url' => 'https://nike.ca/',
             'address' => 'Karachi',
@@ -25,5 +26,12 @@ class StoreSeeder extends Seeder
             'manage_able' => false,
             'user_id' => 1
         ]);
+        StoreCategory::create([
+            'name' => 'Shoes & Sneakers'
+        ]);
+        StoreCategory::create([
+            'name' => 'Caps'
+        ]);
+        $store->categories()->attach([1], ['type' => 'store']);
     }
 }
