@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\File;
 
 function uploadFile(object $file, string $uploadPath, string $oldFile = null)
 {
-
     $fileNameToStore = "";
     $file_path = public_path($oldFile);
 
@@ -16,7 +15,7 @@ function uploadFile(object $file, string $uploadPath, string $oldFile = null)
 
     if (gettype($file) == 'object') {
         $fileNameToStore = $file->hashName();
-        $path = $file->move($uploadPath, $fileNameToStore);
+        $path = $file->move(public_path($uploadPath), $fileNameToStore);
     }
 
     return $uploadPath . $fileNameToStore;
@@ -39,11 +38,11 @@ function deleteFile(string $fileName)
 
 function imagePath(string $name = '')
 {
-    return 'storage/uploads/images/' . $name;
+    return 'uploads/images/' . $name;
 }
 function videoPath(string $name = '')
 {
-    return 'storage/uploads/videos/' . $name;
+    return 'uploads/videos/' . $name;
 }
 function noImage()
 {
