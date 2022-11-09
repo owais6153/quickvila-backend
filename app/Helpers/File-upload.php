@@ -39,11 +39,11 @@ function deleteFile(string $fileName)
 
 function imagePath(string $name = '')
 {
-    return 'storage/uploads/images/' . $name;
+    return 'uploads/images/' . $name;
 }
 function videoPath(string $name = '')
 {
-    return 'storage/uploads/videos/' . $name;
+    return 'uploads/videos/' . $name;
 }
 function noImage()
 {
