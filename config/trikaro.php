@@ -92,13 +92,21 @@ return [
     'setting' => [ //Default Settingss
         'hidden' => [
             'currency' => 'USD',
-            'currency_symbol' => '$'
+            'currency_symbol' => '$',
         ],
         'store' => [
             'tax' => '20',
             'default_price' => '0',
             'default_price_condition' => '0',
             'default_radius' => '10',
+        ],
+        'email' => [
+            'should_send' => true,
+            'host' => env('MAIL_HOST'),
+            'port' => env('MAIL_PORT'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'encryption' => env('MAIL_ENCRYPTION'),
         ]
     ]
 ];

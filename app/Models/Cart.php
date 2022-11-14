@@ -11,7 +11,9 @@ class Cart extends Model
     public $fillable = [
         'total',
         'count',
-        'user_id'
+        'user_id',
+        'identifier',
+        'ip'
     ];
     public function items()
     {

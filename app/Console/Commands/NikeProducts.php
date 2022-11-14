@@ -47,8 +47,9 @@ class NikeProducts extends Command
         $CronDetial = CronDetial::where('errors',  null)->orderBy('created_at', 'desc')->first();
         if (!empty($store)) {
             if (!empty($CronDetial)) {
-                if ($page < intval($CronDetial->totalPages)) {
-                    $page = intval($CronDetial->currentPage) + 1;
+                $page = intval($CronDetial->currentPage) + 1;
+                if ($page > intval($CronDetial->totalPages)) {
+                    $page =  1;
                 }
             } else {
 

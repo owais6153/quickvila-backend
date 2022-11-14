@@ -7,19 +7,37 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\CartProduct;
+use Illuminate\Support\Facades\Auth;
+
 
 class CartController extends Controller
 {
+    public function getCart(Request $request)
+    {
+        if(Auth::check()){
+            $user_id = $request->user()->id;
+            return Cart::where('user_id', $user_id)->first();
+        }
+        else{
+            if($request->has('identifier')){
+                return Cart::where('identifier', $request->identifier)->first();
+            }
+        }
+        return [];
+    }
     public function index(Request $request)
     {
         try{
-            $user_id = $request->user()->id;
-            $data['cart'] = Cart::with(['items', 'items.product'])->where('user_id', $user_id)->first();
+            $data['cart'] = $this->getCart($request);
             if(empty($data['cart'])){
                 $data['cart'] = [];
             }
+            else{
+                $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $data['cart']->identifier)->first();
+            }
             $data['status'] = 200;
-            return  response()->json($data, 200);
+            $identifier = isset($cart->identifier) ? $cart->identifier : false;
+            return  response()->json($data, 200)->cookie('cart', $identifier);
         }
         catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
@@ -27,14 +45,11 @@ class CartController extends Controller
 
             return response()->json($error, 500);
         }
-
-
     }
     public function add(Product $product, Request $request)
     {
         try{
-            $user_id = $request->user()->id;
-            $cart = Cart::where('user_id', $user_id)->first();
+            $cart = $this->getCart($request);
             if(!empty($cart)){
                 $cartItem = CartProduct::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
                 if(!empty($cartItem)){
@@ -58,10 +73,12 @@ class CartController extends Controller
                 ]);
             }
             else{
+                $identifier = time();
                 $cart = Cart::create([
                     'count' => 1,
                     'total' => ($product->sale_price) ? $product->sale_price : $product->price,
-                    'user_id' => $user_id
+                    'identifier' => $identifier,
+                    'ip' => $request->ip()
                 ]);
 
                 $cartItem = CartProduct::create([
@@ -70,12 +87,18 @@ class CartController extends Controller
                     'product_id' => $product->id,
                     'cart_id' => $cart->id
                 ]);
+                if(Auth::check()){
+                    $cart->update([
+                        'user_id' => $request->user()->id,
+                    ]);
+                }
             }
 
-            $data['cart'] = Cart::with(['items', 'items.product'])->where('user_id', $user_id)->first();
+            $identifier = isset($cart->identifier) ? $cart->identifier : false;
+            $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $identifier)->first();
             $data['status'] = 200;
             $data['message'] = 'Product added to cart';
-            return  response()->json($data, 200);
+            return  response()->json($data, 200)->cookie('cart', $identifier);
         }
         catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
@@ -86,38 +109,43 @@ class CartController extends Controller
     }
     public function emptyCart(Request $request){
         try{
-            $user_id = $request->user()->id;
-            $cart = Cart::where('user_id', $user_id)->first();
-            if($cart->items->count())
-                $cart->items()->delete();
-            if(!empty($cart))
+            $cart = $this->getCart($request);
+
+            if(!empty($cart)){
+                if($cart->items->count()){
+                    $cart->items()->delete();
+                }
                 $cart->delete();
+                $data['status'] = 200;
+                $data['message'] = 'Cart is empty';
+                return  response()->json($data, 200);
+            }
 
-            $data['status'] = 200;
-            $data['message'] = 'Cart is empty';
-            return  response()->json($data, 200);
-
+            $error['errors'] = ['error' => ['No Item in cart']];
+            $error['status'] = 500;
+            return response()->json($error, 500);
         }
         catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
-
             return response()->json($error, 500);
         }
     }
     public function remove(CartProduct $cartProduct, Request $request)
     {
         try{
-            $user_id = $request->user()->id;
             $item_id = $cartProduct->cart_id;
-            $cart = Cart::where('id', $item_id)->where('user_id', $user_id)->first();
+            $cart = $this->getCart($request);
             if(!empty($cart)){
+
                 $cart->update([
                     'count' => $cart->count - $cartProduct->qty,
                     'total' => $cart->total - $cartProduct->line_total,
                 ]);
                 $cartProduct->delete();
-                $data['cart'] = Cart::with(['items', 'items.product'])->where('id', $item_id)->first();
+
+                $identifier = isset($cart->identifier) ? $cart->identifier : false;
+                $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $identifier)->first();
                 if(empty($data['cart'])){
                     $data['cart'] = [];
                 }
@@ -141,8 +169,8 @@ class CartController extends Controller
     public function update(CartProduct $cartProduct, $operation, Request $request)
     {
         try{
-            $user_id = $request->user()->id;
-            $cart = Cart::where('user_id', $user_id)->first();
+            $cart = $this->getCart($request);
+            $identifier = isset($cart->identifier) ? $cart->identifier : false;
             $product = $cartProduct->product;
             if($operation == 'increment'){
                 $qty = $cartProduct->qty + 1;
@@ -155,7 +183,7 @@ class CartController extends Controller
                     'total' => ($product->sale_price) ? $cart->total + $product->sale_price : $cart->total + $product->price
                 ]);
 
-                $data['cart'] = Cart::with(['items', 'items.product'])->where('user_id', $user_id)->first();
+                $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $identifier)->first();
                 $data['status'] = 200;
                 $data['message'] = 'Quantity Updated';
                 return  response()->json($data, 200);
@@ -176,7 +204,7 @@ class CartController extends Controller
                     'total' => ($product->sale_price) ? $cart->total - $product->sale_price : $cart->total - $product->price
                 ]);
 
-                $data['cart'] = Cart::with(['items', 'items.product'])->where('user_id', $user_id)->first();
+                $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $identifier)->first();
                 $data['status'] = 200;
                 $data['message'] = 'Quantity Updated';
                 return  response()->json($data, 200);

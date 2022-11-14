@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Auth;
 use Hash;
 use Str;
-use App\Models\User;
+use Config;
+use App\Models\User;use Mail;
+
 
 class AuthController extends Controller
 {
@@ -81,11 +83,19 @@ class AuthController extends Controller
             $user->password = Hash::make($request->password);
             $user->code = rand(100000, 999999);
 
-            if (env('APP_ENV') == 'local')
-                $user->email_verified_at = date("Y-m-d", time());
+            if(!!Config::get('mail.mailers.smtp.should_send') === true){
+                Mail::send(array(), array(), function ($message) use ($user) {
+                    $message->to($user->email)
+                        ->subject("Verify Your Account")
+                        ->setBody("<p>Hi $user->name!<br>
+                        Please verify your account.
+                        </p><h3>Your Verification Code is : $user->code</h3>", 'text/html');
+                });
+            }
 
             $user->save();
             $user->assign('Customer');
+
 
             if (env('APP_ENV') != 'local')
                 $user->sendEmailVerificationNotification();
@@ -123,7 +133,7 @@ class AuthController extends Controller
             if ($validator->fails()) {
                 $error['errors'] = $validator->messages();
                 $error['status'] = 400;
-                $error['request'] = $request;
+
                 return response()->json($error, 400);
             }
             if ($request->user()->code == $request->code) {
@@ -156,6 +166,17 @@ class AuthController extends Controller
                 'code' => rand(100000, 999999)
             ]);
 
+
+            if(!!Config::get('mail.mailers.smtp.should_send') === true){
+                Mail::send(array(), array(), function ($message) use ($user) {
+                    $message->to($user->email)
+                        ->subject("Verify Your Account")
+                        ->setBody("<p>Hi $user->name!<br>
+                        Please verify your account.
+                        </p><h3>Your Verification Code is : $user->code</h3>", 'text/html');
+                });
+            }
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Code resend successfully',
@@ -175,15 +196,28 @@ class AuthController extends Controller
             if ($validator->fails()) {
                 $error['errors'] = $validator->messages();
                 $error['status'] = 400;
-                $error['request'] = $request;
+
                 return response()->json($error, 400);
             }
             $user = User::where('email', $request->email)->first();
             $user->update([
                 'code' => rand(100000, 999999)
             ]);
+
+            if(!!Config::get('mail.mailers.smtp.should_send') === true){
+                Mail::send(array(), array(), function ($message) use ($user) {
+                    $message->to($user->email)
+                        ->subject("Verify Your Account")
+                        ->setBody("<p>Hi $user->name!<br>
+                        Please verify your account.
+                        </p><h3>Your Verification Code is : $user->code</h3>", 'text/html');
+                });
+            }
+
             return response()->json([
                 'status' => 200,
+                'code' => $user->code,
+                'update_token' => $user->createToken(Str::random(30))->plainTextToken,
                 'message' => 'Code send to email',
             ], 200);
         } catch (\Throwable $th) {
@@ -196,23 +230,22 @@ class AuthController extends Controller
     {
         try {
             $validator = \Validator::make($request->all(), [
-                'email' => 'required|email|exists:users,email',
                 'code' => 'required|min:6|max:6|exists:users,code',
             ]);
             if ($validator->fails()) {
                 $error['errors'] = $validator->messages();
                 $error['status'] = 400;
-                $error['request'] = $request;
+
                 return response()->json($error, 400);
             }
-            $user = User::where('email', $request->email)->where('code', $request->code)->first();
-            if (empty($user)) {
+            $user = $request->user();
+
+            if ($user->code != $request->code) {
                 $error['errors'] = ['code' => ['Code is invalid']];
                 $error['status'] = 500;
                 return response()->json($error, 500);
             }
             return response()->json([
-                'token' => $user->createToken(Str::random(30))->plainTextToken,
                 'status' => 200,
                 'message' => 'User verified successfully',
             ], 200);
@@ -233,7 +266,7 @@ class AuthController extends Controller
             if ($validator->fails()) {
                 $error['errors'] = $validator->messages();
                 $error['status'] = 400;
-                $error['request'] = $request;
+
                 return response()->json($error, 400);
             }
             $user = $request->user();
@@ -260,21 +293,5 @@ class AuthController extends Controller
             return response()->json($error, 500);
         }
     }
-    public function me(Request $request)
-    {
-        try {
-            $user = $request->user();
-            $user->transform(function ($u) {
-                unset($u->code);
-                return $u;
-            });
-            $data['status'] = 200;
-            $data['me'] = $user;
-            return  response()->json($data, 200);
-        } catch (\Throwable $th) {
-            $error['errors'] = ['error' => [$th->getMessage()]];
-            $error['status'] = 500;
-            return response()->json($error, 500);
-        }
-    }
+
 }

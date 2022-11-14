@@ -146,6 +146,7 @@
         </a>
         <div id="settings" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('setting.index', ['key' => 'email']) }}">Email</a>
                 <a class="collapse-item" href="{{ route('setting.index', ['key' => 'store']) }}">Store</a>
             </div>
         </div>

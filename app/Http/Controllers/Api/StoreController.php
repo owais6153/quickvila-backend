@@ -18,7 +18,7 @@ class StoreController extends Controller
     {
         $stores = $this->model->query();
         $paginate = ($request->has('paginate')) ? $request->paginate : 15;
-        $stores = $stores->withCount(['products'])->paginate($paginate);
+        $stores = $stores->withCount(['products'])->orderBy('id', 'desc')->paginate($paginate);
         $data['stores'] = $stores;
         $data['categories'] = StoreCategory::all();
         $data['status'] = 200;
@@ -29,7 +29,8 @@ class StoreController extends Controller
         $store = $this->model->where('id', $id);
         $store = $store->withCount(['products'])->with(['categories'])->first();
         $data['store'] = $store;
-        $data['products'] = $store->products()->limit(10)->get();
+        $data['top_selling_products'] = $store->products()->limit(10)->orderBy('id', 'desc')->get();
+        $data['featured_products'] = $store->products()->limit(10)->orderBy('id', 'desc')->get();
         $data['status'] = 200;
         return response()->json($data, $data['status']);
     }
