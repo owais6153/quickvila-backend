@@ -144,9 +144,11 @@ class AuthController extends Controller
                 ]);
                 return response()->json([
                     'userId' => $user->id,
+                    'user' => $user,
                     'verified' => $user->email_verified_at,
                     'status' => 200,
-                    'message' => 'User Verified Successfully',
+                    'message' => 'User verified Successfully',
+                    'token' => $user->createToken(Str::random(30))->plainTextToken
                 ], 200);
             }
             $error['errors'] = ['code' => ['Code is invalid']];

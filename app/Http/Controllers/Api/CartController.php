@@ -16,7 +16,13 @@ class CartController extends Controller
     {
         if(Auth::check()){
             $user_id = $request->user()->id;
-            return Cart::where('user_id', $user_id)->first();
+            $cart =  Cart::where('user_id', $user_id)->first();
+            if(empty($cart) && $request->has('identifier')){
+                $cart =  Cart::where('identifier', $request->identifier)->first();
+                if(!empty($cart))
+                    $cart->update(['user_id', $user_id]);
+            }
+            return $cart;
         }
         else{
             if($request->has('identifier')){
