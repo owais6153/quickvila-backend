@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Hash;
 use Str;
-use Config;
-use App\Models\User;use Mail;
+use App\Models\User;
 
 
 class AuthController extends Controller
@@ -82,23 +81,11 @@ class AuthController extends Controller
             $user->phone = $request->phone;
             $user->password = Hash::make($request->password);
             $user->code = rand(100000, 999999);
-
-            if(!!Config::get('mail.mailers.smtp.should_send') === true){
-                Mail::send(array(), array(), function ($message) use ($user) {
-                    $message->to($user->email)
-                        ->subject("Verify Your Account")
-                        ->setBody("<p>Hi $user->name!<br>
-                        Please verify your account.
-                        </p><h3>Your Verification Code is : $user->code</h3>", 'text/html');
-                });
-            }
-
             $user->save();
             $user->assign('Customer');
 
+            $user->sendCodeByEmail();
 
-            if (env('APP_ENV') != 'local')
-                $user->sendEmailVerificationNotification();
 
             return response()->json([
                 'userId' => $user->id,
@@ -168,16 +155,7 @@ class AuthController extends Controller
                 'code' => rand(100000, 999999)
             ]);
 
-
-            if(!!Config::get('mail.mailers.smtp.should_send') === true){
-                Mail::send(array(), array(), function ($message) use ($user) {
-                    $message->to($user->email)
-                        ->subject("Verify Your Account")
-                        ->setBody("<p>Hi $user->name!<br>
-                        Please verify your account.
-                        </p><h3>Your Verification Code is : $user->code</h3>", 'text/html');
-                });
-            }
+            $user->sendCodeByEmail();
 
             return response()->json([
                 'status' => 200,
@@ -206,19 +184,10 @@ class AuthController extends Controller
                 'code' => rand(100000, 999999)
             ]);
 
-            if(!!Config::get('mail.mailers.smtp.should_send') === true){
-                Mail::send(array(), array(), function ($message) use ($user) {
-                    $message->to($user->email)
-                        ->subject("Verify Your Account")
-                        ->setBody("<p>Hi $user->name!<br>
-                        Please verify your account.
-                        </p><h3>Your Verification Code is : $user->code</h3>", 'text/html');
-                });
-            }
+            $user->sendCodeByEmail();
 
             return response()->json([
                 'status' => 200,
-                'code' => $user->code,
                 'update_token' => $user->createToken(Str::random(30))->plainTextToken,
                 'message' => 'Code send to email',
             ], 200);

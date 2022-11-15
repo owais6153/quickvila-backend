@@ -48,3 +48,27 @@ function noImage()
 {
     return 'images/no-image.png';
 }
+
+
+function validateImageUrl($attr){
+    if(strpos($attr, 'http') !== false){
+        return $attr;
+    }
+    else if($attr == null){
+        return env('FILE_URL') . noImage();
+    }
+    else{
+        return env('FILE_URL') . $attr;
+    }
+}
+function validateVideoUrl($attr){
+    if(strpos($attr, 'http') !== false){
+        return $attr;
+    }
+    else if($attr == null){
+        return false;
+    }
+    else{
+        return env('FILE_URL') . $attr;
+    }
+}

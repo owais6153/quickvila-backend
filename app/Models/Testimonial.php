@@ -17,6 +17,6 @@ class Testimonial extends Model
         'sort',
     ];
     public function getImageAttribute($attr){
-        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+        return validateImageUrl($attr);
     }
 }

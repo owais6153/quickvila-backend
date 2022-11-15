@@ -25,6 +25,7 @@ class CreateStoresTable extends Migration
             $table->string('longitude');
             $table->integer('radius')->nullable();
             $table->string('price')->default(0);
+            $table->string('tax')->default(0);
             $table->enum('price_condition', ['percentage', 'price'])->default('percentage');
             $table->boolean('manage_able')->default(true);
             $table->unsignedBigInteger('user_id');

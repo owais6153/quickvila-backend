@@ -38,8 +38,8 @@ class StoreRequest extends FormRequest
             'description' => 'nullable',
             'url' => 'nullable|min:5',
             'address' => 'nullable|min:3',
-            'latitude' => 'required|numeric|between:-90,90',
-            'longitude' => 'required|numeric|between:-180,180',
+            'latitude' => 'required|between:-90,90',
+            'longitude' => 'required|between:-180,180',
             'category.*' => 'nullable|numeric',
         ];
     }

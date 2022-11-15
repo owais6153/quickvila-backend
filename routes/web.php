@@ -32,9 +32,16 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
     // Stores
     Route::resource('store', StoreController::class);
     Route::get('store-list', [StoreController::class, 'getList'])->name('store.list');
+    Route::get('store/{store:id}/setting', [StoreController::class, 'setting'])->name('store.setting');
+    Route::put('store/{store:id}/setting/update', [StoreController::class, 'updateSetting'])->name('store.setting.update');
+
     // StoreCategory
     Route::resource('storecategory', StoreCategoryController::class);
     Route::get('storecategory-list', [StoreCategoryController::class, 'getList'])->name('storecategory.list');
+
+
+    Route::get('product', [ProductController::class, 'index'])->name('product.index');
+
 
     // Products
     Route::resource('product', ProductController::class);

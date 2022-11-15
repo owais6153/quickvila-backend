@@ -27,9 +27,10 @@ class User extends Authenticatable
         'email',
         'password',
         'email_verified_at',
-        'code',
         'address',
         'dob',
+        'avatar',
+        'code'
     ];
 
     /**
@@ -50,6 +51,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function getAvatarAttribute($attr){
+        return validateImageUrl($attr);
+    }
+
+    //Emails
+    public function sendCodeByEmail()
+    {
+        sendEmail(
+            [],
+            [],
+            $this,
+            "Verify Email",
+            "<p>Hi $this->name!<br>Please verify your account.</p><h3>Your Verification Code is : $this->code</h3>"
+        );
+    }
+
+    // Relations
     public function orders()
     {
         return $this->hasMany(Order::class, 'user_id', 'id');

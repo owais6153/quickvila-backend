@@ -7,19 +7,23 @@ use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\StoreCategory;
 use App\Http\Requests\Admin\StoreRequest;
+use App\Http\Requests\Admin\StoreSettingRequest;
 use DataTables;
 use Bouncer;
 use Auth;
 
 class StoreController extends Controller
 {
+    protected $setting = false;
     function __construct()
     {
         $this->middleware('permission:view-store', ['index', 'getList']);
         $this->middleware('permission:create-store', ['create', 'store']);
         $this->middleware('permission:edit-store', ['edit', 'update']);
         $this->middleware('permission:delete-store', ['destroy']);
+        $this->middleware('permission:setting-store', ['setting', 'updateSetting']);
         $this->dir = 'admin.store.';
+        $this->setting = getSetting('store');
     }
     /**
      * Display a listing of the resource.
@@ -40,11 +44,14 @@ class StoreController extends Controller
                 }
 
                 if (Bouncer::can('delete-store')  && $row->manage_able) {
-                    $actionBtn .= '
-                <form style="display:inline-block" method="POST" action="' . route('store.destroy', ['store' => $row->id]) . '">
+                    $actionBtn .= '<form style="display:inline-block" method="POST" action="' . route('store.destroy', ['store' => $row->id]) . '">
                     <input type="hidden" name="_token" value="' . csrf_token() . '"/>
                     <input type="hidden" name="_method" value="DELETE" />
-                <button class="btn-circle delete btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button></form>';
+                <button class="btn-circle delete btn btn-sm btn-danger mr-1"><i class="fas fa-trash-alt"></i></button></form>';
+                }
+                if(Bouncer::can('setting-store') ){
+                    $actionBtn .= '<a href="' . route('store.setting', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info">
+                    <i class="fas fa-fw fa-cog"></i></a>';
                 }
 
                 return $actionBtn;
@@ -72,6 +79,23 @@ class StoreController extends Controller
         return view($this->dir . 'create', compact('categories'));
     }
 
+
+    public function setting(Store $store)
+    {
+        return view($this->dir . 'setting', compact('store'));
+    }
+    public function updateSetting(Store $store, StoreSettingRequest $request)
+    {
+        $store->update([
+            'price' => $request->price,
+            'radius' => $request->radius,
+            'tax' => $request->tax,
+            'price_condition' => $request->price_condition,
+        ]);
+
+        return redirect()->route('store.index')->with('success', 'Store Setting Updated');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -93,7 +117,6 @@ class StoreController extends Controller
             $file_name = uploadFile($coverFile, imagePath());
             $cover = $file_name;
         }
-
         $store = Store::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -104,6 +127,10 @@ class StoreController extends Controller
             'logo' => ($logo != '') ? $logo :  noImage(),
             'cover' => ($cover != '') ? $cover :  noImage(),
             'user_id' => $request->user_id,
+            'price' => $this->setting['default_price'],
+            'radius' => $this->setting['default_radius'],
+            'tax' => $this->setting['tax'],
+            'price_condition' => $this->setting['default_price_condition'],
         ]);
 
         if ($request->has('categories'))

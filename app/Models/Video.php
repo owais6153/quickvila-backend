@@ -18,10 +18,10 @@ class Video extends Model
         'sort',
     ];
     public function getThumbnailAttribute($attr){
-        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+        return validateImageUrl($attr);
     }
     public function getVideoAttribute($attr){
-        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+        validateVideoUrl($attr);
     }
 
 }

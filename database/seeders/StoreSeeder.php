@@ -24,7 +24,10 @@ class StoreSeeder extends Seeder
             'logo' => 'https://fullstop360.com/blog/wp-content/uploads/2021/11/Nike-Logos-Principles-of-Design.jpg',
             'cover' => 'https://wallpaperaccess.com/full/545360.jpg',
             'manage_able' => false,
-            'user_id' => 1
+            'user_id' => 1,
+            'price' => 0,
+            'radius' => 10,
+            'tax' => 0,
         ]);
 
 
@@ -37,7 +40,10 @@ class StoreSeeder extends Seeder
             'logo' => 'images/no-image.png',
             'cover' => 'images/no-image.png',
             'manage_able' => false,
-            'user_id' => 1
+            'user_id' => 1,
+            'price' => 0,
+            'radius' => 10,
+            'tax' => 0,
         ]);
 
 

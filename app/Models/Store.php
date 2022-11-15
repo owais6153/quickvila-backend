@@ -19,13 +19,17 @@ class Store extends Model
         'latitude',
         'longitude',
         'manage_able',
-        'user_id'
+        'user_id',
+        'radius',
+        'price',
+        'tax',
+        'price_condition',
     ];
     public function getLogoAttribute($attr){
-        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+        return validateImageUrl($attr);
     }
     public function getCoverAttribute($attr){
-        return (strpos($attr, 'http') !== false || $attr == null) ? $attr : env('FILE_URL') . $attr;
+        return validateImageUrl($attr);
     }
     public function products()
     {

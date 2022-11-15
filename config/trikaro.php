@@ -23,6 +23,7 @@ return [
             ],
             'Store Permissions' => [
                 'All Store' => 'all-store',
+                'Store Settings' => 'setting-store',
                 'View Stores' => 'view-store',
                 'Create Store' => 'create-store',
                 'Edit Store ' => 'edit-store',
