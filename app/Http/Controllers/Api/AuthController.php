@@ -80,10 +80,11 @@ class AuthController extends Controller
             $user->email = $request->email;
             $user->phone = $request->phone;
             $user->password = Hash::make($request->password);
-            $user->code = rand(100000, 999999);
             $user->save();
             $user->assign('Customer');
-
+            $user->update([
+                'code' => rand(100000, 999999)
+            ]);
             $user->sendCodeByEmail();
 
 
@@ -138,7 +139,7 @@ class AuthController extends Controller
                     'token' => $user->createToken(Str::random(30))->plainTextToken
                 ], 200);
             }
-            $error['errors'] = ['code' => ['Code is invalid']];
+            $error['errors'] = ['code' => ['Invalid Code']];
             $error['status'] = 500;
             return response()->json($error, 500);
         } catch (\Throwable $th) {
@@ -212,7 +213,7 @@ class AuthController extends Controller
             $user = $request->user();
 
             if ($user->code != $request->code) {
-                $error['errors'] = ['code' => ['Code is invalid']];
+                $error['errors'] = ['code' => ['Invalid Code']];
                 $error['status'] = 500;
                 return response()->json($error, 500);
             }

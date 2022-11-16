@@ -20,10 +20,6 @@ class Store extends Model
         'longitude',
         'manage_able',
         'user_id',
-        'radius',
-        'price',
-        'tax',
-        'price_condition',
     ];
     public function getLogoAttribute($attr){
         return validateImageUrl($attr);
@@ -42,5 +38,8 @@ class Store extends Model
     public function author()
     {
         return $this->belongsTo(User::class);
+    }
+    public function setting(){
+        return $this->hasOne(StoreSetting::class);
     }
 }

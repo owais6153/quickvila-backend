@@ -31,7 +31,7 @@ class StoreCategoryController extends Controller
 
     public function getList(Request $request)
     {
-        $model = StoreCategory::query();
+        $model = Bouncer::can('all-store-category') ? StoreCategory::query() : StoreCategory::where('user_id', Auth::id());
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';
@@ -69,7 +69,10 @@ class StoreCategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        $cat = StoreCategory::create($request->all());
+        $cat = StoreCategory::create([
+            'name' =>$request->name,
+            'user_id' => auth()->id()
+        ]);
         return redirect()->route('storecategory.index')->with('success', 'Store Category Created');
     }
 
@@ -104,7 +107,10 @@ class StoreCategoryController extends Controller
      */
     public function update(StoreCategoryRequest $request, StoreCategory $storecategory)
     {
-        $storecategory->update($request->all());
+        $storecategory->update([
+            'name' =>$request->name,
+            'user_id' => auth()->id()
+        ]);
         return redirect()->route('storecategory.index')->with('success', 'Store Category Updated');
     }
 

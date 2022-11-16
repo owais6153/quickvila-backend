@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Store;
+use App\Models\StoreSetting;
 use App\Models\StoreCategory;
 
 class StoreSeeder extends Seeder
@@ -25,12 +26,7 @@ class StoreSeeder extends Seeder
             'cover' => 'https://wallpaperaccess.com/full/545360.jpg',
             'manage_able' => false,
             'user_id' => 1,
-            'price' => 0,
-            'radius' => 10,
-            'tax' => 0,
         ]);
-
-
         $store2 = Store::create([
             'name' => 'Mart',
             'url' => 'https://mart.ca/',
@@ -41,17 +37,27 @@ class StoreSeeder extends Seeder
             'cover' => 'images/no-image.png',
             'manage_able' => false,
             'user_id' => 1,
+        ]);
+
+        StoreSetting::create([
             'price' => 0,
             'radius' => 10,
             'tax' => 0,
+            'store_id' => $store1->id
         ]);
-
-
-        StoreCategory::create([
-            'name' => 'Shoes & Sneakers'
+        StoreSetting::create([
+            'price' => 0,
+            'radius' => 10,
+            'tax' => 0,
+            'store_id' => $store2->id
         ]);
         StoreCategory::create([
-            'name' => 'Caps'
+            'name' => 'Shoes & Sneakers',
+            'user_id' => 1,
+        ]);
+        StoreCategory::create([
+            'name' => 'Caps',
+            'user_id' => 1,
         ]);
         $store1->categories()->attach([1], ['type' => 'store']);
         $store2->categories()->attach([1], ['type' => 'store']);

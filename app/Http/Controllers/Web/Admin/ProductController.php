@@ -34,11 +34,11 @@ class ProductController extends Controller
             ->addColumn('action', function ($row) {
                 $actionBtn = '';
                 if (Bouncer::can('edit-product')) {
-                    $actionBtn .= '<a href="' . route('product.edit', ['product' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
+                    $actionBtn .= '<a href="' . route('product.edit', ['product' => $row->id, 'store' => $row->store_id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
                 }
                 if (Bouncer::can('delete-product') && $row->manage_able) {
                     $actionBtn .= '
-                    <form style="display:inline-block" method="POST" action="' . route('product.destroy', ['product' => $row->id]) . '">
+                    <form style="display:inline-block" method="POST" action="' . route('product.destroy', ['product' => $row->id, 'store' => $row->store_id]) . '">
                         <input type="hidden" name="_token" value="' . csrf_token() . '"/>
                         <input type="hidden" name="_method" value="DELETE" />
                     <button class="btn-circle delete btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button></form>';
@@ -56,24 +56,21 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return view($this->dir . 'index');
-    }
-    public function store_products(Store $store)
+    public function index(Store $store)
     {
         return view($this->dir . 'index', compact('store'));
     }
+
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Store $store)
     {
         $categories = ProductCategory::all();
         $stores = Bouncer::can('all-store') ? Store::all() : Store::where('user_id', Auth::id())->get();
-        return view($this->dir . 'create', compact('categories', 'stores'));
+        return view($this->dir . 'create', compact('categories', 'store'));
     }
 
     public function handleVariations(Request $request, Product $product)
@@ -130,7 +127,7 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request)
+    public function store(Store $store, ProductRequest $request)
     {
         $image = "";
         if ($request->hasFile('image')) {
@@ -144,7 +141,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'short_description' => $request->short_description,
-            'store_id' => $request->store,
+            'store_id' => $store->id,
             'product_type' => $request->product_type,
             'price' => $request->price,
             'sale_price' => $request->sale_price,
@@ -160,7 +157,7 @@ class ProductController extends Controller
             $this->handleVariations($request, $product);
         }
 
-        return redirect()->route('store.products', ['store'=>$product->store_id])->with('success', 'Product Created');
+        return redirect()->route('product.index', ['store'=>$product->store_id])->with('success', 'Product Created');
     }
 
     /**
@@ -180,11 +177,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit(Store $store, Product $product)
     {
         $categories = ProductCategory::all();
-        $stores = Bouncer::can('all-store') ? Store::all() : Store::where('user_id', Auth::id())->get();
-        return view($this->dir . 'edit', compact('product', 'categories', 'stores'));
+        return view($this->dir . 'edit', compact('product', 'categories', 'store'));
     }
 
     /**
@@ -194,7 +190,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request, Product $product)
+    public function update(Store $store, Product $product, ProductRequest $request)
     {
 
         $image = "";
@@ -210,7 +206,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'short_description' => $request->short_description,
             'product_type' => $request->product_type,
-            'store_id' => $product->manage_able ? $request->store :  $product->store_id,
+            'store_id' => $store->id,
             'price' => $product->manage_able ? $request->price : $product->price,
             'sale_price' => $product->manage_able ? $request->sale_price :  $product->sale_price,
             'image' => ($image != '') ? $image : str_replace(env('FILE_URL'), '', $product->image),
@@ -231,7 +227,7 @@ class ProductController extends Controller
 
 
 
-        return redirect()->route('store.products', ['store'=>$product->store_id])->with('success', 'Product Updated');
+        return redirect()->route('product.index', ['store'=>$product->store_id])->with('success', 'Product Updated');
     }
 
     /**
@@ -240,12 +236,12 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Store $store,Product $product)
     {
         if ($product->manage_able) {
             deleteFile(str_replace(env('FILE_URL'), '', $product->image));
             $product->delete();
-            return redirect()->route('store.products', ['store'=>$product->store_id])->with('success', 'Product Deleted');
+            return redirect()->route('product.index', ['store'=>$product->store_id])->with('success', 'Product Deleted');
         }
         abort(404);
     }

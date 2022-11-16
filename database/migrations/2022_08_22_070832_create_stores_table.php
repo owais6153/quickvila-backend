@@ -23,13 +23,12 @@ class CreateStoresTable extends Migration
             $table->longText('address')->nullable();
             $table->string('latitude');
             $table->string('longitude');
-            $table->integer('radius')->nullable();
-            $table->string('price')->default(0);
-            $table->string('tax')->default(0);
-            $table->enum('price_condition', ['percentage', 'price'])->default('percentage');
             $table->boolean('manage_able')->default(true);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            // $table->unsignedBigInteger('owner')->nullable();
+            // $table->foreign('owner')->references('id')->on('users')->onDelete('cascade');
+            // $table->enum('status', ['published', 'draft'])->default('draft');
             $table->timestamps();
             $table->softDeletes();
         });

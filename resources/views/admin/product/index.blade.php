@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">All Products</h1>
-            <a href="{{ route('product.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add New
+            <a href="{{ route('product.create', ['store' => $store->id]) }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add New
                 Product</a>
         </div>
         <div class="row">
@@ -45,11 +45,9 @@
                 ajax: {
                     url: "{{ route('product.list') }}",
                     type: 'GET',
-                    @if(isset($store))
                         data:{
                             'store_id': {{$store->id}}
                         }
-                    @endif
                 },
                 columns: [{
                         data: 'id',

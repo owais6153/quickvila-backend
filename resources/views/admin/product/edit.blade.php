@@ -4,10 +4,10 @@
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Edit Product</h1>
-            <a href="{{ route('product.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> All
+            <a href="{{ route('product.index', ['store' => $store->id]) }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> All
                 Products</a>
         </div>
-        <form class="row" action="{{ route('product.update', ['product' => $product->id]) }}" method="POST"
+        <form class="row" action="{{ route('product.update', ['product' => $product->id,'store' => $store->id]) }}" method="POST"
             enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -28,13 +28,11 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Store</label>
-                                    <select name="store" class="form-control"
-                                        {{ !$product->manage_able ? 'readonly=readonly' : '' }}>
-                                        @foreach ($stores as $store)
+                                    <select name="store" class="form-control">
+
                                             <option
                                                 {{ old('store', $product->store_id) == $store->id ? 'selected=selected' : '' }}
                                                 value="{{ $store->id }}">{{ $store->name }}</option>
-                                        @endforeach
                                     </select>
                                 </div>
                             </div>

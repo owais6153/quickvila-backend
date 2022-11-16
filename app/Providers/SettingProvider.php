@@ -27,13 +27,15 @@ class SettingProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (Schema::hasTable('settings')) {
-            $emailSettings = Setting::where('key', 'email')->first();
-            if(!empty($emailSettings)){
-                if($emailSettings->value){
-                    $emailConfig = unserialize($emailSettings->value);
-                    foreach($emailConfig as $key => $val){
-                        Config::set("mail.mailers.smtp.$key", $val);
+        if(\DB::connection()->getDatabaseName()){
+            if (Schema::hasTable('settings')) {
+                $emailSettings = Setting::where('key', 'email')->first();
+                if(!empty($emailSettings)){
+                    if($emailSettings->value){
+                        $emailConfig = unserialize($emailSettings->value);
+                        foreach($emailConfig as $key => $val){
+                            Config::set("mail.mailers.smtp.$key", $val);
+                        }
                     }
                 }
             }

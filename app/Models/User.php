@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\SendCode;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,7 +31,7 @@ class User extends Authenticatable
         'address',
         'dob',
         'avatar',
-        'code'
+        'code',
     ];
 
     /**
@@ -41,6 +42,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'code'
     ];
 
     /**
@@ -58,13 +60,7 @@ class User extends Authenticatable
     //Emails
     public function sendCodeByEmail()
     {
-        sendEmail(
-            [],
-            [],
-            $this,
-            "Verify Email",
-            "<p>Hi $this->name!<br>Please verify your account.</p><h3>Your Verification Code is : $this->code</h3>"
-        );
+        $this->notify(new SendCode());
     }
 
     // Relations

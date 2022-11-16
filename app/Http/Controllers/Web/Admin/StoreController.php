@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\Models\StoreCategory;
 use App\Http\Requests\Admin\StoreRequest;
 use App\Http\Requests\Admin\StoreSettingRequest;
+use App\Models\StoreSetting;
 use DataTables;
 use Bouncer;
 use Auth;
@@ -40,7 +41,7 @@ class StoreController extends Controller
                     $actionBtn .= '<a href="' . route('store.edit', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
                 }
                 if (Bouncer::can('view-product')) {
-                    $actionBtn .= '<a href="' . route('store.products', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-eye"></i></a>';
+                    $actionBtn .= '<a href="' . route('product.index', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-eye"></i></a>';
                 }
 
                 if (Bouncer::can('delete-store')  && $row->manage_able) {
@@ -82,11 +83,12 @@ class StoreController extends Controller
 
     public function setting(Store $store)
     {
-        return view($this->dir . 'setting', compact('store'));
+        $storeSetting = $store->setting;
+        return view($this->dir . 'setting', compact('storeSetting'));
     }
     public function updateSetting(Store $store, StoreSettingRequest $request)
     {
-        $store->update([
+        $storeSetting = StoreSetting::where('store_id', $store->id)->update([
             'price' => $request->price,
             'radius' => $request->radius,
             'tax' => $request->tax,
@@ -127,6 +129,9 @@ class StoreController extends Controller
             'logo' => ($logo != '') ? $logo :  noImage(),
             'cover' => ($cover != '') ? $cover :  noImage(),
             'user_id' => $request->user_id,
+        ]);
+
+        $storeSetting = StoreSetting::where('store_id', $store->id)->update([
             'price' => $this->setting['default_price'],
             'radius' => $this->setting['default_radius'],
             'tax' => $this->setting['tax'],

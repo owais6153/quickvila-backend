@@ -30,6 +30,7 @@ class CreateProductsTable extends Migration
             $table->boolean('manage_able')->default(true);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            // $table->enum('status', ['published', 'draft'])->default('draft');
             $table->timestamps();
             $table->softDeletes();
         });

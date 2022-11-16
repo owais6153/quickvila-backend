@@ -11,5 +11,6 @@ class StoreCategory extends Model
     use HasFactory, SoftDeletes;
     public $fillable = [
         'name',
+        'user_id'
     ];
 }

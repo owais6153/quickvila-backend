@@ -40,13 +40,19 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
     Route::get('storecategory-list', [StoreCategoryController::class, 'getList'])->name('storecategory.list');
 
 
-    Route::get('product', [ProductController::class, 'index'])->name('product.index');
-
 
     // Products
-    Route::resource('product', ProductController::class);
-    Route::get('store/{store:id}/products', [ProductController::class, 'store_products'])->name('store.products');
+    Route::get('store/{store:id}/product', [ProductController::class, 'index'])->name('product.index');
+    Route::get('store/{store:id}/product/create', [ProductController::class, 'create'])->name('product.create');
+    Route::post('store/{store:id}/product/store', [ProductController::class, 'store'])->name('product.store');
+    Route::get('store/{store:id}/product/{product:id}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    Route::put('store/{store:id}/product/{product:id}/update', [ProductController::class, 'update'])->name('product.update');
+    Route::delete('store/{store:id}/product/{product:id}/destroy', [ProductController::class, 'destroy'])->name('product.destroy');
     Route::get('product-list', [ProductController::class, 'getList'])->name('product.list');
+
+
+    // Route::resource('product', ProductController::class);
+    // Route::get('store/{store:id}/products', [ProductController::class, 'store_products'])->name('store.products');
 
     // ProductCategory
     Route::resource('productcategory', ProductCategoryController::class);
