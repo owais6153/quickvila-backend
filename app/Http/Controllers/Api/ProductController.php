@@ -17,7 +17,7 @@ class ProductController extends Controller
     {
         $products = $this->model->query();
         $paginate = ($request->has('paginate')) ? $request->paginate : 20;
-        $products = $products->orderBy('id', 'desc')->paginate($paginate);
+        $products = $products->where('status', 'published')->orderBy('id', 'desc')->paginate($paginate);
         $data['products'] = $products;
         $data['status'] = 200;
         return response()->json($data, $data['status']);
@@ -32,7 +32,7 @@ class ProductController extends Controller
     public function storeProducts(Store $store, Request $request){
         $products = $this->model->where('store_id', $store->id);
         $paginate = ($request->has('paginate')) ? $request->paginate : 20;
-        $products = $products->orderBy('id', 'desc')->paginate($paginate);
+        $products = $products->where('status', 'published')->orderBy('id', 'desc')->paginate($paginate);
         $data['products'] = $products;
         $data['store'] = $store;
         $data['status'] = 200;

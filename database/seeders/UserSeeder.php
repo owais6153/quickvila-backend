@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
         $user->password = Hash::make('secret123');
         $user->email = 'admin@trikaro.com';
         $user->email_verified_at = date("Y-m-d", time());
+        $user->phone_verified_at = date("Y-m-d", time());
         $user->save();
         $user->assign(Admin());
 
@@ -34,6 +35,7 @@ class UserSeeder extends Seeder
         $user->password = Hash::make('secret123');
         $user->email = 'manager@trikaro.com';
         $user->email_verified_at = date("Y-m-d", time());
+        $user->phone_verified_at = date("Y-m-d", time());
         $user->save();
 
         $user->assign(Manager());

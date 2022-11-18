@@ -16,8 +16,8 @@ class HomeController extends Controller
     {
         $limit = ($request->has('limit')) ? $request->limit : 10;
         $data['top_selling_products'] = Product::limit($limit)->orderBy('id', 'desc')->get();
-        $data['featured_products'] = Product::limit($limit)->orderBy('id', 'desc')->get();
-        $data['stores'] = Store::withCount(['products'])->limit($limit)->orderBy('id', 'desc')->get();
+        $data['featured_products'] = Product::limit($limit)->where('is_site_featured', 1)->where('status', 'published')->orderBy('id', 'desc')->get();
+        $data['stores'] = Store::withCount(['products'])->where('status', 'published')->limit($limit)->orderBy('id', 'desc')->get();
         $data['testimonials'] = Testimonial::limit($limit)->orderBy('sort', 'desc')->get();
         $data['videos'] = Video::limit($limit)->orderBy('sort', 'desc')->get();
 
@@ -33,7 +33,7 @@ class HomeController extends Controller
 
         $paginate = ($request->has('paginate')) ? $request->paginate : 20;
 
-        $data['products'] = $data['products']->orderBy('id', 'desc')->paginate($paginate);
+        $data['products'] = $data['products']->where('status', 'published')->orderBy('id', 'desc')->paginate($paginate);
         if(!$data['products']->count()){
             $data['status'] = 404;
             $data['message'] = 'No Product Found';

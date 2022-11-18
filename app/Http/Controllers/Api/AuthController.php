@@ -8,10 +8,16 @@ use Auth;
 use Hash;
 use Str;
 use App\Models\User;
-
+use App\Events\UserEvent;
+use App\Models\UserCode;
 
 class AuthController extends Controller
 {
+    protected $setting = false;
+    function __construct()
+    {
+        $this->setting = getSetting('hidden');
+    }
 
     public function authenticate(Request $request)
     {
@@ -81,12 +87,9 @@ class AuthController extends Controller
             $user->phone = $request->phone;
             $user->password = Hash::make($request->password);
             $user->save();
-            $user->assign('Customer');
-            $user->update([
-                'code' => rand(100000, 999999)
-            ]);
-            $user->sendCodeByEmail();
+            $user->assign(Customer());
 
+            event(new UserEvent($user));
 
             return response()->json([
                 'userId' => $user->id,
@@ -116,7 +119,7 @@ class AuthController extends Controller
     {
         try {
             $validator = \Validator::make($request->all(), [
-                'code' => 'required|min:6|max:6|exists:users,code',
+                'code' => 'required|min:6|max:6|exists:user_codes,code',
             ]);
             if ($validator->fails()) {
                 $error['errors'] = $validator->messages();
@@ -124,12 +127,14 @@ class AuthController extends Controller
 
                 return response()->json($error, 400);
             }
-            if ($request->user()->code == $request->code) {
-                $user = $request->user();
+            $user = $request->user();
+            $user_code = UserCode::where('code',  $request->code)->where('user_id', $user->id)->where('type', $this->setting['default_verification_method'])->first();
+
+            if (!empty($user_code)) {
                 $user->update([
                     'email_verified_at' => date("Y-m-d", time()),
-                    'code' => null
                 ]);
+                $user->codes()->delete();
                 return response()->json([
                     'userId' => $user->id,
                     'user' => $user,
@@ -152,11 +157,7 @@ class AuthController extends Controller
     {
         try {
             $user = $request->user();
-            $user->update([
-                'code' => rand(100000, 999999)
-            ]);
-
-            $user->sendCodeByEmail();
+            event(new UserEvent($user));
 
             return response()->json([
                 'status' => 200,
@@ -181,11 +182,7 @@ class AuthController extends Controller
                 return response()->json($error, 400);
             }
             $user = User::where('email', $request->email)->first();
-            $user->update([
-                'code' => rand(100000, 999999)
-            ]);
-
-            $user->sendCodeByEmail();
+            event(new UserEvent($user));
 
             return response()->json([
                 'status' => 200,
@@ -211,8 +208,13 @@ class AuthController extends Controller
                 return response()->json($error, 400);
             }
             $user = $request->user();
+            $user_code = UserCode::where('code',  $request->code)->where('user_id', $user->id)->where('type', $this->setting['default_verification_method'])->first();
 
-            if ($user->code != $request->code) {
+            if (!empty($user_code)) {
+                $user->update([
+                    'email_verified_at' => date("Y-m-d", time()),
+                ]);
+                $user->codes()->delete();
                 $error['errors'] = ['code' => ['Invalid Code']];
                 $error['status'] = 500;
                 return response()->json($error, 500);

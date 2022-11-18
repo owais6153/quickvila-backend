@@ -43,11 +43,14 @@ class SendCode extends Notification
     public function toMail($notifiable)
     {
         if(Config::get('mail.mailers.smtp.should_send') === true){
+
+            $code = $notifiable->codes->where('type', 'email')->first();
+
             return (new MailMessage)
                     ->subject('Verify Your Account - ' . env('MAIL_FROM_NAME'))
                     ->greeting("Hi $notifiable->name!")
                     ->line("Please verify your account")
-                    ->line(new HtmlString("<h3>Your Verification Code is: <span style='font-size: 20px'>$notifiable->code</span></h3>"))
+                    ->line(new HtmlString("<h3>Your Verification Code is: <span style='font-size: 20px'>$code->code</span></h3>"))
                     ->line('Thank you for using our application!');
         }
     }

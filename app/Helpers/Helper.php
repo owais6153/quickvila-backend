@@ -7,6 +7,12 @@ function Admin(){
 function Manager(){
     return 'Manager';
 }
+function Customer(){
+    return 'Customer';
+}
+function Store(){
+    return 'Store';
+}
 
 // Email
 function sendEmail($f = array(), $s =  array(), $user, $subject, $body, $type = 'text/html'){

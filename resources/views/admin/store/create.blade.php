@@ -23,13 +23,6 @@
                                         value="{{ old('name') }}">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Url</label>
-                                    <input type="url" name="url" placeholder="Store URL" class="form-control"
-                                        value="{{ old('url') }}">
-                                </div>
-                            </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Address</label>
@@ -57,6 +50,36 @@
                                     <textarea name="description" class="form-control" placeholder="Description">{{ old('description') }}</textarea>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Store Credentials</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Store Email</label>
+                                    <input type="text" name="email" placeholder="Store Email" class="form-control"
+                                        value="{{ old('email') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Store Password</label>
+                                    <input type="password" name="password" placeholder="Store Password" class="form-control"
+                                        value="">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Confirm Password</label>
+                                    <input type="password" name="confirm_password" placeholder="Confirm Password" class="form-control"
+                                        value="">
+                                </div>
+                            </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <input type="submit" name="" value="Save" placeholder="Store Name"
@@ -70,7 +93,35 @@
             <div class="col-md-3">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Additional Store Info</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Addition Store Info</h6>
+                    </div>
+                    <div class="card-body">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select name="status" class="form-control">
+                                        <option value="draft" {{ old('status') == 'draft' ? 'selected=selected':'' }}>Draft</option>
+                                        <option value="published" {{ old('status') == 'published' ? 'selected=selected':'' }}>Published</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Type</label>
+                                    <select name="type" class="form-control">
+                                        <option value="default" {{ old('status') == 'default' ? 'selected=selected':'' }}>Default</option>
+                                        <option value="adult" {{ old('status') == 'adult' ? 'selected=selected':'' }}>Adult</option>
+                                        <option value="pharmacy" {{ old('status') == 'pharmacy' ? 'selected=selected':'' }}>Pharmacy</option>
+                                    </select>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Store Media</h6>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">

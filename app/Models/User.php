@@ -28,10 +28,11 @@ class User extends Authenticatable
         'email',
         'password',
         'email_verified_at',
+        'phone_verified_at',
         'address',
         'dob',
         'avatar',
-        'code',
+        'identity_card'
     ];
 
     /**
@@ -45,12 +46,8 @@ class User extends Authenticatable
         'code'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
+        'phone_verified_at' => 'datetime',
         'email_verified_at' => 'datetime',
     ];
     public function getAvatarAttribute($attr){
@@ -71,5 +68,9 @@ class User extends Authenticatable
     public function addresses()
     {
         return $this->hasMany(Address::class, 'user_id', 'id');
+    }
+    public function codes()
+    {
+        return $this->hasMany(UserCode::class, 'user_id', 'id');
     }
 }

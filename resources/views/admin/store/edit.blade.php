@@ -72,7 +72,34 @@
             <div class="col-md-3">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Additional Store Info</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Addition Store Info</h6>
+                    </div>
+                    <div class="card-body">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select name="status" class="form-control">
+                                        <option value="draft" {{ old('status', $store->status) == 'draft' ? 'selected=selected':'' }}>Draft</option>
+                                        <option value="published" {{ old('status',  $store->status) == 'published' ? 'selected=selected':'' }}>Published</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Type</label>
+                                    <select name="type" class="form-control">
+                                        <option value="default" {{ old('status', $store->type) == 'default' ? 'selected=selected':'' }}>Default</option>
+                                        <option value="adult" {{ old('status',  $store->type) == 'adult' ? 'selected=selected':'' }}>Adult</option>
+                                        <option value="pharmacy" {{ old('status',  $store->type) == 'pharmacy' ? 'selected=selected':'' }}>Pharmacy</option>
+                                    </select>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Store Media</h6>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">

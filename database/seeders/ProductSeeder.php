@@ -22,7 +22,10 @@ class ProductSeeder extends Seeder
             'store_id' => 2,
             'image' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=989&q=80',
             'manage_able' => false,
-            'user_id' => 1
+            'user_id' => 1,
+            'is_site_featured' => true,
+            'is_store_featured' => true,
+            'status' => 'published',
         ]);
         Product::create([
             'name' => 'Bag',
@@ -31,7 +34,10 @@ class ProductSeeder extends Seeder
             'store_id' => 2,
             'image' => 'https://images.unsplash.com/photo-1491637639811-60e2756cc1c7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=669&q=80',
             'manage_able' => false,
-            'user_id' => 1
+            'user_id' => 1,
+            'is_site_featured' => true,
+            'is_store_featured' => true,
+            'status' => 'published',
         ]);
         Product::create([
             'name' => 'perfume',
@@ -40,7 +46,10 @@ class ProductSeeder extends Seeder
             'description' => 'Good perfume',
             'image' => 'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1868&q=80',
             'manage_able' => false,
-            'user_id' => 1
+            'user_id' => 1,
+            'is_site_featured' => true,
+            'is_store_featured' => true,
+            'status' => 'published',
         ]);
     }
 }

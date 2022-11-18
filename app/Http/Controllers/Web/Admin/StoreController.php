@@ -12,6 +12,7 @@ use App\Models\StoreSetting;
 use DataTables;
 use Bouncer;
 use Auth;
+use App\Events\StoreEvents;
 
 class StoreController extends Controller
 {
@@ -129,6 +130,8 @@ class StoreController extends Controller
             'logo' => ($logo != '') ? $logo :  noImage(),
             'cover' => ($cover != '') ? $cover :  noImage(),
             'user_id' => $request->user_id,
+            'type' => $request->type,
+            'status' => $request->status,
         ]);
 
         $storeSetting = StoreSetting::where('store_id', $store->id)->update([
@@ -140,6 +143,9 @@ class StoreController extends Controller
 
         if ($request->has('categories'))
             $store->categories()->attach($request->categories, ['type' => 'store']);
+
+
+        event(new StoreEvents($request, $store->id));
 
         return redirect()->route('store.index')->with('success', 'Store Created');
     }
@@ -191,6 +197,8 @@ class StoreController extends Controller
             'logo' => ($logo != '') ? $logo : str_replace(env('FILE_URL'),'',$store->logo),
             'cover' => ($cover != '') ? $cover : str_replace(env('FILE_URL'),'',$store->cover),
             'user_id' => $request->user_id,
+            'type' => $request->type,
+            'status' => $request->status,
         ]);
 
         if ($request->has('categories')) {

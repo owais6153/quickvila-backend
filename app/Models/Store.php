@@ -20,6 +20,9 @@ class Store extends Model
         'longitude',
         'manage_able',
         'user_id',
+        'owner_id',
+        'status',
+        'type',
     ];
     public function getLogoAttribute($attr){
         return validateImageUrl($attr);
@@ -27,6 +30,12 @@ class Store extends Model
     public function getCoverAttribute($attr){
         return validateImageUrl($attr);
     }
+
+    public function published()
+    {
+        return $this->where('status', 'published');
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);
@@ -38,6 +47,10 @@ class Store extends Model
     public function author()
     {
         return $this->belongsTo(User::class);
+    }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id', 'id');
     }
     public function setting(){
         return $this->hasOne(StoreSetting::class);

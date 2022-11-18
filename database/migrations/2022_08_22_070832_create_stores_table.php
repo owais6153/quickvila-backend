@@ -26,9 +26,10 @@ class CreateStoresTable extends Migration
             $table->boolean('manage_able')->default(true);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            // $table->unsignedBigInteger('owner')->nullable();
-            // $table->foreign('owner')->references('id')->on('users')->onDelete('cascade');
-            // $table->enum('status', ['published', 'draft'])->default('draft');
+            $table->unsignedBigInteger('owner_id')->nullable();
+            $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
+            $table->enum('status', ['published', 'draft'])->default('draft');
+            $table->enum('type', ['pharmacy', 'adult', 'default'])->default('default');
             $table->timestamps();
             $table->softDeletes();
         });

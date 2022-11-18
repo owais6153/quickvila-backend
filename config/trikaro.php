@@ -100,6 +100,7 @@ return [
         'hidden' => [
             'currency' => 'USD',
             'currency_symbol' => '$',
+            'default_verification_method' => 'email',
         ],
         'store' => [
             'tax' => '20',

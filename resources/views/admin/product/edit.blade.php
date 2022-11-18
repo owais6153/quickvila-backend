@@ -86,10 +86,42 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3">              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Addition Store Info</h6>
+                </div>
+                <div class="card-body">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="draft" {{ old('status', $product->status) == 'draft' ? 'selected=selected':'' }}>Draft</option>
+                                    <option value="published" {{ old('status', $product->status) == 'published' ? 'selected=selected':'' }}>Published</option>
+                                </select>
+                            </div>
+
+                            <div class="custom-control custom-checkbox small">
+                                <input type="checkbox" class="custom-control-input" name="is_store_featured"
+                                    value="1" id="is_store_featured"
+                                    {{ old('is_store_featured', $product->is_store_featured) ? 'checked=checked' : '' }}>
+                                <label class="custom-control-label"
+                                    for="is_store_featured">Make it featured</label>
+                            </div>
+                            @can('setting-store')
+                                <div class="custom-control custom-checkbox small">
+                                    <input type="checkbox" class="custom-control-input" name="is_site_featured"
+                                        value="1" id="is_site_featured"
+                                        {{ old('is_site_featured', $product->is_site_featured) ? 'checked=checked' : '' }}>
+                                    <label class="custom-control-label"
+                                        for="is_site_featured">Make it featured on front pages</label>
+                                </div>
+                            @endcan
+                        </div>
+                    </div>
+                </div>
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Additional Product Info</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Product Media</h6>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">

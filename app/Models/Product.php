@@ -21,7 +21,11 @@ class Product extends Model
         'price',
         'sale_price',
         'product_type',
-        'product_id'
+        'product_id',
+        'is_site_featured',
+        'is_store_featured',
+        'status',
+        'is_tax_free',
     ];
 
     public function getImageAttribute($attr)

@@ -16,9 +16,11 @@ class StoreController extends Controller
     }
     public function index(Request $request)
     {
-        $stores = $this->model->query();
+        $stores = $this->model->query()->where('status', 'published');
         $paginate = ($request->has('paginate')) ? $request->paginate : 15;
-        $stores = $stores->withCount(['products'])->orderBy('id', 'desc')->paginate($paginate);
+        $stores = $stores->withCount(['products' => function($q){
+            $q->where('status', 'published');
+        }])->orderBy('id', 'desc')->paginate($paginate);
         $data['stores'] = $stores;
         $data['categories'] = StoreCategory::all();
         $data['status'] = 200;
@@ -26,11 +28,11 @@ class StoreController extends Controller
     }
     public function show($id)
     {
-        $store = $this->model->where('id', $id);
+        $store = $this->model->where('id', $id)->where('status', 'published');
         $store = $store->withCount(['products'])->with(['categories'])->first();
         $data['store'] = $store;
-        $data['top_selling_products'] = $store->products()->limit(10)->orderBy('id', 'desc')->get();
-        $data['featured_products'] = $store->products()->limit(10)->orderBy('id', 'desc')->get();
+        $data['top_selling_products'] = $store->products()->where('status', 'published')->limit(10)->orderBy('id', 'desc')->get();
+        $data['featured_products'] = $store->products()->where('status', 'published')->where('is_store_featured', 1)->limit(10)->orderBy('id', 'desc')->get();
         $data['status'] = 200;
         return response()->json($data, $data['status']);
     }

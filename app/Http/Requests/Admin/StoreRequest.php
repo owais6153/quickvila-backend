@@ -31,17 +31,26 @@ class StoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required|min:3|max:255',
             'logo' => 'nullable|file|mimes:png,jpg,jpeg,gif',
             'cover' => 'nullable|file|mimes:png,jpg,jpeg,gif',
             'description' => 'nullable',
             'url' => 'nullable|min:5',
+            'status' => 'required|min:3|max:255',
+            'type' => 'required|min:3|max:255',
             'address' => 'nullable|min:3',
             'latitude' => 'required|between:-90,90',
             'longitude' => 'required|between:-180,180',
             'category.*' => 'nullable|numeric',
         ];
+
+        if($this->method() != 'PUT'){
+            $rules['email'] = 'required|email|unique:users,email';
+            $rules['password'] = 'required';
+            $rules['confirm_password'] = 'required|same:password';
+        }
+        return $rules;
     }
     public function messages()
     {

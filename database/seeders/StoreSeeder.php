@@ -26,6 +26,8 @@ class StoreSeeder extends Seeder
             'cover' => 'https://wallpaperaccess.com/full/545360.jpg',
             'manage_able' => false,
             'user_id' => 1,
+            'status' => 'published',
+            'type' => 'default'
         ]);
         $store2 = Store::create([
             'name' => 'Mart',
@@ -37,6 +39,8 @@ class StoreSeeder extends Seeder
             'cover' => 'images/no-image.png',
             'manage_able' => false,
             'user_id' => 1,
+            'status' => 'published',
+            'type' => 'default'
         ]);
 
         StoreSetting::create([

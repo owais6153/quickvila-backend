@@ -64,7 +64,10 @@ class ProductCategoryController extends Controller
      */
     public function store(ProductCategoryRequest $request)
     {
-        $cat = ProductCategory::create($request->all());
+        $cat = ProductCategory::create([
+            'name' =>$request->name,
+            'user_id' => auth()->id()
+        ]);
         return redirect()->route('productcategory.index')->with('success', 'Product Category Created');
     }
 
