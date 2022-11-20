@@ -13,6 +13,9 @@ function Customer(){
 function Store(){
     return 'Store';
 }
+function Rider(){
+    return 'Rider';
+}
 
 // Email
 function sendEmail($f = array(), $s =  array(), $user, $subject, $body, $type = 'text/html'){

@@ -31,10 +31,7 @@ class Store extends Model
         return validateImageUrl($attr);
     }
 
-    public function published()
-    {
-        return $this->where('status', 'published');
-    }
+
 
     public function products()
     {
