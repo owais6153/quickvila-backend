@@ -97,10 +97,12 @@ return [
         ]
     ],
     'setting' => [ //Default Settingss
+        'general' => [
+            'default_verification_method' => 'phone',
+        ],
         'hidden' => [
             'currency' => 'USD',
             'currency_symbol' => '$',
-            'default_verification_method' => 'email',
         ],
         'store' => [
             'tax' => '20',
@@ -115,6 +117,14 @@ return [
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'encryption' => env('MAIL_ENCRYPTION'),
-        ]
+        ],
+        'sms' => [
+            'should_send' => true,
+            'sid' => env('TWILIO_SID'),
+            'token' => env('TWILIO_TOKEN'),
+            'number' => env('TWILIO_NUMBER'),
+            'messaging_service' => env('TWILIO_MESSAGING_SERVICE_ID'),
+        ],
+
     ]
 ];

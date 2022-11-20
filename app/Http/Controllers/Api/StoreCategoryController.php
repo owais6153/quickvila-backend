@@ -20,15 +20,10 @@ class StoreCategoryController extends Controller
         $limit = ($request->has('limit')) ? $request->limit : 10;
         $stores = Store::whereHas('categories', function ($q) use($request){
             $q->whereIn('store_categories.id', $request->categories);
-        })->where('status', 'published')->limit($limit)->orderBy('id', 'desc');
-        if($stores->count() < 1){
-            $error['errors'] = ['error' => ['404 Not found']];
-            $error['status'] = 404;
+        })->where('status', 'published')->orderBy('id', 'desc')->paginate($limit);
 
-            return response()->json($error, 404);
-        }
 
-        $data['stores'] = $stores->get();
+        $data['stores'] = $stores;
         $data['status'] = 200;
         return response()->json($data, $data['status']);
     }

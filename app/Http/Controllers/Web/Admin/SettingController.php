@@ -18,6 +18,7 @@ class SettingController extends Controller
 
     public function index($key)
     {
+        $this->settings = getSetting('sms');
         if (view()->exists("admin.setting.type.$key" ))
         {
             $setting = Setting::where('key', $key)->where('key', '!=', 'hidden')->first();

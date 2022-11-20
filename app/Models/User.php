@@ -6,7 +6,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Notifications\SendCode;
+use App\Notifications\SendCodeByEmail;
+use App\Notifications\SendCodeByPhone;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -54,10 +55,14 @@ class User extends Authenticatable
         return validateImageUrl($attr);
     }
 
-    //Emails
+
     public function sendCodeByEmail()
     {
-        $this->notify(new SendCode());
+        $this->notify(new SendCodeByEmail());
+    }
+    public function sendCodeByPhone()
+    {
+        $this->notify(new SendCodeByPhone());
     }
 
     // Relations

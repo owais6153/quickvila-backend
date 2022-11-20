@@ -20,7 +20,9 @@
                                     <tr>
                                         <th scope="col">ID</th>
                                         <th scope="col">Name</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col">Store</th>
+                                        <th scope="col">Is Featured</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -59,10 +61,18 @@
                         name: 'name'
                     },
                     {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
                         data: 'store',
                         name: 'store',
                         orderable: false,
                         searchable: false
+                    },
+                    {
+                        data: 'is_site_featured',
+                        name: 'is_site_featured'
                     },
                     {
                         data: 'action',

@@ -34,7 +34,7 @@ class StoreController extends Controller
      */
     public function getList(Request $request)
     {
-        $model = (Bouncer::can('all-store')) ? Store::query() : Store::where('user_id', Auth::id());
+        $model = (Bouncer::can('all-store')) ? Store::withCount(['products']) : Store::withCount(['products'])->where('user_id', Auth::id());
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';

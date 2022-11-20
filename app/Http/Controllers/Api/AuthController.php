@@ -16,7 +16,7 @@ class AuthController extends Controller
     protected $setting = false;
     function __construct()
     {
-        $this->setting = getSetting('hidden');
+        $this->setting = getSetting('general');
     }
 
     public function authenticate(Request $request)
@@ -43,7 +43,7 @@ class AuthController extends Controller
                 return response()->json([
                     'userId' => $user->id,
                     'user' => $user,
-                    'verified' => $user->email_verified_at,
+                    'verified' => $this->setting['default_verification_method'] == 'email'? $user->email_verified_at : $user->phone_verified_at,
                     'status' => 200,
                     'message' => 'User Logged In Successfully',
                     'token' => $user->createToken(Str::random(30))->plainTextToken
@@ -94,7 +94,7 @@ class AuthController extends Controller
             return response()->json([
                 'userId' => $user->id,
                 'user' => $user,
-                'verified' => $user->email_verified_at,
+                'verified' => $this->setting['default_verification_method'] == 'email'? $user->email_verified_at : $user->phone_verified_at,
                 'status' => 200,
                 'message' => 'User Register Successfully',
                 'token' => $user->createToken(Str::random(30))->plainTextToken
@@ -128,17 +128,17 @@ class AuthController extends Controller
                 return response()->json($error, 400);
             }
             $user = $request->user();
-            $user_code = UserCode::where('code',  $request->code)->where('user_id', $user->id)->where('type', $this->setting['default_verification_method'])->first();
+            $user_code = UserCode::where('code',  $request->code)->where('user_id', $user->id)->first();
 
             if (!empty($user_code)) {
                 $user->update([
-                    'email_verified_at' => date("Y-m-d", time()),
+                    $user_code->type . "_verified_at" => date("Y-m-d", time()),
                 ]);
                 $user->codes()->delete();
                 return response()->json([
                     'userId' => $user->id,
                     'user' => $user,
-                    'verified' => $user->email_verified_at,
+                    'verified' => $this->setting['default_verification_method'] == 'email'? $user->email_verified_at : $user->phone_verified_at,
                     'status' => 200,
                     'message' => 'User verified Successfully',
                     'token' => $user->createToken(Str::random(30))->plainTextToken
@@ -175,6 +175,7 @@ class AuthController extends Controller
             $validator = \Validator::make($request->all(), [
                 'email' => 'required|email|exists:users,email',
             ]);
+
             if ($validator->fails()) {
                 $error['errors'] = $validator->messages();
                 $error['status'] = 400;
@@ -199,7 +200,7 @@ class AuthController extends Controller
     {
         try {
             $validator = \Validator::make($request->all(), [
-                'code' => 'required|min:6|max:6|exists:users,code',
+                'code' => 'required|min:6|max:6|exists:user_codes,code',
             ]);
             if ($validator->fails()) {
                 $error['errors'] = $validator->messages();
@@ -212,17 +213,17 @@ class AuthController extends Controller
 
             if (!empty($user_code)) {
                 $user->update([
-                    'email_verified_at' => date("Y-m-d", time()),
+                    $user_code->type . "_verified_at" => date("Y-m-d", time()),
                 ]);
                 $user->codes()->delete();
-                $error['errors'] = ['code' => ['Invalid Code']];
-                $error['status'] = 500;
-                return response()->json($error, 500);
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'User verified successfully',
+                ], 200);
             }
-            return response()->json([
-                'status' => 200,
-                'message' => 'User verified successfully',
-            ], 200);
+            $error['errors'] = ['code' => ['Invalid Code']];
+            $error['status'] = 500;
+            return response()->json($error, 500);
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;

@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 use Config;
 
-class SendCode extends Notification
+class SendCodeByEmail extends Notification
 {
     use Queueable;
 
@@ -42,7 +42,7 @@ class SendCode extends Notification
      */
     public function toMail($notifiable)
     {
-        if(Config::get('mail.mailers.smtp.should_send') === true){
+        if(Config::get('mail.mailers.smtp.should_send')){
 
             $code = $notifiable->codes->where('type', 'email')->first();
 

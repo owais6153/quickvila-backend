@@ -17,7 +17,7 @@ class SendCodeToUser
      */
     public function __construct()
     {
-        $this->setting = getSetting('hidden');
+        $this->setting = getSetting('general');
     }
 
     /**
@@ -37,8 +37,11 @@ class SendCodeToUser
             'user_id' => $user->id,
             'type' => $this->setting['default_verification_method'],
         ]);
+
         if($this->setting['default_verification_method'] == 'email')
             $user->sendCodeByEmail();
+        else if($this->setting['default_verification_method'] == 'phone')
+            $user->sendCodeByPhone();
     }
 
 

@@ -19,6 +19,8 @@ class CreateAttributesTable extends Migration
             $table->enum('type', ['custom', 'size', 'color'])->defaul('custom');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('store_id');
+            $table->foreign('store_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
