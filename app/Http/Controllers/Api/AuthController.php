@@ -38,16 +38,19 @@ class AuthController extends Controller
 
             $fieldType =  'email';
             if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember'))) {
-                $user = User::where('email', $request->email)->first();
-
-                return response()->json([
-                    'userId' => $user->id,
-                    'user' => $user,
-                    'verified' => $this->setting['default_verification_method'] == 'email'? $user->email_verified_at : $user->phone_verified_at,
-                    'status' => 200,
-                    'message' => 'User Logged In Successfully',
-                    'token' => $user->createToken(Str::random(30))->plainTextToken
-                ], 200);
+                $user = User::where('email', $request->email)
+                // ->whereIs(Customer())
+                ->first();
+                if(!empty($user)){
+                    return response()->json([
+                        'userId' => $user->id,
+                        'user' => $user,
+                        'verified' => $this->setting['default_verification_method'] == 'email'? $user->email_verified_at : $user->phone_verified_at,
+                        'status' => 200,
+                        'message' => 'User Logged In Successfully',
+                        'token' => $user->createToken(Str::random(30))->plainTextToken
+                    ], 200);
+                }
             }
 
             $error['errors'] = ['login' => ['Credentials do not match our records.']];

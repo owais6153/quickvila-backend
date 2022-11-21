@@ -49,11 +49,9 @@ return [
                 'Save Settings' => 'edit-setting',
             ],
             'Order Permissions' => [
-                'All Orders' => 'all-orders',
                 'View Order' => 'view-order',
             ],
             'User Permissions' => [
-                'All Users' => 'all-users',
                 'View User' => 'view-user',
             ],
         ],

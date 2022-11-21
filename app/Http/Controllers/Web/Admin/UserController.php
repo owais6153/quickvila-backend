@@ -25,13 +25,9 @@ class UserController extends Controller
     public function getList(Request $request)
     {
         $model =  User::where('id', '!=', '1');
-        if(!Bouncer::can('all-users')){
-            $store_ids = Store::where('user_id', auth()->id())->pluck('id');
-            $model = $model->whereHas('orders', function($query) use($store_ids) {
-                $query->whereHas('items', function ($q) use($store_ids){
-                    $q->whereIn('store_id', $store_ids);
-                });
-            });
+
+        if($request->has('role')){
+            $model->whereIs($request->role);
         }
 
         return DataTables::eloquent($model)

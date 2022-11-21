@@ -81,12 +81,12 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
     <div class="sidebar-heading">
-       {{Bouncer::can('all-users') ? 'Users / Customers' : 'Customers'}}
+       All Users
     </div>
     <li class="nav-item">
         <a class="nav-link" href="{{ route('user.index') }}" ><i class="fas fa-user"></i>
             <span>
-                {{Bouncer::can('all-users') ? 'Users / Customers' : 'Customers'}}
+                All Users
             </span>
         </a>
     </li>
