@@ -8,21 +8,18 @@ return [
                 'Admin Area' => 'admin-area',
             ],
             'Product Permissions' => [
-                'All Products' => 'all-product',
                 'View Products' => 'view-product',
                 'Create Product' => 'create-product',
                 'Edit Product ' => 'edit-product',
                 'Delete Product' => 'delete-product',
             ],
             'Product Category Permissions' => [
-                'All Product Categories' => 'all-product-category',
                 'View Product Categories' => 'view-product-category',
                 'Create Product Category' => 'create-product-category',
                 'Edit Product Category ' => 'edit-product-category',
                 'Delete Product Category' => 'delete-product-category',
             ],
             'Store Permissions' => [
-                'All Store' => 'all-store',
                 'Store Settings' => 'setting-store',
                 'View Stores' => 'view-store',
                 'Create Store' => 'create-store',
@@ -30,7 +27,6 @@ return [
                 'Delete Store' => 'delete-store',
             ],
             'Store Category Permissions' => [
-                'All Store Categories' => 'all-store-category',
                 'View Store Categories' => 'view-store-category',
                 'Create Store Category' => 'create-store-category',
                 'Edit Store Category ' => 'edit-store-category',
@@ -66,21 +62,18 @@ return [
                 'Admin Area' => 'admin-area',
             ],
             'Product Permissions' => [
-                'All Products' => 'all-product',
                 'View Products' => 'view-product',
                 'Create Product' => 'create-product',
                 'Edit Product ' => 'edit-product',
                 'Delete Product' => 'delete-product',
             ],
             'Product Category Permissions' => [
-                'All Product Categories' => 'all-product-category',
                 'View Product Categories' => 'view-product-category',
                 'Create Product Category' => 'create-product-category',
                 'Edit Product Category ' => 'edit-product-category',
                 'Delete Product Category' => 'delete-product-category',
             ],
             'Store Permissions' => [
-                'All Store' => 'all-store',
                 'Store Settings' => 'setting-store',
                 'View Stores' => 'view-store',
                 'Create Store' => 'create-store',
@@ -88,7 +81,6 @@ return [
                 'Delete Store' => 'delete-store',
             ],
             'Store Category Permissions' => [
-                'All Store Categories' => 'all-store-category',
                 'View Store Categories' => 'view-store-category',
                 'Create Store Category' => 'create-store-category',
                 'Edit Store Category ' => 'edit-store-category',
@@ -98,7 +90,7 @@ return [
     ],
     'setting' => [ //Default Settingss
         'general' => [
-            'default_verification_method' => 'phone',
+            'default_verification_method' => 'email',
         ],
         'hidden' => [
             'currency' => 'USD',

@@ -17,21 +17,37 @@ function Rider(){
     return 'Rider';
 }
 
-// Email
-function sendEmail($f = array(), $s =  array(), $user, $subject, $body, $type = 'text/html'){
-    if(Config::get('mail.mailers.smtp.should_send') === true){
-        try{
-            Mail::send($f,$s, function ($message) use ($user) {
-                $message->to($user->email)
-                    ->subject($subject)
-                    ->setBody($body, $type);
-            });
-        }
-        catch (\Throwable $e){
-            throw new Exception('Failed to send Email', 500);
-        }
-    }
+// Status
+
+function Published(){
+    return 'published';
 }
+
+function Draft(){
+    return 'draft';
+}
+
+
+
+// Order Status
+
+function Completed(){
+    return 'completed';
+}
+
+function Canceled(){
+    return 'canceled';
+}
+function InProcess(){
+    return 'in-process';
+}
+function Refunded(){
+    return 'refunded';
+}
+
+
+
+
 
 // Settings
 function getSetting($key){

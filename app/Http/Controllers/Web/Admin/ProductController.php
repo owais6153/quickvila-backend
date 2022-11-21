@@ -26,7 +26,7 @@ class ProductController extends Controller
     }
     public function getList(Request $request)
     {
-        $model = Bouncer::can('all-product') ? Product::query() : Product::where('user_id', Auth::id());
+        $model = Product::query();
         if($request->has('store_id'))
             $model = $model->where('store_id', $request->store_id);
 
@@ -69,7 +69,6 @@ class ProductController extends Controller
     public function create(Store $store)
     {
         $categories = ProductCategory::all();
-        $stores = Bouncer::can('all-store') ? Store::all() : Store::where('user_id', Auth::id())->get();
         return view($this->dir . 'create', compact('categories', 'store'));
     }
 

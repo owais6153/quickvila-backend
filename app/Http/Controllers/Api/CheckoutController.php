@@ -26,8 +26,8 @@ class CheckoutController extends Controller
                 'total' => $cart->total,
                 'latitude' => '24',
                 'longitude' => '24',
-                'status' => 'in process',
-                'address' => 'in process',
+                'status' => InProcess(),
+                'address' => InProcess(),
                 'user_id' => $cart->user_id,
             ]);
             foreach($cart->items as $item){

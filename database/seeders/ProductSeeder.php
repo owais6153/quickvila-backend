@@ -25,7 +25,7 @@ class ProductSeeder extends Seeder
             'user_id' => 1,
             'is_site_featured' => true,
             'is_store_featured' => true,
-            'status' => 'published',
+            'status' => Published(),
         ]);
         Product::create([
             'name' => 'Bag',
@@ -37,7 +37,7 @@ class ProductSeeder extends Seeder
             'user_id' => 1,
             'is_site_featured' => true,
             'is_store_featured' => true,
-            'status' => 'published',
+            'status' => Published(),
         ]);
         Product::create([
             'name' => 'perfume',
@@ -49,7 +49,7 @@ class ProductSeeder extends Seeder
             'user_id' => 1,
             'is_site_featured' => true,
             'is_store_featured' => true,
-            'status' => 'published',
+            'status' => Published(),
         ]);
     }
 }

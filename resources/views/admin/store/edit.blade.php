@@ -79,8 +79,8 @@
                                 <div class="form-group">
                                     <label>Status</label>
                                     <select name="status" class="form-control">
-                                        <option value="draft" {{ old('status', $store->status) == 'draft' ? 'selected=selected':'' }}>Draft</option>
-                                        <option value="published" {{ old('status',  $store->status) == 'published' ? 'selected=selected':'' }}>Published</option>
+                                        <option value="{{Draft()}}" {{ old('status', $store->status) == Draft() ? 'selected=selected':'' }}>Draft</option>
+                                        <option value="{{Published()}}" {{ old('status',  $store->status) == Published() ? 'selected=selected':'' }}>Published</option>
                                     </select>
                                 </div>
 

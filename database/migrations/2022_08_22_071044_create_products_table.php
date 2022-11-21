@@ -31,7 +31,7 @@ class CreateProductsTable extends Migration
             $table->string('gallery')->nullable();
             $table->boolean('is_site_featured')->default(false);
             $table->boolean('is_store_featured')->default(false);
-            $table->enum('status', ['published', 'draft'])->default('published');
+            $table->enum('status', [Published(), Draft()])->default(Draft());
             $table->boolean('is_tax_free')->default(false);
             $table->timestamps();
             $table->softDeletes();

@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class StoreSetting extends Model
 {
     use HasFactory;
+    public $fillable = [
+        'radius',
+        'price',
+        'tax',
+        'price_condition',
+        'store_id',
+    ];
 
     public function store()
     {

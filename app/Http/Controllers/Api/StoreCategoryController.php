@@ -20,7 +20,7 @@ class StoreCategoryController extends Controller
         $limit = ($request->has('limit')) ? $request->limit : 10;
         $stores = Store::whereHas('categories', function ($q) use($request){
             $q->whereIn('store_categories.id', $request->categories);
-        })->where('status', 'published')->orderBy('id', 'desc')->paginate($limit);
+        })->where('status', Published())->orderBy('id', 'desc')->paginate($limit);
 
 
         $data['stores'] = $stores;

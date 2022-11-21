@@ -22,7 +22,7 @@ class CreateOrdersTable extends Migration
             $table->string('address');
             $table->string('latitude');
             $table->string('longitude');
-            $table->enum('status', ['completed', 'canceled', 'in process', 'refunded'])->defaul('in progress');
+            $table->enum('status', [Completed(), Canceled(), InProcess(), Refunded()])->defaul(InProcess());
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

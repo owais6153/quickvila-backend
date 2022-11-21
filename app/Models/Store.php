@@ -31,8 +31,6 @@ class Store extends Model
         return validateImageUrl($attr);
     }
 
-
-
     public function products()
     {
         return $this->hasMany(Product::class);

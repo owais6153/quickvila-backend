@@ -116,7 +116,7 @@ class NikeProducts extends Command
                                     'store_id' => $store->id,
                                     'image' => (isset($p->images) && !empty($p->images)) ? $p->images->portraitURL : 'images/no-image.png',
                                     'manage_able' => false,
-                                    'status' => 'published',
+                                    'status' => Published(),
                                     'user_id' => 1,
                                     'price' => $p->price->fullPrice,
                                     'sale_price' => ($p->price->fullPrice !=  $p->price->currentPrice) ? $p->price->currentPrice : null,

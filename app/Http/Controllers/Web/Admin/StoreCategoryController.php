@@ -31,7 +31,7 @@ class StoreCategoryController extends Controller
 
     public function getList(Request $request)
     {
-        $model = Bouncer::can('all-store-category') ? StoreCategory::query() : StoreCategory::where('user_id', Auth::id());
+        $model =   StoreCategory::query();
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';

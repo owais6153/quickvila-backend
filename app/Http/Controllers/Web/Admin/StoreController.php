@@ -34,7 +34,7 @@ class StoreController extends Controller
      */
     public function getList(Request $request)
     {
-        $model = (Bouncer::can('all-store')) ? Store::withCount(['products']) : Store::withCount(['products'])->where('user_id', Auth::id());
+        $model =  Store::withCount(['products']);
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';
@@ -134,7 +134,8 @@ class StoreController extends Controller
             'status' => $request->status,
         ]);
 
-        $storeSetting = StoreSetting::where('store_id', $store->id)->update([
+        $storeSetting = StoreSetting::create([
+            'store_id' => $store->id,
             'price' => $this->setting['default_price'],
             'radius' => $this->setting['default_radius'],
             'tax' => $this->setting['tax'],
@@ -223,8 +224,8 @@ class StoreController extends Controller
     public function destroy(Store $store)
     {
         if ($store->manage_able) {
-            deleteFile(str_replace(env('FILE_URL'),'',$store->logo) );
-            deleteFile(str_replace(env('FILE_URL'),'',$store->cover) );
+            $store->owner->delete();
+            $store->setting->delete();
             $store->delete();
             return redirect()->route('store.index')->with('success', 'Store Deleted');
         }

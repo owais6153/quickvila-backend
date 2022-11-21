@@ -26,7 +26,8 @@ class StoreSeeder extends Seeder
             'cover' => 'https://wallpaperaccess.com/full/545360.jpg',
             'manage_able' => false,
             'user_id' => 1,
-            'status' => 'published',
+            'status' => Published(),
+            'is_featured' => 1,
             'type' => 'default'
         ]);
         $store2 = Store::create([
@@ -35,11 +36,12 @@ class StoreSeeder extends Seeder
             'address' => 'Karachi',
             'latitude' => 23,
             'longitude' => 34,
+            'is_featured' => 1,
             'logo' => 'images/no-image.png',
             'cover' => 'images/no-image.png',
             'manage_able' => false,
             'user_id' => 1,
-            'status' => 'published',
+            'status' => Published(),
             'type' => 'default'
         ]);
 

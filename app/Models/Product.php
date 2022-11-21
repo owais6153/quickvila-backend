@@ -16,7 +16,6 @@ class Product extends Model
         'store_id',
         'image',
         'manage_able',
-        'is_featured',
         'user_id',
         'price',
         'sale_price',

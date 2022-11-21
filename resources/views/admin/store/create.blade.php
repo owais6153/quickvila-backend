@@ -100,8 +100,8 @@
                                 <div class="form-group">
                                     <label>Status</label>
                                     <select name="status" class="form-control">
-                                        <option value="draft" {{ old('status') == 'draft' ? 'selected=selected':'' }}>Draft</option>
-                                        <option value="published" {{ old('status') == 'published' ? 'selected=selected':'' }}>Published</option>
+                                        <option value="{{Draft()}}" {{ old('status') == Draft() ? 'selected=selected':'' }}>Draft</option>
+                                        <option value="{{Published()}}" {{ old('status') == Published() ? 'selected=selected':'' }}>Published</option>
                                     </select>
                                 </div>
 

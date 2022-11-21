@@ -24,13 +24,9 @@ class AuthController extends Controller
     public function index()
     {
         $data = [];
-        $data['store'] = Bouncer::can('all-store') ? Store::count() : Store::where('user_id', Auth::id())->count();
-        $data['product'] = Bouncer::can('all-product') ? Product::count() : Product::where('user_id', Auth::id())->count();
-
-        $store_ids = Store::where('user_id', auth()->id())->pluck('id');
-        $data['order'] = Bouncer::can('all-orders') ? Order::sum('total') : Order::whereHas('items', function($query) use($store_ids) {
-            $query->whereIn('store_id', $store_ids);
-        })->sum('total');
+        $data['store'] = Store::count();
+        $data['product'] =  Product::count();
+        $data['order'] =  Order::sum('total');
 
         return view('admin.index')->with($data);
     }
