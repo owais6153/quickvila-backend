@@ -44,6 +44,10 @@ class Product extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'product_id', 'id');
+    }
     public function variations()
     {
         return $this->hasMany(Variation::class, 'product_id', 'id');

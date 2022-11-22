@@ -101,6 +101,7 @@ class NikeProducts extends Command
                                 $pr->update([
                                     'name' => $p->title,
                                     'short_description' => $p->subtitle,
+                                    'description' => $p->subtitle,
                                     'image' => (isset($p->images) && !empty($p->images)) ? $p->images->portraitURL : 'images/no-image.png',
                                     'manage_able' => false,
                                     'user_id' => 1,
@@ -113,6 +114,7 @@ class NikeProducts extends Command
                                     'product_id' => $p->id,
                                     'name' => $p->title,
                                     'short_description' => $p->subtitle,
+                                    'description' => $p->subtitle,
                                     'store_id' => $store->id,
                                     'image' => (isset($p->images) && !empty($p->images)) ? $p->images->portraitURL : 'images/no-image.png',
                                     'manage_able' => false,

@@ -50,4 +50,8 @@ class Store extends Model
     public function setting(){
         return $this->hasOne(StoreSetting::class);
     }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'store_id', 'id');
+    }
 }

@@ -19,6 +19,8 @@ class CreateRatingsTable extends Migration
             $table->foreign('product_id')->references('id')->on('products');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('store_id');
+            $table->foreign('store_id')->references('id')->on('stores');
             $table->integer('rating');
             $table->longText('comment')->nullable();
             $table->timestamps();

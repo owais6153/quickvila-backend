@@ -31,6 +31,7 @@ class StoreController extends Controller
         $store = $this->model->where('id', $id)->where('status', Published());
         $store = $store->withCount(['products'])->with(['categories'])->first();
         $data['store'] = $store;
+        $data['ratings'] = $store->reviews()->avg('rating');
         $data['top_selling_products'] = $store->products()->where('status', Published())->limit(10)->orderBy('id', 'desc')->get();
         $data['featured_products'] = $store->products()->where('status', Published())->where('is_store_featured', 1)->limit(10)->orderBy('id', 'desc')->get();
         $data['status'] = 200;

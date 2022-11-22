@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\Review;
+
 
 class ProductSeeder extends Seeder
 {
@@ -18,6 +20,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Watch',
             'price' => 250,
+            'short_description' => 'Good Bag',
             'description' => 'Good watch',
             'store_id' => 2,
             'image' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=989&q=80',
@@ -30,6 +33,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Bag',
             'price' => 350,
+            'short_description' => 'Good Bag',
             'description' => 'Good Bag',
             'store_id' => 2,
             'image' => 'https://images.unsplash.com/photo-1491637639811-60e2756cc1c7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=669&q=80',
@@ -41,6 +45,7 @@ class ProductSeeder extends Seeder
         ]);
         Product::create([
             'name' => 'perfume',
+            'short_description' => 'Good Bag',
             'price' => 100,
             'store_id' => 2,
             'description' => 'Good perfume',
@@ -50,6 +55,27 @@ class ProductSeeder extends Seeder
             'is_site_featured' => true,
             'is_store_featured' => true,
             'status' => Published(),
+        ]);
+        Review::create([
+            'rating' => 4,
+            'comment' => "Very Good Product.",
+            'product_id' => 3,
+            'store_id' => 2,
+            'user_id' => 1,
+        ]);
+        Review::create([
+            'rating' => 4,
+            'comment' => "Good Quality.",
+            'product_id' => 3,
+            'store_id' => 2,
+            'user_id' => 1,
+        ]);
+        Review::create([
+            'rating' => 4,
+            'comment' => "Best service",
+            'product_id' => 3,
+            'store_id' => 2,
+            'user_id' => 1,
         ]);
     }
 }

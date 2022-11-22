@@ -28,7 +28,8 @@ class StoreSeeder extends Seeder
             'user_id' => 1,
             'status' => Published(),
             'is_featured' => 1,
-            'type' => 'default'
+            'type' => 'default',
+            'description' => 'Nike is an American multinational corporation that is engaged in the design, development, manufacturing, and worldwide marketing and sales of footwear, apparel, equipment, accessories, and services.'
         ]);
         $store2 = Store::create([
             'name' => 'Mart',
