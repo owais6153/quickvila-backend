@@ -34,6 +34,7 @@ class StoreController extends Controller
         $data['ratings'] = $store->reviews()->avg('rating');
         $data['top_selling_products'] = $store->products()->where('status', Published())->limit(10)->orderBy('id', 'desc')->get();
         $data['featured_products'] = $store->products()->where('status', Published())->where('is_store_featured', 1)->limit(10)->orderBy('id', 'desc')->get();
+        $data['nearby_stores'] = Store::limit('10')->get();
         $data['status'] = 200;
         return response()->json($data, $data['status']);
     }
