@@ -244,7 +244,6 @@ class ProductController extends Controller
     public function destroy(Store $store,Product $product)
     {
         if ($product->manage_able) {
-            deleteFile(str_replace(env('FILE_URL'), '', $product->image));
             $product->delete();
             return redirect()->route('product.index', ['store'=>$product->store_id])->with('success', 'Product Deleted');
         }

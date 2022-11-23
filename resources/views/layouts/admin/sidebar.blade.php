@@ -19,7 +19,7 @@
         CATALOG
     </div>
 
-    @if(Bouncer::can('view-store') || Bouncer::can('create-store') || Bouncer::can('view-store-category') || Bouncer::can('edit-store-category'))
+    @if(Bouncer::can('view-store') || Bouncer::can('create-store') || Bouncer::can('view-store-category') || Bouncer::can('edit-store-category') || Bouncer::can('view-product-category') || Bouncer::can('create-product-category') || Bouncer::can('create-attribute') || Bouncer::can('create-attribute'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#store" aria-expanded="true"
             aria-controls="store">
@@ -49,15 +49,26 @@
               @endif
 
               @if(Bouncer::can('view-product-category') || Bouncer::can('create-product-category'))
-              <h6 class="collapse-header">Product Categories</h6>
+                <h6 class="collapse-header">Product Categories</h6>
 
-              @can('create-product-category')
-                  <a class="collapse-item" href="{{ route('productcategory.create') }}">Add New Category</a>
-              @endcan
-              @can('view-product-category')
-                  <a class="collapse-item" href="{{ route('productcategory.index') }}">All Categories</a>
-              @endcan
-          @endif
+                @can('create-product-category')
+                    <a class="collapse-item" href="{{ route('productcategory.create') }}">Add New Category</a>
+                @endcan
+                @can('view-product-category')
+                    <a class="collapse-item" href="{{ route('productcategory.index') }}">All Categories</a>
+                @endcan
+              @endif
+
+              @if(Bouncer::can('view-attribute') || Bouncer::can('create-attribute'))
+                <h6 class="collapse-header">Product Attributes</h6>
+
+                @can('create-attribute')
+                    <a class="collapse-item" href="{{ route('attribute.create') }}">Add New Attribute</a>
+                @endcan
+                @can('view-attribute')
+                    <a class="collapse-item" href="{{ route('attribute.index') }}">All Attributes</a>
+                @endcan
+              @endif
             </div>
         </div>
     </li>

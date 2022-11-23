@@ -109,7 +109,6 @@ class StoreCategoryController extends Controller
     {
         $storecategory->update([
             'name' =>$request->name,
-            'user_id' => auth()->id()
         ]);
         return redirect()->route('storecategory.index')->with('success', 'Store Category Updated');
     }

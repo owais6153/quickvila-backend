@@ -44,6 +44,12 @@ return [
                 'Edit Video ' => 'edit-video',
                 'Delete Video' => 'delete-video',
             ],
+            'Attribute Permissions' => [
+                'View Attributes' => 'view-attribute',
+                'Create Attribute' => 'create-attribute',
+                'Edit Attribute ' => 'edit-attribute',
+                'Delete Attribute' => 'delete-attribute',
+            ],
             'Setting Permissions' => [
                 'View Settings' => 'view-setting',
                 'Save Settings' => 'edit-setting',
@@ -83,6 +89,12 @@ return [
                 'Create Store Category' => 'create-store-category',
                 'Edit Store Category ' => 'edit-store-category',
                 'Delete Store Category' => 'delete-store-category',
+            ],
+            'Attribute Permissions' => [
+                'View Attributes' => 'view-attribute',
+                'Create Attribute' => 'create-attribute',
+                'Edit Attribute ' => 'edit-attribute',
+                'Delete Attribute' => 'delete-attribute',
             ],
         ]
     ],

@@ -23,6 +23,7 @@ class Store extends Model
         'owner_id',
         'status',
         'type',
+        'is_featured'
     ];
     public function getLogoAttribute($attr){
         return validateImageUrl($attr);

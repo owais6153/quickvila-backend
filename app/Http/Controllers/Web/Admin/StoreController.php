@@ -37,26 +37,40 @@ class StoreController extends Controller
         $model =  Store::withCount(['products']);
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
-                $actionBtn = '';
-                if (Bouncer::can('edit-store')) {
-                    $actionBtn .= '<a href="' . route('store.edit', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
-                }
-                if (Bouncer::can('view-product')) {
-                    $actionBtn .= '<a href="' . route('product.index', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-eye"></i></a>';
-                }
 
-                if (Bouncer::can('delete-store')  && $row->manage_able) {
-                    $actionBtn .= '<form style="display:inline-block" method="POST" action="' . route('store.destroy', ['store' => $row->id]) . '">
-                    <input type="hidden" name="_token" value="' . csrf_token() . '"/>
-                    <input type="hidden" name="_method" value="DELETE" />
-                <button class="btn-circle delete btn btn-sm btn-danger mr-1"><i class="fas fa-trash-alt"></i></button></form>';
+                $html = '<div class="dropdown">
+                <a class="btn btn-sm btn-icon-only dropdown-toggle text-light" role="button" style="color: #ced4da !important;"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                    <i class="fas fa-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">';
+                if (Bouncer::can('edit-store')) {
+                    $html .= '<a  href="' . route('store.edit', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-pencil-alt"></i>Edit</a>';
                 }
                 if(Bouncer::can('setting-store') ){
-                    $actionBtn .= '<a href="' . route('store.setting', ['store' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info">
-                    <i class="fas fa-fw fa-cog"></i></a>';
+                    $html .= '<a  href="' . route('store.setting', ['store' => $row->id]) . '" class="dropdown-item">
+                    <i class="mr-2 fas fa-fw fa-cog"></i>Setting</a>';
                 }
+                if (Bouncer::can('delete-store')  && $row->manage_able) {
+                    $html .= '<form method="POST" action="' . route('store.destroy', ['store' => $row->id]) . '">
+                    <input type="hidden" name="_token" value="' . csrf_token() . '"/>
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button class="dropdown-item d-block mr-1 btn-link delete"><i class="mr-2 fas fa-trash-alt"></i>Delete</button></form>';
+                }
+                $html .= '<li class="dropdown-header">Prdoucts</li>';
+                if (Bouncer::can('view-product')) {
+                    $html .= '<a  href="' . route('product.index', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fa fa-archive"></i>All Products</a>';
+                }
+                if (Bouncer::can('view-product')) {
+                    $html .= '<a  href="' . route('product.create', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fa fa-archive"></i>Add Product</a>';
+                }
+                $html .= '</div>
+            </div>';
 
-                return $actionBtn;
+
+
+
+                return $html;
             })
             ->addColumn('products', function ($row) {
                 return $row->products->count();
@@ -132,6 +146,7 @@ class StoreController extends Controller
             'user_id' => $request->user_id,
             'type' => $request->type,
             'status' => $request->status,
+            'is_featured' => $request->has('is_featured')
         ]);
 
         $storeSetting = StoreSetting::create([
@@ -200,6 +215,7 @@ class StoreController extends Controller
             'user_id' => $request->user_id,
             'type' => $request->type,
             'status' => $request->status,
+            'is_featured' => $request->has('is_featured')
         ]);
 
         if ($request->has('categories')) {
@@ -226,6 +242,7 @@ class StoreController extends Controller
         if ($store->manage_able) {
             $store->owner->delete();
             $store->setting->delete();
+            $store->products->delete();
             $store->delete();
             return redirect()->route('store.index')->with('success', 'Store Deleted');
         }

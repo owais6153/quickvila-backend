@@ -94,6 +94,15 @@
                                     </select>
 
                             </div>
+                            @can('setting-store')
+                                <div class="custom-control custom-checkbox small">
+                                    <input type="checkbox" class="custom-control-input" name="is_featured"
+                                        value="1" id="is_featured"
+                                        {{ old('is_featured', $store->is_featured) ? 'checked=checked' : '' }}>
+                                    <label class="custom-control-label"
+                                        for="is_featured">Make it featured on front pages</label>
+                                </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
