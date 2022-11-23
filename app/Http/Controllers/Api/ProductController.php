@@ -23,7 +23,7 @@ class ProductController extends Controller
         return response()->json($data, $data['status']);
     }
     public function show(Store $store, Product $product, Request $request){
-        $data['product'] = Product::with(['variations', 'variations.options'])->withCount(['reviews'])->where('id', $product->id)->first();
+        $data['product'] = Product::with(['variations', 'variations.options', 'store'])->withCount(['reviews'])->where('id', $product->id)->first();
         $data['reviews'] = $data['product']->reviews()->with(['author'])->paginate(10);
         $data['average_rating'] = number_format($data['product']->reviews()->avg('rating'), 1);
         $data['status'] = 200;
