@@ -9,8 +9,8 @@ use App\Models\ProductCategory;
 use App\Models\Store;
 use App\Http\Requests\Admin\ProductRequest;
 use DataTables;
+use App\Models\Attribute;
 use App\Models\Variation;
-use App\Models\VariationOption;
 use Bouncer;
 use Auth;
 
@@ -69,7 +69,8 @@ class ProductController extends Controller
     public function create(Store $store)
     {
         $categories = ProductCategory::all();
-        return view($this->dir . 'create', compact('categories', 'store'));
+        $attributes = Attribute::all();
+        return view($this->dir . 'create', compact('categories', 'store', 'attributes'));
     }
 
     public function handleVariations(Request $request, Product $product)

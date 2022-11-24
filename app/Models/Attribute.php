@@ -16,6 +16,6 @@ class Attribute extends Model
     ];
     public function options()
     {
-        return $this->hasMany(AttributesOptions::class, 'attr_id', 'id');
+        return $this->hasMany(AttributesOption::class, 'attr_id', 'id');
     }
 }

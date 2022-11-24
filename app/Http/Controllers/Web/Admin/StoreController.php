@@ -59,10 +59,10 @@ class StoreController extends Controller
                 }
                 $html .= '<li class="dropdown-header">Prdoucts</li>';
                 if (Bouncer::can('view-product')) {
-                    $html .= '<a  href="' . route('product.index', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fa fa-archive"></i>All Products</a>';
+                    $html .= '<a  href="' . route('product.create', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fa fa-plus"></i>Add Product</a>';
                 }
                 if (Bouncer::can('view-product')) {
-                    $html .= '<a  href="' . route('product.create', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fa fa-archive"></i>Add Product</a>';
+                    $html .= '<a  href="' . route('product.index', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-archive"></i>All Products</a>';
                 }
                 $html .= '</div>
             </div>';

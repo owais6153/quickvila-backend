@@ -67,10 +67,34 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-12 variation-card" style="display:none;">
+                                <div class="card  mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Product Variations</h6>
+                                    </div>
+                                    <div class="card-body" id="product-variations">
+                                        <div id="variations" class="row" >
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Product Attributes</label>
+                                                    <select class="form-control select2" id="attributes" name="attributes[]" multiple placeholer="Select Attributes">
+                                                        @foreach ($attributes as $attr)
+                                                            <option value="{{$attr->id}}">{{$attr->name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>ACTION</label>
+                                                <button type="button" class="btn btn-block btn-primary" id="makeVariation">Make Variations out of attr</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            @include('admin.product.variation.create')
 
-                            <div class="col-md-12">
+                            <div class="col-md-12 mt-3">
                                 <div class="form-group">
                                     <input type="submit" name="" value="Save" placeholder="Product Name"
                                         class="btn btn-primary btn-block">
@@ -159,3 +183,49 @@
         </form>
     </div>
 @endsection
+
+@push('afterScripts')
+<script>
+    $('#product_type').change(function(){
+        if($(this).val() == 'simple')
+            $('.variation-card').fadeOut()
+        else
+            $('.variation-card').fadeIn()
+    })
+
+    $('.select2').select2({
+        'placeholder': $(this).attr('placeholder'),
+        'width': '100%'
+    });
+
+    $('#makeVariation').on('click', function(){
+        if($('#product_type').val() == 'variation' && $('#attributes').val() != ''){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '{{route('product.variations')}}',
+                data :{
+                    'variation_attr[]':  $('#attributes').val()
+                },
+                dataType: 'json',
+                // contentType: 'application/json',
+                success: function (data) {
+                    if(data.length > 0){
+                        for(let i = 0; i < data.length; i++){
+                            console.log(data[i])
+                        }
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    })
+</script>
+@endpush

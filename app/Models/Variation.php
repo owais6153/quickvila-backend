@@ -11,12 +11,13 @@ class Variation extends Model
 
     protected $fillable = [
         'name',
-        'is_required',
         'product_id',
-        'type'
+        'price',
+        'sale_price',
+        'variants',
     ];
-
-    public function options(){
-        return $this->hasMany(VariationOption::class, 'variation_id', 'id');
+    public function getVariantsAttribute($attr)
+    {
+        return json_decode($attr);
     }
 }

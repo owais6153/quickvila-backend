@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VariationOption extends Model
+class AttributesOption extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'value',
-        'price',
-        'variation_id',
-        'media'
+    public $fillable = [
+        'name',
+        'media',
+        'user_id',
+        'store_id',
+        'attr_id',
     ];
 }

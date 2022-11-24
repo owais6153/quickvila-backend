@@ -50,6 +50,10 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
     Route::delete('store/{store:id}/product/{product:id}/destroy', [ProductController::class, 'destroy'])->name('product.destroy');
     Route::get('product-list', [ProductController::class, 'getList'])->name('product.list');
 
+    Route::post('product/variations', [AttributeOptionController::class, 'listForVariations'])->name('product.variations');
+
+
+
     // ProductCategory
     Route::resource('productcategory', ProductCategoryController::class);
     Route::get('productcategory-list', [ProductCategoryController::class, 'getList'])->name('productcategory.list');
@@ -59,13 +63,13 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
     Route::get('attribute-list', [AttributesController::class, 'getList'])->name('attribute.list');
 
     // Attributes Options
-    Route::get('attribute/{attribute:id}/option', [AttributeOptionController::class, 'index'])->name('attributeoption.index');
-    Route::get('attribute/{attribute:id}/option/create', [AttributeOptionController::class, 'create'])->name('attributeoption.create');
-    Route::post('attribute/{attribute:id}/option/store', [AttributeOptionController::class, 'store'])->name('attributeoption.store');
-    Route::get('attribute/{attribute:id}/option/{attributeOption:id}/edit', [AttributeOptionController::class, 'edit'])->name('attributeoption.edit');
-    Route::put('attribute/{attribute:id}/option/{attributeOption:id}/update', [AttributeOptionController::class, 'update'])->name('attributeoption.update');
-    Route::delete('attribute/{attribute:id}/option/{attributeOption:id}/destroy', [AttributeOptionController::class, 'destroy'])->name('attributeoption.destroy');
-    Route::get('attribute/{attribute:id}/option-list', [AttributeOptionController::class, 'getList'])->name('attributeoption.list');
+    Route::get('attribute/{attribute:id}/options', [AttributeOptionController::class, 'index'])->name('attributeoption.index');
+    Route::get('attribute/{attribute:id}/options/create', [AttributeOptionController::class, 'create'])->name('attributeoption.create');
+    Route::post('attribute/{attribute:id}/options/store', [AttributeOptionController::class, 'store'])->name('attributeoption.store');
+    Route::get('attribute/{attribute:id}/options/{attributeOption:id}/edit', [AttributeOptionController::class, 'edit'])->name('attributeoption.edit');
+    Route::put('attribute/{attribute:id}/options/{attributeOption:id}/update', [AttributeOptionController::class, 'update'])->name('attributeoption.update');
+    Route::delete('attribute/{attribute:id}/options/{attributeOption:id}/destroy', [AttributeOptionController::class, 'destroy'])->name('attributeoption.destroy');
+    Route::get('attribute/{attribute:id}/options-list', [AttributeOptionController::class, 'getList'])->name('attributeoption.list');
 
 
     // Testimonail

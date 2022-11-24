@@ -25,13 +25,7 @@
                                         value="{{ old('name', $store->name) }}">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Url</label>
-                                    <input type="url" name="url" placeholder="Store URL" class="form-control"
-                                        value="{{ old('url', $store->url) }}">
-                                </div>
-                            </div>
+
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Address</label>

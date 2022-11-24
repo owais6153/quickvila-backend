@@ -16,8 +16,9 @@ class CreateVariationsTable extends Migration
         Schema::create('variations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['custom', 'size', 'color']);
-            $table->boolean('is_required')->default(0);
+            $table->string('price');
+            $table->string('sale_price')->nullable();
+            $table->longText('variants');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->timestamps();

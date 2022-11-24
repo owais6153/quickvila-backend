@@ -48,7 +48,8 @@ class AttributesController extends Controller
                 $html .= '<li class="dropdown-header">Options</li>';
 
                 if (Bouncer::can('edit-attribute')) {
-                    $html .= '<a  href="' . route('attributeoption.create', ['attribute' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fa  fa-plus"></i>Add Option</a>';
+                    $html .= '<a  href="' . route('attributeoption.create', ['attribute' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fa  fa-plus"></i>Add Option</a>
+                    <a  href="' . route('attributeoption.index', ['attribute' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fa  fa-eye"></i>All Options</a>';
                 }
 
                 $html .= '</div>
