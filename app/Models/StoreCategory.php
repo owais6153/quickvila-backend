@@ -11,6 +11,10 @@ class StoreCategory extends Model
     use HasFactory, SoftDeletes;
     public $fillable = [
         'name',
+        'image',
         'user_id'
     ];
+    public function getImageAttribute($attr){
+        return validateImageUrl($attr);
+    }
 }

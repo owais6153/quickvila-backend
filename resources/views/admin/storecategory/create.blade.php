@@ -25,6 +25,15 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
+                                <div class="form-group uploader">
+                                    <label>Upload Image</label>
+                                    <input type="file" name="image" />
+                                    <div class="image-uploader"
+                                        style="background-image: url('{{ asset('images/camera.png') }}')">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <input type="submit" name="" value="Save" placeholder="Store Name"
                                         class="btn btn-primary btn-block">

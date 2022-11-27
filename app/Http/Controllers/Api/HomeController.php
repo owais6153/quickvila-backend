@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Testimonial;
 use App\Models\Video;
 use App\Models\Store;
+use App\Models\StoreCategory;
 
 
 class HomeController extends Controller
@@ -19,6 +20,7 @@ class HomeController extends Controller
         $data['featured_products'] = Product::limit($limit)->where('is_site_featured', 1)->where('status', Published())->orderBy('id', 'desc')->get();
         $data['stores'] = Store::withCount(['products'])->where('status', Published())->limit($limit)->orderBy('id', 'desc')->get();
         $data['testimonials'] = Testimonial::limit($limit)->orderBy('sort', 'desc')->get();
+        $data['store_categories'] = StoreCategory::limit($limit)->orderBy('id', 'desc')->get();
         $data['videos'] = Video::limit($limit)->orderBy('sort', 'desc')->get();
 
         $data['status'] = 200;

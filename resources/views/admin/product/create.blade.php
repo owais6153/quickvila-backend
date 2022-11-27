@@ -176,6 +176,9 @@
                                     @endforeach
                                 </div>
                             </div>
+                            <div class="col-12" id="variations_options">
+
+                            </div>
                         </div>
                     </div>
                 @endif
@@ -217,7 +220,7 @@
                 success: function (data) {
                     if(data.length > 0){
                         for(let i = 0; i < data.length; i++){
-                            console.log(data[i])
+
                         }
                     }
                 },

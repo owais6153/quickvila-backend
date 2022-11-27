@@ -92,6 +92,21 @@ class AttributeOptionController extends Controller
 
     public function listForVariations(Request $request)
     {
+        // foreach($request->variation_attr as $attr){
+        //     $a = Attribute::where('id', $attr)->whereHas('options')->first();
+        //     if(!empty($a)){
+        //          $attributes[] = [
+        //              'name' => $a->name,
+        //              'options' => $a->options,
+        //          ];
+        //          $totalVariants = $totalVariants != 0 ? $totalVariants * $a->options->count(): $a->options->count();
+        //     }
+        //  }
+
+        //  foreach($attributes as $attr){
+        //      foreach($attr['options'] as $option)
+        //  }
+
         $validator = \Validator::make($request->all(), [
             'variation_attr' => 'required',
         ]);
@@ -100,16 +115,13 @@ class AttributeOptionController extends Controller
             $error['status'] = 400;
             return response()->json($error, 400);
         }
+        $totalVariants = 0;
+        $variations = [];
         $attributes = [];
-        foreach($request->variation_attr as $attr){
-           $a = Attribute::findOrFail($attr);
-           if(!empty($a)){
-                $attributes[] = [
-                    'name' => $a->name,
-                    'options' => $a->options,
-                ];
-           }
-        }
-        return response()->json($attributes, 200);
+        $a = Attribute::whereIn('id', $request->variation_attr)->whereHas('options')->get()->toArray();
+        dd($a);
+
+
+        return response()->json(['variants' => $attributes, 'totalVariants' => $totalVariants], 200);
     }
 }

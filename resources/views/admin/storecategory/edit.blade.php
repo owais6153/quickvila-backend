@@ -27,6 +27,18 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
+                                <div class="form-group uploader">
+                                    <label>Upload Image</label>
+                                    <input type="file" name="image" />
+                                    <div class="image-uploader"
+                                        style="background-image: url('{{ asset('images/camera.png') }}')">
+                                        @if ($storecategory->image)
+                                            <img src={{ asset($storecategory->image) }} />
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <input type="submit" name="" value="Save" class="btn btn-primary btn-block">
                                 </div>

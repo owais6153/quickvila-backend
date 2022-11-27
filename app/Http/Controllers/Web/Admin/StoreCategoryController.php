@@ -69,9 +69,20 @@ class StoreCategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
+
+        $image = "";
+        if ($request->hasFile('image')) {
+
+            $imageFile = $request->image;
+            $file_name = uploadFile($imageFile, imagePath());
+            $image = $file_name;
+        }
+
         $cat = StoreCategory::create([
             'name' =>$request->name,
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
+            'image' => ($image != '') ? $image :  noImage(),
+
         ]);
         return redirect()->route('storecategory.index')->with('success', 'Store Category Created');
     }
@@ -107,8 +118,17 @@ class StoreCategoryController extends Controller
      */
     public function update(StoreCategoryRequest $request, StoreCategory $storecategory)
     {
+        $image = "";
+        if ($request->hasFile('image')) {
+
+            $imageFile = $request->image;
+            $file_name = uploadFile($imageFile, imagePath());
+            $image = $file_name;
+        }
+
         $storecategory->update([
             'name' =>$request->name,
+            'image' => ($image != '') ? $image : str_replace(env('FILE_URL'),'',$store->image),
         ]);
         return redirect()->route('storecategory.index')->with('success', 'Store Category Updated');
     }

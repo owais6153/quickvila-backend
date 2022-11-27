@@ -59,12 +59,15 @@ class StoreSeeder extends Seeder
             'tax' => 0,
             'store_id' => $store2->id
         ]);
+
         StoreCategory::create([
-            'name' => 'Shoes & Sneakers',
+            'name' => 'Medical',
+            'image' => 'https://cdn-icons-png.flaticon.com/512/3063/3063143.png',
             'user_id' => 1,
         ]);
         StoreCategory::create([
-            'name' => 'Caps',
+            'name' => 'Apparels',
+            'image' => 'http://cdn.onlinewebfonts.com/svg/img_569713.png',
             'user_id' => 1,
         ]);
         $store1->categories()->attach([1], ['type' => 'store']);
