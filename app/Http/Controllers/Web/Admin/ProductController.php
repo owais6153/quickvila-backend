@@ -73,54 +73,6 @@ class ProductController extends Controller
         return view($this->dir . 'create', compact('categories', 'store', 'attributes'));
     }
 
-    public function handleVariations(Request $request, Product $product)
-    {
-        if($request->has('variation')){
-            foreach($request->variation as $variation){
-                if(isset($variation['id'])){
-                    $va = $variation;
-                    unset($va['options']);
-                    $v = Variation::where('id', $variation['id'])->first();
-                    $v->update($va);
-                }
-                else{
-                    $v = new Variation();
-                    $v->name = $variation['name'];
-                    $v->is_required = isset($variation['is_required']) ? $variation['is_required'] : 0;
-                    $v->type = $variation['type'];
-                    $v->product_id = $product->id;
-                    $v->save();
-                }
-
-
-                foreach($variation['options'] as $option){
-                    if(isset($option['id'])){
-                        $o = VariationOption::where('id', $option['id'])->first();
-                        $o->update($option);
-                    }
-                    else{
-                        $op = new VariationOption();
-                        $op->value = $option['value'];
-                        $op->price = isset($option['price']) ? $option['price'] : null;
-                        $op->media = isset($option['media']) ? $option['media'] : null;
-                        $op->variation_id = $v->id;
-                        $op->save();
-                    }
-                }
-            }
-        }
-        if($request->has('delete_variation')){
-            foreach($request->delete_variation as $variation_id){
-                $delete_variation = Variation::where('id', $variation_id)->delete();
-            }
-        }
-        if($request->has('delete_option')){
-            foreach($request->delete_option as $option_id){
-                $delete_option = VariationOption::where('id', $option_id)->delete();
-            }
-        }
-    }
-
     /**
      * Product a newly created resource in storage.
      *
@@ -157,7 +109,15 @@ class ProductController extends Controller
 
 
         if($request->product_type == 'variation'){
-            $this->handleVariations($request, $product);
+            foreach($request->variations as $variation){
+                Variation::create([
+                    'name' => $variation['name'],
+                    'price' => $variation['price'],
+                    'sale_price' => (isset($variation['sale_price'])) ?  $variation['sale_price'] : null,
+                    'variants' => $variation['variants'],
+                    'product_id' => $product->id,
+                ]);
+            }
         }
 
         return redirect()->route('product.index', ['store'=>$product->store_id])->with('success', 'Product Created');
@@ -183,7 +143,8 @@ class ProductController extends Controller
     public function edit(Store $store, Product $product)
     {
         $categories = ProductCategory::all();
-        return view($this->dir . 'edit', compact('product', 'categories', 'store'));
+        $attributes = Attribute::all();
+        return view($this->dir . 'edit', compact('product', 'categories', 'store', 'attributes'));
     }
 
     /**
@@ -227,8 +188,18 @@ class ProductController extends Controller
             $product->categories()->sync(array(), ['type' => 'product']);
         }
 
-
-        $this->handleVariations($request, $product);
+        if($request->product_type == 'variation'){
+            $product->variations()->delete();
+            foreach($request->variations as $variation){
+                Variation::create([
+                    'name' => $variation['name'],
+                    'price' => $variation['price'],
+                    'sale_price' => (isset($variation['sale_price'])) ?  $variation['sale_price'] : null,
+                    'variants' => $variation['variants'],
+                    'product_id' => $product->id,
+                ]);
+            }
+        }
 
 
 
@@ -245,6 +216,7 @@ class ProductController extends Controller
     public function destroy(Store $store,Product $product)
     {
         if ($product->manage_able) {
+            $product->variations()->delete();
             $product->delete();
             return redirect()->route('product.index', ['store'=>$product->store_id])->with('success', 'Product Deleted');
         }

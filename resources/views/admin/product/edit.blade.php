@@ -21,7 +21,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Product Name</label>
-                                    <input type="text" name="name" placeholder="Product Name" class="form-control"
+                                    <input type="text" id="p_name" name="name" placeholder="Product Name" class="form-control"
                                         value="{{ old('name', $product->name) }}">
                                 </div>
                             </div>
@@ -39,7 +39,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Product Price</label>
-                                    <input type="text" name="price"
+                                    <input type="text"  id="p_price"  name="price"
                                         {{ !$product->manage_able ? 'readonly=readonly' : '' }}
                                         placeholder="Product Price" class="form-control"
                                         value="{{ old('price', $product->price) }}">
@@ -48,7 +48,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Product Sale Price</label>
-                                    <input type="text" name="sale_price" placeholder="Sale Price" class="form-control"
+                                    <input type="text"  id="p_sale_price" name="sale_price" placeholder="Sale Price" class="form-control"
                                         {{ !$product->manage_able ? 'readonly=readonly' : '' }}
                                         value="{{ old('sale_price', $product->sale_price) }}">
                                 </div>
@@ -86,7 +86,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">              <div class="card shadow mb-4">
+            <div class="col-md-3">
+                <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Addition Store Info</h6>
                 </div>
@@ -172,3 +173,91 @@
         </form>
     </div>
 @endsection
+
+@push('afterScripts')
+<script>
+    $('#product_type').change(function(){
+        if($(this).val() == 'simple')
+            $('.variation-card').fadeOut()
+        else
+            $('.variation-card').fadeIn()
+    })
+
+    $('.select2').select2({
+        'placeholder': $(this).attr('placeholder'),
+        'width': '100%'
+    });
+
+    $('#makeVariation').on('click', function(){
+        if($('#product_type').val() == 'variation' && $('#attributes').val() != ''){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '{{route('product.variations')}}',
+                data :{
+                    'variation_attr[]':  $('#attributes').val()
+                },
+                dataType: 'json',
+                // contentType: 'application/json',
+                success: function (data) {
+                    if(data.status == 200 && data.variants.length > 0 ){
+                        $('#variants').html('')
+                        for(let i = 0; i < data.variants.length; i++){
+
+                            let name = $('#p_name').val();
+                            for (const key in data.variants[i]) {
+                                name = `${name} - ${key}: ${data.variants[i][key].name}`;
+                            }
+
+                            let price = $('#p_price').val();
+                            let saleprice = $('#p_sale_price').val();
+
+                            let html = `<div class="card variant variant-${i} mb-4">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>Variation name</label>
+                                                            <input type="text" name="variations[${i}][name]" placeholder="Product Name" class="form-control"
+                                                                value="${name}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Variation Price</label>
+                                                            <input type="text" name="variations[${i}][price]" placeholder="Product Name" class="form-control"
+                                                                value="${price}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Sale Price</label>
+                                                            <input type="text" name="variations[${i}][sale_price]" placeholder="Product Name" class="form-control"
+                                                                value="${saleprice}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <button type="button" class="btn btn-danger" onclick="$(this).parents('.card.variant').remove()">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>`;
+                            let hid = $(`<input type="hidden" name="variations[${i}][variants]" class="json"/>`).val(JSON.stringify(data.variants[i]));
+                            $('#variants').append($(html));
+                            $(document).find(`.variant-${i}`).append($(hid))
+                        }
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    })
+</script>
+@endpush

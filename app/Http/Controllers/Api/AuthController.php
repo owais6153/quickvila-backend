@@ -39,7 +39,7 @@ class AuthController extends Controller
             $fieldType =  'email';
             if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember'))) {
                 $user = User::where('email', $request->email)
-                // ->whereIs(Customer())
+                ->whereIs(Customer())
                 ->first();
                 if(!empty($user)){
                     return response()->json([

@@ -90,22 +90,95 @@ class AttributeOptionController extends Controller
         return redirect()->route('attributeoption.index', ['attribute' => $attribute->id])->with('success', 'Option Deleted');
     }
 
+
+    public function generateVariations($array) {
+        if (empty($array)) {
+            return [];
+        }
+
+        function traverse($array, $parent_ind) {
+            $r = [];
+            $pr = '';
+
+            if(!is_numeric($parent_ind)) {
+                $pr = $parent_ind.'-';
+            }
+
+            foreach ($array as $ind => $el) {
+                if (is_array($el)) {
+                    $r = array_merge($r, traverse($el, $pr.(is_numeric($ind) ? '' : $ind)));
+                } elseif (is_numeric($ind)) {
+                    $r[] = $pr.$el;
+                } else {
+                    $r[] = $pr.$ind.'-'.$el;
+                }
+            }
+
+            return $r;
+        }
+
+        //1. Go through entire array and transform elements that are arrays into elements, collect keys
+        $keys = [];
+        $size = 1;
+
+        foreach ($array as $key => $elems) {
+            if (is_array($elems)) {
+                $rr = [];
+
+                foreach ($elems as $ind => $elem) {
+                    if (is_array($elem) && !isset($elem['name']) && !isset($elem['media'])) {
+                        $rr = array_merge($rr, traverse($elem, $ind));
+                    } else {
+                        $rr[] = $elem;
+                    }
+
+                }
+
+                $array[$key] = $rr;
+                $size *= count($rr);
+            }
+
+            $keys[] = $key;
+        }
+
+
+
+        //2. Go through all new elems and make variations
+        $rez = [];
+        for ($i = 0; $i < $size; $i++) {
+            $rez[$i] = [];
+
+            foreach ($array as $key => $value) {
+                $current = current($array[$key]);
+                $rez[$i][$key] = $current;
+            }
+
+            foreach ($keys as $key) {
+                if (!next($array[$key])) {
+                    reset($array[$key]);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return $rez;
+    }
+    // public function generateVariations($arrays){
+    //     $result = array(array());
+    //     foreach ($arrays as $property => $property_values) {
+    //         $tmp = array();
+    //         foreach ($result as $result_item) {
+    //             foreach ($property_values as $property_key => $property_value) {
+    //                 $tmp[] = $result_item + array($property_key => $property_value);
+    //             }
+    //         }
+    //         $result = $tmp;
+    //     }
+    //     return $result;
+    // }
     public function listForVariations(Request $request)
     {
-        // foreach($request->variation_attr as $attr){
-        //     $a = Attribute::where('id', $attr)->whereHas('options')->first();
-        //     if(!empty($a)){
-        //          $attributes[] = [
-        //              'name' => $a->name,
-        //              'options' => $a->options,
-        //          ];
-        //          $totalVariants = $totalVariants != 0 ? $totalVariants * $a->options->count(): $a->options->count();
-        //     }
-        //  }
-
-        //  foreach($attributes as $attr){
-        //      foreach($attr['options'] as $option)
-        //  }
 
         $validator = \Validator::make($request->all(), [
             'variation_attr' => 'required',
@@ -115,13 +188,21 @@ class AttributeOptionController extends Controller
             $error['status'] = 400;
             return response()->json($error, 400);
         }
-        $totalVariants = 0;
-        $variations = [];
-        $attributes = [];
-        $a = Attribute::whereIn('id', $request->variation_attr)->whereHas('options')->get()->toArray();
-        dd($a);
+        $variants = [];
+        $attributes = Attribute::whereIn('id', $request->variation_attr)->with(['options' => function ($q){
+            $q->select('name', 'id', 'media', 'attr_id');
+        }])->whereHas('options')->get()->toArray();
+
+        $options = [];
+        foreach($attributes as $attribute){
+            foreach($attribute['options'] as $option){
+                $options[$attribute['name']][]= $option;
+            }
+        }
 
 
-        return response()->json(['variants' => $attributes, 'totalVariants' => $totalVariants], 200);
+        $variants = $this->generateVariations($options);
+
+        return response()->json(['variants' => $variants, 'status' => 200], 200);
     }
 }

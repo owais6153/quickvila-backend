@@ -43,13 +43,13 @@ class ProductRequest extends FormRequest
             'category.*' => 'nullable|numeric',
             'product_type' => 'required',
             'status' => 'required',
-            'variation' => 'required_if:product_type,variation',
-            'variation.*.name' => 'required_if:product_type,variation|max:255',
-            'variation.*.type' => 'required_if:product_type,variation|max:255',
-            'variation.*.options' => 'required_if:product_type,variation',
-            'variation.*.options.*.value' => 'required_if:product_type,variation|max:255|min:3',
-            'variation.*.options.*.price' => 'nullable|numeric|min:1',
-            'variation.*.options.*.media' => 'nullable|max:100',
+            'p_attributes' =>  'nullable',
+            // Variations
+            'variations' => 'required_if:product_type,variation',
+            'variations.*.name' => 'required_if:product_type,variation|max:255',
+            'variations.*.price' => 'required_if:product_type,variation|numeric|min:1',
+            'variations.*.sale_price' => 'nullable|numeric|min:1',
+            'variations.*.variants' => 'required_if:product_type,variation',
         ];
     }
 }
