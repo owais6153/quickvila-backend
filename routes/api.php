@@ -3,16 +3,16 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\HomeController;
-use App\Http\Controllers\Api\StoreController;
-use App\Http\Controllers\Api\CartController;
-use App\Http\Controllers\Api\CheckoutController;
-use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Api\AddressController;
-use App\Http\Controllers\Api\AccountController;
-use App\Http\Controllers\Api\StoreCategoryController;
-use App\Http\Controllers\Api\ProductCategoryController;
+use App\Http\Controllers\Api\Customer\ProductController;
+use App\Http\Controllers\Api\Customer\HomeController;
+use App\Http\Controllers\Api\Customer\StoreController;
+use App\Http\Controllers\Api\Customer\CartController;
+use App\Http\Controllers\Api\Customer\CheckoutController;
+use App\Http\Controllers\Api\Customer\OrderController;
+use App\Http\Controllers\Api\Customer\AddressController;
+use App\Http\Controllers\Api\Customer\AccountController;
+use App\Http\Controllers\Api\Customer\StoreCategoryController;
+use App\Http\Controllers\Api\Customer\ProductCategoryController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -91,6 +91,10 @@ use App\Http\Controllers\Api\ProductCategoryController;
         Route::delete('/cart/remove/{cartProduct:id}', [CartController::class, 'remove']);
         Route::delete('/cart/empty', [CartController::class, 'emptyCart']);
     });
+
+
+
+
 
 
     Route::any('{any}', function(){

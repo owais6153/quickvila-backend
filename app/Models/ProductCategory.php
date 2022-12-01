@@ -12,6 +12,7 @@ class ProductCategory extends Model
 
     public $fillable = [
         'name',
-        'user_id'
+        'user_id',
+        'store_id'
     ];
 }

@@ -6,6 +6,8 @@ use Illuminate\Database\Seeder;
 use App\Models\Store;
 use App\Models\StoreSetting;
 use App\Models\StoreCategory;
+use App\Models\User;
+use Hash;
 
 class StoreSeeder extends Seeder
 {
@@ -40,7 +42,7 @@ class StoreSeeder extends Seeder
             'is_featured' => 1,
             'logo' => 'images/no-image.png',
             'cover' => 'images/no-image.png',
-            'manage_able' => false,
+            'manage_able' => true,
             'user_id' => 1,
             'status' => Published(),
             'type' => 'default',
@@ -72,5 +74,37 @@ class StoreSeeder extends Seeder
         ]);
         $store1->categories()->attach([1], ['type' => 'store']);
         $store2->categories()->attach([1], ['type' => 'store']);
+
+
+        $user = new User();
+        $user->name =  $store1->name;
+        $user->first_name =  $store1->name;
+        $user->last_name =  $store1->name;
+        $user->password =  Hash::make('secret123');
+        $user->email = 'nike@storevila.com';
+        $user->email_verified_at = date("Y-m-d", time());
+        $user->phone_verified_at = date("Y-m-d", time());
+        $user->save();
+        $user->assign(Store());
+        Store::where('id', $store1->id)->update([
+            'owner_id' => $user->id
+        ]);
+
+
+
+        $user = new User();
+        $user->name =  $store2->name;
+        $user->first_name =  $store2->name;
+        $user->last_name =  $store2->name;
+        $user->password =  Hash::make('secret123');
+        $user->email = 'mart@storevila.com';
+        $user->email_verified_at = date("Y-m-d", time());
+        $user->phone_verified_at = date("Y-m-d", time());
+        $user->save();
+        $user->assign(Store());
+        Store::where('id', $store2->id)->update([
+            'owner_id' => $user->id
+        ]);
+
     }
 }

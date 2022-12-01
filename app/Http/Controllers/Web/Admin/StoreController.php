@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\StoreCategory;
-use App\Http\Requests\Admin\StoreRequest;
 use App\Http\Requests\Admin\StoreSettingRequest;
 use App\Models\StoreSetting;
 use DataTables;
@@ -186,8 +185,13 @@ class StoreController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreRequest $request, Store $store)
+    public function update(Request $request, Store $store)
     {
+
+
+
+
+
 
         $logo = $cover = "";
         if ($request->hasFile('logo')) {
@@ -212,7 +216,6 @@ class StoreController extends Controller
             'longitude' => $request->longitude,
             'logo' => ($logo != '') ? $logo : str_replace(env('FILE_URL'),'',$store->logo),
             'cover' => ($cover != '') ? $cover : str_replace(env('FILE_URL'),'',$store->cover),
-            'user_id' => $request->user_id,
             'type' => $request->type,
             'status' => $request->status,
             'is_featured' => $request->has('is_featured')

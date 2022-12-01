@@ -8,6 +8,7 @@ use Auth;
 use Hash;
 use Str;
 use App\Models\User;
+use App\Models\Store;
 use App\Events\UserEvent;
 use App\Models\UserCode;
 
@@ -32,6 +33,9 @@ class AuthController extends Controller
                 $error['status'] = 400;
                 return response()->json($error, 400);
             }
+
+            $type = $request->has('type') && $request->type == 'store' ? Store() : Customer();
+
             $credentials = [];
             $credentials['email'] = $request->email;
             $credentials['password'] = $request->password;
@@ -39,17 +43,23 @@ class AuthController extends Controller
             $fieldType =  'email';
             if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember'))) {
                 $user = User::where('email', $request->email)
-                ->whereIs(Customer())
+                ->whereIs($type)
                 ->first();
                 if(!empty($user)){
-                    return response()->json([
+
+                    $data = [
                         'userId' => $user->id,
                         'user' => $user,
                         'verified' => $this->setting['default_verification_method'] == 'email'? $user->email_verified_at : $user->phone_verified_at,
                         'status' => 200,
                         'message' => 'User Logged In Successfully',
                         'token' => $user->createToken(Str::random(30))->plainTextToken
-                    ], 200);
+                    ];
+
+                    if($request->has('type') && $request->type == 'store')
+                        $data['mystore'] = Store::where('owner_id', $user->id)->first();
+
+                    return response()->json($data, 200);
                 }
             }
 

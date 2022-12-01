@@ -18,6 +18,8 @@ class CreateProductCategoriesTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('store_id')->nullable();
+            $table->foreign('store_id')->references('id')->on('stores');
             $table->timestamps();
             $table->softDeletes();
         });

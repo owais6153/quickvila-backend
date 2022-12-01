@@ -1,30 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Customer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ProductCategory;
-use App\Models\Product;
+use App\Models\StoreCategory;
+use App\Models\Store;
 
-
-class ProductCategoryController extends Controller
+class StoreCategoryController extends Controller
 {
     public function index()
     {
-        $data['categories'] = ProductCategory::all();
+        $data['categories'] = StoreCategory::all();
         $data['status'] = 200;
         return response()->json($data, $data['status']);
     }
-    public function products(Request $request)
+    public function stores(Request $request)
     {
         $limit = ($request->has('limit')) ? $request->limit : 10;
-        $products = Product::whereHas('categories', function ($q) use($request){
-            $q->whereIn('product_categories.id', $request->categories);
+        $stores = Store::whereHas('categories', function ($q) use($request){
+            $q->whereIn('store_categories.id', $request->categories);
         })->where('status', Published())->orderBy('id', 'desc')->paginate($limit);
 
 
-        $data['products'] = $products;
+        $data['stores'] = $stores;
         $data['status'] = 200;
         return response()->json($data, $data['status']);
     }

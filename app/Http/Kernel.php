@@ -43,8 +43,7 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-
-        'auth.sanctum.optional' => \App\Http\Middleware\OptionalAuthSanctum::class,
+            'auth.sanctum.optional' => \App\Http\Middleware\OptionalAuthSanctum::class,
         ],
     ];
 
@@ -67,5 +66,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'permission' => \App\Http\Middleware\HasPermission::class,
         'auth.sanctum.optional' => \App\Http\Middleware\OptionalAuthSanctum::class,
+        'iAmStoreOwner' => \App\Http\Middleware\StoreAuthMiddleware::class,
     ];
 }
