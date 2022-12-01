@@ -13,6 +13,8 @@ use App\Models\User;
 use App\Models\Store;
 use App\Models\Product;
 use App\Models\Order;
+use App\Services\AuthServices\WebAuthService;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Verified;
 use Hash;
@@ -21,6 +23,12 @@ use Bouncer;
 
 class AuthController extends Controller
 {
+    protected $service;
+    function __construct()
+    {
+        $this->service = new WebAuthService();
+    }
+
     public function index()
     {
         $data = [];
@@ -34,20 +42,16 @@ class AuthController extends Controller
     public function authenticate(LoginRequest $request)
     {
         $credentials = $request->getCredentials();
-
-        $fieldType = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember'))) {
-            $request->session()->regenerate();
+        if ($this->service->authenticate($credentials, $request)) {
             return redirect()->intended('/')->with('message', 'Login successfuly');
         }
-
         return back()->withErrors([
             'authenticate' => 'Credentials do not match our records.'
         ], 'login')->withInput();
     }
     public function logout()
     {
-        Auth::logout();
+        $this->service->signout();
         return redirect('/login')->with('successs', 'Logout successfuly');
     }
 }
