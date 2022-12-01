@@ -24,13 +24,13 @@ function uploadFile(object $file, string $uploadPath, string $oldFile = null)
 
 function deleteFile(string $fileName)
 {
-    if(strpos($fileName, 'http') !== false ){
+    if (strpos($fileName, 'http') !== false) {
         return;
     }
 
     $file_path = public_path($fileName);
     // dd($file_path);
-    if ($file_path && strpos($file_path, noImage() )  === false) {
+    if ($file_path && strpos($file_path, noImage())  === false) {
         if (file_exists($file_path)) {
             unlink($file_path);
         }
@@ -51,25 +51,23 @@ function noImage()
 }
 
 
-function validateImageUrl($attr){
-    if(strpos($attr, 'http') !== false){
+function validateImageUrl($attr)
+{
+    if (strpos($attr, 'http') !== false) {
         return $attr;
-    }
-    else if($attr == null){
+    } else if ($attr == null) {
         return env('FILE_URL') . noImage();
-    }
-    else{
+    } else {
         return env('FILE_URL') . $attr;
     }
 }
-function validateVideoUrl($attr){
-    if(strpos($attr, 'http') !== false){
+function validateVideoUrl($attr)
+{
+    if (strpos($attr, 'http') !== false) {
         return $attr;
-    }
-    else if($attr == null){
+    } else if ($attr == null) {
         return false;
-    }
-    else{
+    } else {
         return env('FILE_URL') . $attr;
     }
 }

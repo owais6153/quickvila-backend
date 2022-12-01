@@ -1,29 +1,36 @@
 <?php
 
 // Roles
-function Admin(){
+function Admin()
+{
     return 'Admin';
 }
-function Manager(){
+function Manager()
+{
     return 'Manager';
 }
-function Customer(){
+function Customer()
+{
     return 'Customer';
 }
-function Store(){
+function Store()
+{
     return 'Store';
 }
-function Rider(){
+function Rider()
+{
     return 'Rider';
 }
 
 // Status
 
-function Published(){
+function Published()
+{
     return 'published';
 }
 
-function Draft(){
+function Draft()
+{
     return 'draft';
 }
 
@@ -31,17 +38,21 @@ function Draft(){
 
 // Order Status
 
-function Completed(){
+function Completed()
+{
     return 'completed';
 }
 
-function Canceled(){
+function Canceled()
+{
     return 'canceled';
 }
-function InProcess(){
+function InProcess()
+{
     return 'in-process';
 }
-function Refunded(){
+function Refunded()
+{
     return 'refunded';
 }
 
@@ -50,12 +61,13 @@ function Refunded(){
 
 
 // Settings
-function getSetting($key){
+function getSetting($key)
+{
     $setting = \App\Models\Setting::where('key', $key)->first();
-    if(!empty($setting)){
-        if($setting->value){
-          return $setting = unserialize($setting->value);
+    if (!empty($setting)) {
+        if ($setting->value) {
+            return $setting = unserialize($setting->value);
         }
     }
-    return false;
+    return [];
 }

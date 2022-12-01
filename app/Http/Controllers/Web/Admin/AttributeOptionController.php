@@ -9,6 +9,7 @@ use App\Models\Attribute;
 use App\Http\Requests\Admin\AttributeOptionRequest;
 use DataTables;
 use Bouncer;
+
 class AttributeOptionController extends Controller
 {
     function __construct()
@@ -35,10 +36,10 @@ class AttributeOptionController extends Controller
                 </a>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">';
                 if (Bouncer::can('edit-attribute')) {
-                    $html .= '<a  href="' . route('attributeoption.edit', ['attribute' => $row->attr_id, 'attributeOption'=>$row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-pencil-alt"></i>Edit</a>';
+                    $html .= '<a  href="' . route('attributeoption.edit', ['attribute' => $row->attr_id, 'attributeOption' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-pencil-alt"></i>Edit</a>';
                 }
-                if (Bouncer::can('delete-attribute') ) {
-                    $html .= '<form method="POST" action="' . route('attributeoption.destroy', ['attribute' => $row->attr_id, 'attributeOption'=>$row->id]) . '">
+                if (Bouncer::can('delete-attribute')) {
+                    $html .= '<form method="POST" action="' . route('attributeoption.destroy', ['attribute' => $row->attr_id, 'attributeOption' => $row->id]) . '">
                     <input type="hidden" name="_token" value="' . csrf_token() . '"/>
                     <input type="hidden" name="_method" value="DELETE" />
                     <button class="dropdown-item d-block mr-1 btn-link delete"><i class="mr-2 fas fa-trash-alt"></i>Delete</button></form>';
@@ -67,7 +68,6 @@ class AttributeOptionController extends Controller
         ]);
 
         return redirect()->route('attributeoption.index', ['attribute' => $attribute->id])->with('success', 'Option Created');
-
     }
     public function edit(Attribute $attribute, $id)
     {
@@ -91,26 +91,28 @@ class AttributeOptionController extends Controller
     }
 
 
-    public function generateVariations($array) {
+    public function generateVariations($array)
+    {
         if (empty($array)) {
             return [];
         }
 
-        function traverse($array, $parent_ind) {
+        function traverse($array, $parent_ind)
+        {
             $r = [];
             $pr = '';
 
-            if(!is_numeric($parent_ind)) {
-                $pr = $parent_ind.'-';
+            if (!is_numeric($parent_ind)) {
+                $pr = $parent_ind . '-';
             }
 
             foreach ($array as $ind => $el) {
                 if (is_array($el)) {
-                    $r = array_merge($r, traverse($el, $pr.(is_numeric($ind) ? '' : $ind)));
+                    $r = array_merge($r, traverse($el, $pr . (is_numeric($ind) ? '' : $ind)));
                 } elseif (is_numeric($ind)) {
-                    $r[] = $pr.$el;
+                    $r[] = $pr . $el;
                 } else {
-                    $r[] = $pr.$ind.'-'.$el;
+                    $r[] = $pr . $ind . '-' . $el;
                 }
             }
 
@@ -131,7 +133,6 @@ class AttributeOptionController extends Controller
                     } else {
                         $rr[] = $elem;
                     }
-
                 }
 
                 $array[$key] = $rr;
@@ -164,19 +165,7 @@ class AttributeOptionController extends Controller
 
         return $rez;
     }
-    // public function generateVariations($arrays){
-    //     $result = array(array());
-    //     foreach ($arrays as $property => $property_values) {
-    //         $tmp = array();
-    //         foreach ($result as $result_item) {
-    //             foreach ($property_values as $property_key => $property_value) {
-    //                 $tmp[] = $result_item + array($property_key => $property_value);
-    //             }
-    //         }
-    //         $result = $tmp;
-    //     }
-    //     return $result;
-    // }
+
     public function listForVariations(Request $request)
     {
 
@@ -189,14 +178,14 @@ class AttributeOptionController extends Controller
             return response()->json($error, 400);
         }
         $variants = [];
-        $attributes = Attribute::whereIn('id', $request->variation_attr)->with(['options' => function ($q){
+        $attributes = Attribute::whereIn('id', $request->variation_attr)->with(['options' => function ($q) {
             $q->select('name', 'id', 'media', 'attr_id');
         }])->whereHas('options')->get()->toArray();
 
         $options = [];
-        foreach($attributes as $attribute){
-            foreach($attribute['options'] as $option){
-                $options[$attribute['name']][]= $option;
+        foreach ($attributes as $attribute) {
+            foreach ($attribute['options'] as $option) {
+                $options[$attribute['name']][] = $option;
             }
         }
 
