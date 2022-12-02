@@ -11,13 +11,16 @@ use App\Models\User;
 use App\Models\Store;
 use App\Events\UserEvent;
 use App\Models\UserCode;
+use App\Services\AuthServices\ApiAuthService;
 
 class AuthController extends Controller
 {
     protected $setting = false;
+    protected $service;
     function __construct()
     {
         $this->setting = getSetting('general');
+        $this->service = new ApiAuthService();
     }
 
     public function authenticate(Request $request)
@@ -41,22 +44,22 @@ class AuthController extends Controller
             $credentials['password'] = $request->password;
 
             $fieldType =  'email';
-            if (Auth::attempt(array($fieldType => $credentials['email'], 'password' => $credentials['password']), request()->has('remember'))) {
+            if ($this->service->authenticate($credentials, $request)) {
                 $user = User::where('email', $request->email)
-                ->whereIs($type)
-                ->first();
-                if(!empty($user)){
+                    ->whereIs($type)
+                    ->first();
+                if (!empty($user)) {
 
                     $data = [
                         'userId' => $user->id,
                         'user' => $user,
-                        'verified' => $this->setting['default_verification_method'] == 'email'? $user->email_verified_at : $user->phone_verified_at,
+                        'verified' => $this->setting['default_verification_method'] == 'email' ? $user->email_verified_at : $user->phone_verified_at,
                         'status' => 200,
                         'message' => 'User Logged In Successfully',
                         'token' => $user->createToken(Str::random(30))->plainTextToken
                     ];
 
-                    if($request->has('type') && $request->type == 'store')
+                    if ($request->has('type') && $request->type == 'store')
                         $data['mystore'] = Store::where('owner_id', $user->id)->first();
 
                     return response()->json($data, 200);
@@ -94,8 +97,8 @@ class AuthController extends Controller
 
             $user = new User;
             $user->name = "$request->first_name $request->last_name";
-            $user->first_name = $request->first_name ;
-            $user->last_name = $request->last_name ;
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
             $user->email = $request->email;
             $user->phone = $request->phone;
             $user->password = Hash::make($request->password);
@@ -107,7 +110,7 @@ class AuthController extends Controller
             return response()->json([
                 'userId' => $user->id,
                 'user' => $user,
-                'verified' => $this->setting['default_verification_method'] == 'email'? $user->email_verified_at : $user->phone_verified_at,
+                'verified' => $this->setting['default_verification_method'] == 'email' ? $user->email_verified_at : $user->phone_verified_at,
                 'status' => 200,
                 'message' => 'User Register Successfully',
                 'token' => $user->createToken(Str::random(30))->plainTextToken
@@ -151,7 +154,7 @@ class AuthController extends Controller
                 return response()->json([
                     'userId' => $user->id,
                     'user' => $user,
-                    'verified' => $this->setting['default_verification_method'] == 'email'? $user->email_verified_at : $user->phone_verified_at,
+                    'verified' => $this->setting['default_verification_method'] == 'email' ? $user->email_verified_at : $user->phone_verified_at,
                     'status' => 200,
                     'message' => 'User verified Successfully',
                     'token' => $user->createToken(Str::random(30))->plainTextToken
@@ -281,5 +284,4 @@ class AuthController extends Controller
             return response()->json($error, 500);
         }
     }
-
 }
