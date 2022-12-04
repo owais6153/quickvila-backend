@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\StoreCategory;
 use App\Http\Requests\Admin\StoreSettingRequest;
+use App\Http\Requests\Admin\StoreRequest;
 use App\Models\StoreSetting;
 use DataTables;
 use Bouncer;
