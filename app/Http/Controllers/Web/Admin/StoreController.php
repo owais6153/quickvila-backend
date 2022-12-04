@@ -245,8 +245,10 @@ class StoreController extends Controller
     {
         if ($store->manage_able) {
             $store->owner->delete();
-            $store->setting->delete();
-            $store->products->delete();
+            $store->setting()->delete();
+            if($store->products->count() > 0)
+                $store->products->delete();
+
             $store->delete();
             return redirect()->route('store.index')->with('success', 'Store Deleted');
         }
