@@ -1,36 +1,12 @@
 Delete relations on observer
 
+Service
+    AuthService
 
-$('#role').select2({
-    placeholder: "Search Role",
-    allowClear: true,
-    ajax: {
-        url: "{{ route('role.get-role') }}",
-        type: "GET",
-        dataType: 'json',
-        data: function(params) {
-            return {
-                search: params.term
-            };
-        },
-        processResults: function(response) {
-            return {
-                results: response
-            };
-        },
-        cache: true
-    }
-});
-
-public function getRole(Request $request)
-{
-    $search = trim($request->search);
-
-    $role = Role::where('name', 'LIKE', '%' . $search . '%')->get();
-    $formatted_role = [];
-    foreach ($role as $p) {
-        $formatted_role[] = ['id' => $p->name, 'text' => $p->name];
-    }
-
-    return \Response::json($formatted_role);
-}
+Repository Pattern
+    AttributesOptionController
+    AttributesController
+    VideoController
+    Product Cattegory
+    Store Banners
+    TestimonialController

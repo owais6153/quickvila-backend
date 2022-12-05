@@ -36,34 +36,26 @@ class AuthController extends Controller
                 $error['status'] = 400;
                 return response()->json($error, 400);
             }
-
-            $type = $request->has('type') && $request->type == 'store' ? Store() : Customer();
-
             $credentials = [];
             $credentials['email'] = $request->email;
             $credentials['password'] = $request->password;
+            $user = $this->service->authenticate($credentials, $request);
 
-            $fieldType =  'email';
-            if ($this->service->authenticate($credentials, $request)) {
-                $user = User::where('email', $request->email)
-                    ->whereIs($type)
-                    ->first();
-                if (!empty($user)) {
+            if ($user !== false) {
 
-                    $data = [
-                        'userId' => $user->id,
-                        'user' => $user,
-                        'verified' => $this->setting['default_verification_method'] == 'email' ? $user->email_verified_at : $user->phone_verified_at,
-                        'status' => 200,
-                        'message' => 'User Logged In Successfully',
-                        'token' => $user->createToken(Str::random(30))->plainTextToken
-                    ];
+                $data = [
+                    'userId' => $user->id,
+                    'user' => $user,
+                    'verified' => $this->setting['default_verification_method'] == 'email' ? $user->email_verified_at : $user->phone_verified_at,
+                    'status' => 200,
+                    'message' => 'User Logged In Successfully',
+                    'token' => $user->createToken(Str::random(30))->plainTextToken
+                ];
 
-                    if ($request->has('type') && $request->type == 'store')
-                        $data['mystore'] = Store::where('owner_id', $user->id)->first();
+                if ($request->has('type') && $request->type == 'store')
+                    $data['mystore'] = Store::where('owner_id', $user->id)->first();
 
-                    return response()->json($data, 200);
-                }
+                return response()->json($data, 200);
             }
 
             $error['errors'] = ['login' => ['Credentials do not match our records.']];
@@ -94,19 +86,10 @@ class AuthController extends Controller
                 return response()->json($error, 400);
             }
 
+            $user = $this->service->register($request, Customer());
 
-            $user = new User;
-            $user->name = "$request->first_name $request->last_name";
-            $user->first_name = $request->first_name;
-            $user->last_name = $request->last_name;
-            $user->email = $request->email;
-            $user->phone = $request->phone;
-            $user->password = Hash::make($request->password);
-            $user->save();
-            $user->assign(Customer());
 
             event(new UserEvent($user));
-
             return response()->json([
                 'userId' => $user->id,
                 'user' => $user,
@@ -144,7 +127,8 @@ class AuthController extends Controller
                 return response()->json($error, 400);
             }
             $user = $request->user();
-            $user_code = UserCode::where('code',  $request->code)->where('user_id', $user->id)->first();
+            $user_code = $this->service->verifycode($request->code, $user->id);
+
 
             if (!empty($user_code)) {
                 $user->update([
@@ -225,7 +209,7 @@ class AuthController extends Controller
                 return response()->json($error, 400);
             }
             $user = $request->user();
-            $user_code = UserCode::where('code',  $request->code)->where('user_id', $user->id)->where('type', $this->setting['default_verification_method'])->first();
+            $user_code = $this->service->verifycode($request->code, $user->id);
 
             if (!empty($user_code)) {
                 $user->update([

@@ -19,7 +19,7 @@
         CATALOG
     </div>
 
-    @if(Bouncer::can('view-store') || Bouncer::can('create-store') || Bouncer::can('view-store-category') || Bouncer::can('edit-store-category') || Bouncer::can('view-product-category') || Bouncer::can('create-product-category') || Bouncer::can('create-attribute') || Bouncer::can('create-attribute'))
+    @if(Bouncer::can('view-store') || Bouncer::can('create-store') || Bouncer::can('view-store-category') || Bouncer::can('edit-store-category') )
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#store" aria-expanded="true"
             aria-controls="store">
@@ -48,27 +48,17 @@
                 @endcan
               @endif
 
-              @if(Bouncer::can('view-product-category') || Bouncer::can('create-product-category'))
-                <h6 class="collapse-header">Product Categories</h6>
 
-                @can('create-product-category')
-                    <a class="collapse-item" href="{{ route('productcategory.create') }}">Add New Category</a>
-                @endcan
-                @can('view-product-category')
-                    <a class="collapse-item" href="{{ route('productcategory.index') }}">All Categories</a>
-                @endcan
-              @endif
+              @if(Bouncer::can('view-store-banner') || Bouncer::can('create-store-banner'))
+              <h6 class="collapse-header">Product Attributes</h6>
 
-              @if(Bouncer::can('view-attribute') || Bouncer::can('create-attribute'))
-                <h6 class="collapse-header">Product Attributes</h6>
-
-                @can('create-attribute')
-                    <a class="collapse-item" href="{{ route('attribute.create') }}">Add New Attribute</a>
+                @can('create-store-banner')
+                    <a class="collapse-item" href="{{ route('storebanner.create') }}">Add New Banner</a>
                 @endcan
-                @can('view-attribute')
-                    <a class="collapse-item" href="{{ route('attribute.index') }}">All Attributes</a>
+                @can('view-store-banner')
+                    <a class="collapse-item" href="{{ route('storebanner.index') }}">All Banners</a>
                 @endcan
-              @endif
+                @endif
             </div>
         </div>
     </li>

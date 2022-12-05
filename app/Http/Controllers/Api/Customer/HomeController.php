@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Testimonial;
 use App\Models\Video;
+use App\Models\StoreBanner;
 use App\Models\Store;
 use App\Models\StoreCategory;
 
@@ -22,6 +23,7 @@ class HomeController extends Controller
         $data['testimonials'] = Testimonial::limit($limit)->orderBy('sort', 'desc')->get();
         $data['store_categories'] = StoreCategory::limit($limit)->orderBy('id', 'desc')->get();
         $data['videos'] = Video::limit($limit)->orderBy('sort', 'desc')->get();
+        $data['banners'] = StoreBanner::limit(2)->orderBy('sort', 'desc')->get();
 
         $data['status'] = 200;
         return response()->json($data, $data['status']);

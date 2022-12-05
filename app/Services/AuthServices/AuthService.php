@@ -3,6 +3,8 @@
 namespace App\Services\AuthServices;
 
 use Auth;
+use App\Models\User;
+use Hash;
 
 class AuthService
 {
@@ -16,5 +18,23 @@ class AuthService
     public function logout()
     {
         Auth::logout();
+    }
+    public function register($request, $role)
+    {
+        $user = new User;
+        $user->name = "$request->first_name $request->last_name";
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->password = Hash::make($request->password);
+        $user->save();
+        $user->assign($role);
+        return $user;
+    }
+    public function verifycode($code, $user_id)
+    {
+        $user_code = UserCode::where('code',  $request->code)->where('user_id', $user_id)->first();
+        return $user_code;
     }
 }

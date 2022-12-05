@@ -5,28 +5,32 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Admin\AttributeRequest;
+use App\Repositories\Repository;
 use App\Models\Attribute;
+use App\Models\Store;
 use DataTables;
 use Bouncer;
 
 class AttributesController extends Controller
 {
-    function __construct()
+    function __construct(Attribute $attribute)
     {
         $this->middleware('permission:view-attribute', ['index', 'getList']);
         $this->middleware('permission:create-attribute', ['create', 'store']);
         $this->middleware('permission:edit-attribute', ['edit', 'update']);
         $this->middleware('permission:delete-attribute', ['destroy']);
         $this->dir = 'admin.attributes.';
+        $this->model = new Repository($attribute);
     }
 
-    public function index()
+    public function index(Store $store)
     {
-        return view($this->dir . 'index');
+        return view($this->dir . 'index', compact('store'));
     }
     public function getList(Request $request)
     {
-        $model =  Attribute::withCount(['options']);
+        $model =  $this->model->withCount(['options']);
+        $model = $model->where('store_id', $request->store);
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $html = '<div class="dropdown">
@@ -36,10 +40,10 @@ class AttributesController extends Controller
                 </a>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">';
                 if (Bouncer::can('edit-attribute')) {
-                    $html .= '<a  href="' . route('attribute.edit', ['attribute' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-pencil-alt"></i>Edit</a>';
+                    $html .= '<a  href="' . route('attribute.edit', ['store'=>$row->store_id, 'attribute' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-pencil-alt"></i>Edit</a>';
                 }
                 if (Bouncer::can('delete-attribute') ) {
-                    $html .= '<form method="POST" action="' . route('attribute.destroy', ['attribute' => $row->id]) . '">
+                    $html .= '<form method="POST" action="' . route('attribute.destroy', ['store'=>$row->store_id, 'attribute' => $row->id]) . '">
                     <input type="hidden" name="_token" value="' . csrf_token() . '"/>
                     <input type="hidden" name="_method" value="DELETE" />
                     <button class="dropdown-item d-block mr-1 btn-link delete"><i class="mr-2 fas fa-trash-alt"></i>Delete</button></form>';
@@ -59,40 +63,55 @@ class AttributesController extends Controller
             ->rawColumns(['action'])
             ->toJson();
     }
-    public function create()
+    public function create(Store $store)
     {
-        return view($this->dir . 'create');
+        return view($this->dir . 'create', compact('store'));
     }
-    public function store(AttributeRequest $request)
+    public function store(Store $store, AttributeRequest $request)
     {
-        Attribute::create([
+        $this->model->create([
             'name' => $request->name,
             'type' => $request->type,
             'user_id' => $request->user_id,
-            'store_id' => $request->has('store_id') ? $request->store_id : null
+            'store_id' => $store->id,
         ]);
 
-        return redirect()->route('attribute.index')->with('success', 'Attribute Created');
+        return redirect()->route('attribute.index', ['store'=>$store->id])->with('success', 'Attribute Created');
     }
-    public function edit(Attribute $attribute)
+    public function edit(Store $store, Attribute $attribute)
     {
-        return view($this->dir . 'edit', compact('attribute'));
+        return view($this->dir . 'edit', compact('attribute', 'store'));
     }
-    public function update(AttributeRequest $request, Attribute $attribute)
+    public function update(AttributeRequest $request, Store $store, $id)
     {
-        $attribute->update([
+        $this->model->update([
             'name' => $request->name,
             'type' => $request->type,
-        ]);
+        ], $id);
 
-        return redirect()->route('attribute.index')->with('success', 'Attribute Updated');
+        return redirect()->route('attribute.index', ['store'=>$store->id])->with('success', 'Attribute Updated');
     }
-    public function destroy(Attribute $attribute)
+    public function destroy(Store $store, Attribute $attribute)
     {
-        $attribute->options->delete();
+        if($attribute->options->count() > 0)
+            $attribute->options->delete();
+
         $attribute->delete();
 
-        return redirect()->route('attribute.index')->with('success', 'Attribute Deleted');
+        return redirect()->route('attribute.index', ['store'=>$store->id])->with('success', 'Attribute Deleted');
     }
+    public function attributesDropdown(Request $request)
+    {
+        $search = trim($request->search);
 
+        $model = $this->model->getModel();
+        $attr = $model::where('name', 'LIKE', '%' . $search . '%')->where('store_id', $request->store)->get();
+
+        $formatted_attr = [];
+        foreach ($attr as $a) {
+            $formatted_attr[] = ['id' => $a->id, 'text' => $a->name];
+        }
+
+        return \Response::json($formatted_attr);
+    }
 }

@@ -6,18 +6,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Testimonial;
 use App\Http\Requests\Admin\TestimonailRequest;
+use App\Repositories\Repository;
 use DataTables;
 use Bouncer;
 
 class TestimonialController extends Controller
 {
-    function __construct()
+    function __construct(Testimonial $testimonial)
     {
         $this->middleware('permission:view-testimonial', ['index', 'getList']);
         $this->middleware('permission:create-testimonial', ['create', 'store']);
         $this->middleware('permission:edit-testimonial', ['edit', 'update']);
         $this->middleware('permission:delete-testimonial', ['destroy']);
         $this->dir = 'admin.testimonial.';
+        $this->model = new Repository($testimonial);
     }
     /**
      * Display a listing of the resource.
@@ -30,7 +32,7 @@ class TestimonialController extends Controller
     }
     public function getList(Request $request)
     {
-        $model = Testimonial::query();
+        $model = $this->model->query();
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';
@@ -73,7 +75,7 @@ class TestimonialController extends Controller
             $file_name = uploadFile($imageFile, imagePath());
             $image = $file_name;
         }
-        $testimonial = Testimonial::create([
+        $testimonial = $this->model->create([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'image' => ($image != '') ? $image :  noImage(),
@@ -122,13 +124,13 @@ class TestimonialController extends Controller
             $file_name = uploadFile($imageFile, imagePath());
             $image = $file_name;
         }
-        $testimonial->update([
+        $this->model->update([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'image' => ($image != '') ? $image :  str_replace(env('FILE_URL'),'',$testimonial->image),
             'description' => $request->description,
             'sort' => $request->sort,
-        ]);
+        ], $testimonial->id);
 
         return redirect()->route('testimonial.index')->with('success', 'Testimonial Updated');
     }
@@ -142,7 +144,7 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial)
     {
         deleteFile(str_replace(env('FILE_URL'),'',$testimonial->image) );
-        $testimonial->delete();
+        $this->model->delete($testimonial->id);
         return redirect()->route('testimonial.index')->with('success', 'Testimonial Deleted');
     }
 }

@@ -60,4 +60,9 @@ class Repository implements RepositoryInterface
     {
         return $this->model->with($relations);
     }
+    public function withCount($relations)
+    {
+        return $this->model->withCount($relations);
+    }
+
 }

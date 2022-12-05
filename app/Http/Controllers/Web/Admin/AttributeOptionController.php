@@ -7,18 +7,20 @@ use Illuminate\Http\Request;
 use App\Models\AttributesOption;
 use App\Models\Attribute;
 use App\Http\Requests\Admin\AttributeOptionRequest;
+use App\Repositories\Repository;
 use DataTables;
 use Bouncer;
 
 class AttributeOptionController extends Controller
 {
-    function __construct()
+    function __construct(AttributesOption $attributeoption)
     {
         $this->middleware('permission:view-attribute', ['index', 'getList']);
         $this->middleware('permission:create-attribute', ['create', 'store']);
         $this->middleware('permission:edit-attribute', ['edit', 'update']);
         $this->middleware('permission:delete-attribute', ['destroy']);
         $this->dir = 'admin.attributes.options.';
+        $this->model = new Repository($attributeoption);
     }
     public function index(Attribute $attribute)
     {
@@ -26,7 +28,8 @@ class AttributeOptionController extends Controller
     }
     public function getList(Attribute $attribute, Request $request)
     {
-        $model =  AttributesOption::where('attr_id', $attribute->id);
+        $model = $this->model->getModel();
+        $model =  $model->where('attr_id', $attribute->id);
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $html = '<div class="dropdown">
@@ -59,7 +62,7 @@ class AttributeOptionController extends Controller
     }
     public function store(Attribute $attribute, AttributeOptionRequest $request)
     {
-        AttributesOption::create([
+        $this->model->create([
             'name' => $request->name,
             'media' => $request->has('media') ?  $request->media : null,
             'attr_id' => $attribute->id,
@@ -76,122 +79,16 @@ class AttributeOptionController extends Controller
     }
     public function update(Attribute $attribute, $id, AttributeOptionRequest $request)
     {
-        $attributesoption = AttributesOption::findOrfail($id);
-        $attributesoption->update([
+        $this->model->update([
             'name' => $request->name,
             'media' => $request->has('media') ?  $request->media : null,
-        ]);
+        ], $id);
         return redirect()->route('attributeoption.index', ['attribute' => $attribute->id])->with('success', 'Option Updated');
     }
 
     public function destroy(Attribute $attribute, $id)
     {
-        $attributesoption = AttributesOption::findOrfail($id)->delete();
+        $this->model->delete($id);
         return redirect()->route('attributeoption.index', ['attribute' => $attribute->id])->with('success', 'Option Deleted');
-    }
-
-
-    public function generateVariations($array)
-    {
-        if (empty($array)) {
-            return [];
-        }
-
-        function traverse($array, $parent_ind)
-        {
-            $r = [];
-            $pr = '';
-
-            if (!is_numeric($parent_ind)) {
-                $pr = $parent_ind . '-';
-            }
-
-            foreach ($array as $ind => $el) {
-                if (is_array($el)) {
-                    $r = array_merge($r, traverse($el, $pr . (is_numeric($ind) ? '' : $ind)));
-                } elseif (is_numeric($ind)) {
-                    $r[] = $pr . $el;
-                } else {
-                    $r[] = $pr . $ind . '-' . $el;
-                }
-            }
-
-            return $r;
-        }
-
-        //1. Go through entire array and transform elements that are arrays into elements, collect keys
-        $keys = [];
-        $size = 1;
-
-        foreach ($array as $key => $elems) {
-            if (is_array($elems)) {
-                $rr = [];
-
-                foreach ($elems as $ind => $elem) {
-                    if (is_array($elem) && !isset($elem['name']) && !isset($elem['media'])) {
-                        $rr = array_merge($rr, traverse($elem, $ind));
-                    } else {
-                        $rr[] = $elem;
-                    }
-                }
-
-                $array[$key] = $rr;
-                $size *= count($rr);
-            }
-
-            $keys[] = $key;
-        }
-
-
-
-        //2. Go through all new elems and make variations
-        $rez = [];
-        for ($i = 0; $i < $size; $i++) {
-            $rez[$i] = [];
-
-            foreach ($array as $key => $value) {
-                $current = current($array[$key]);
-                $rez[$i][$key] = $current;
-            }
-
-            foreach ($keys as $key) {
-                if (!next($array[$key])) {
-                    reset($array[$key]);
-                } else {
-                    break;
-                }
-            }
-        }
-
-        return $rez;
-    }
-
-    public function listForVariations(Request $request)
-    {
-
-        $validator = \Validator::make($request->all(), [
-            'variation_attr' => 'required',
-        ]);
-        if ($validator->fails()) {
-            $error['errors'] = $validator->messages();
-            $error['status'] = 400;
-            return response()->json($error, 400);
-        }
-        $variants = [];
-        $attributes = Attribute::whereIn('id', $request->variation_attr)->with(['options' => function ($q) {
-            $q->select('name', 'id', 'media', 'attr_id');
-        }])->whereHas('options')->get()->toArray();
-
-        $options = [];
-        foreach ($attributes as $attribute) {
-            foreach ($attribute['options'] as $option) {
-                $options[$attribute['name']][] = $option;
-            }
-        }
-
-
-        $variants = $this->generateVariations($options);
-
-        return response()->json(['variants' => $variants, 'status' => 200], 200);
     }
 }

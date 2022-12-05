@@ -49,7 +49,7 @@ class Store extends Model
         return $this->belongsTo(User::class, 'owner_id', 'id');
     }
     public function setting(){
-        return $this->hasOne(StoreSetting::class);
+        return $this->hasOne(StoreSetting::class, 'store_id', 'id');
     }
     public function reviews()
     {

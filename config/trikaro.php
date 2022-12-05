@@ -50,6 +50,12 @@ return [
                 'Edit Attribute ' => 'edit-attribute',
                 'Delete Attribute' => 'delete-attribute',
             ],
+            'Store Banners Permissions' => [
+                'View Store Banners' => 'view-store-banner',
+                'Create Store Banner' => 'create-store-banner',
+                'Edit Store Banner ' => 'edit-store-banner',
+                'Delete Store Banner' => 'delete-store-banner',
+            ],
             'Setting Permissions' => [
                 'View Settings' => 'view-setting',
                 'Save Settings' => 'edit-setting',

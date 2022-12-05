@@ -3,15 +3,15 @@
 @section('content')
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">All Attributes</h1>
-            <a href="{{ route('attribute.create', ['store' => $store->id]) }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                Create Attributes</a>
+            <h1 class="h3 mb-0 text-gray-800">All Store Banners</h1>
+            <a href="{{ route('storebanner.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add New
+                Store Banner</a>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">All Attributes</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">All Stores</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -19,10 +19,10 @@
                                 <thead class="bg-primary text-light">
                                     <tr>
                                         <th scope="col">ID</th>
-                                        <th scope="col">Attribute Name</th>
-                                        <th scope="col">Type</th>
-                                        <th scope="col">Total Options</th>
-                                        <th scope="col">Actions</th>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Subtitle</th>
+                                        <th scope="col">Store</th>
+                                        <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -44,7 +44,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('attribute.list', ['store' => $store->id]) }}",
+                    url: "{{ route('storebanner.list') }}",
                     type: 'GET',
                 },
                 columns: [{
@@ -53,22 +53,22 @@
                         'visible': false
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'title',
+                        name: 'title'
                     },
                     {
-                        data: 'type',
-                        name: 'type'
+                        data: 'subtitle',
+                        name: 'subtitle'
                     },
                     {
-                        data: 'options_count',
-                        name: 'options_count'
+                        data: 'store.name',
+                        name: 'store.name'
                     },
                     {
                         data: 'action',
                         name: 'action',
-                        orderable: false,
-                        searchable: false
+                        orderable: true,
+                        searchable: true
                     }
                 ],
                 order: [

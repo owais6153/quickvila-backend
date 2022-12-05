@@ -57,18 +57,21 @@ class StoreController extends Controller
                     <input type="hidden" name="_method" value="DELETE" />
                     <button class="dropdown-item d-block mr-1 btn-link delete"><i class="mr-2 fas fa-trash-alt"></i>Delete</button></form>';
                 }
-                $html .= '<li class="dropdown-header">Prdoucts</li>';
                 if (Bouncer::can('view-product')) {
-                    $html .= '<a  href="' . route('product.create', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fa fa-plus"></i>Add Product</a>';
+                    $html .= '<li class="dropdown-header">Prdoucts</li>';
+                    $html .= '<a  href="' . route('product.index', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-archive"></i>Products</a>';
                 }
-                if (Bouncer::can('view-product')) {
-                    $html .= '<a  href="' . route('product.index', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-archive"></i>All Products</a>';
+
+                if (Bouncer::can('view-product-category')) {
+                    $html .= '<a  href="' . route('productcategory.index', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-archive"></i>Product Categories</a>';
                 }
+
+                if (Bouncer::can('view-attribute')) {
+                    $html .= '<a  href="' . route('attribute.index', ['store' => $row->id]) . '" class="dropdown-item"><i class="mr-2 fas fa-archive"></i>Product Attributes</a>';
+                }
+
                 $html .= '</div>
             </div>';
-
-
-
 
                 return $html;
             })
@@ -188,12 +191,6 @@ class StoreController extends Controller
      */
     public function update(Request $request, Store $store)
     {
-
-
-
-
-
-
         $logo = $cover = "";
         if ($request->hasFile('logo')) {
 

@@ -173,7 +173,24 @@
 
     $('.select2').select2({
         'placeholder': $(this).attr('placeholder'),
-        'width': '100%'
+        'width': '100%',
+        allowClear: true,
+        ajax: {
+            url: "{{ route('attribute.dropdown', ['store' => $store->id]) }}",
+            type: "GET",
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    search: params.term
+                };
+            },
+            processResults: function(response) {
+                return {
+                    results: response
+                };
+            },
+            cache: true
+        }
     });
 
     $('#makeVariation').on('click', function(){

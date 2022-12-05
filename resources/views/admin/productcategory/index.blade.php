@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">All Product Category</h1>
-            <a href="{{ route('productcategory.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <a href="{{ route('productcategory.create', ['store' => $store->id]) }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                 Add
                 New
                 Product Category</a>
@@ -45,7 +45,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('productcategory.list') }}",
+                    url: "{{ route('productcategory.list', ['store'=> $store->id]) }}",
                     type: 'GET',
                     data: {
                         type: 'store'

@@ -11,24 +11,27 @@ use App\Http\Requests\Admin\ProductRequest;
 use DataTables;
 use App\Models\Attribute;
 use App\Models\Variation;
+use App\Repositories\Repository;
 use Bouncer;
 use Auth;
+use App\Services\ProductServices\VariationService;
 
 class ProductController extends Controller
 {
-    function __construct()
+    function __construct(Product $product)
     {
         $this->middleware('permission:view-product', ['index', 'getList']);
         $this->middleware('permission:create-product', ['create', 'store']);
         $this->middleware('permission:edit-product', ['edit', 'update']);
         $this->middleware('permission:delete-product', ['destroy']);
         $this->dir = 'admin.product.';
+        $this->model = new Repository($product);
+        $this->variationservice = new VariationService();
     }
     public function getList(Request $request)
     {
-        $model = Product::query();
-        if($request->has('store_id'))
-            $model = $model->where('store_id', $request->store_id);
+        $model = $this->model->getModel();
+        $model = $model->where('store_id', $request->store_id);
 
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
@@ -68,8 +71,8 @@ class ProductController extends Controller
      */
     public function create(Store $store)
     {
-        $categories = ProductCategory::all();
-        $attributes = Attribute::all();
+        $categories = ProductCategory::where('store_id', $store->id)->get();
+        $attributes = Attribute::where('store_id', $store->id)->get();
         return view($this->dir . 'create', compact('categories', 'store', 'attributes'));
     }
 
@@ -89,7 +92,7 @@ class ProductController extends Controller
         }
 
 
-        $product = Product::create([
+        $product = $this->model->create([
             'name' => $request->name,
             'description' => $request->description,
             'short_description' => $request->short_description,
@@ -109,15 +112,7 @@ class ProductController extends Controller
 
 
         if($request->product_type == 'variation'){
-            foreach($request->variations as $variation){
-                Variation::create([
-                    'name' => $variation['name'],
-                    'price' => $variation['price'],
-                    'sale_price' => (isset($variation['sale_price'])) ?  $variation['sale_price'] : null,
-                    'variants' => $variation['variants'],
-                    'product_id' => $product->id,
-                ]);
-            }
+            $this->variationservice->create($request->variations, $product);
         }
 
         return redirect()->route('product.index', ['store'=>$product->store_id])->with('success', 'Product Created');
@@ -142,8 +137,8 @@ class ProductController extends Controller
      */
     public function edit(Store $store, Product $product)
     {
-        $categories = ProductCategory::all();
-        $attributes = Attribute::all();
+        $categories = ProductCategory::where('store_id', $store->id)->get();
+        $attributes = Attribute::where('store_id', $store->id)->get();
         return view($this->dir . 'edit', compact('product', 'categories', 'store', 'attributes'));
     }
 
@@ -165,7 +160,7 @@ class ProductController extends Controller
             $image = $file_name;
         }
 
-        $product->update([
+        $this->model->update([
             'name' => $request->name,
             'description' => $request->description,
             'short_description' => $request->short_description,
@@ -177,7 +172,7 @@ class ProductController extends Controller
             'price' => $product->manage_able ? $request->price : $product->price,
             'sale_price' => $product->manage_able ? $request->sale_price :  $product->sale_price,
             'image' => ($image != '') ? $image : str_replace(env('FILE_URL'), '', $product->image),
-        ]);
+        ], $product->id);
 
         if ($request->has('categories')) {
             $categories  = (array) $request->get('categories'); // related ids
@@ -190,19 +185,8 @@ class ProductController extends Controller
 
         if($request->product_type == 'variation'){
             $product->variations()->delete();
-            foreach($request->variations as $variation){
-                Variation::create([
-                    'name' => $variation['name'],
-                    'price' => $variation['price'],
-                    'sale_price' => (isset($variation['sale_price'])) ?  $variation['sale_price'] : null,
-                    'variants' => $variation['variants'],
-                    'product_id' => $product->id,
-                ]);
-            }
+            $this->variationservice->create($request->variations, $product);
         }
-
-
-
 
         return redirect()->route('product.index', ['store'=>$product->store_id])->with('success', 'Product Updated');
     }
@@ -221,5 +205,24 @@ class ProductController extends Controller
             return redirect()->route('product.index', ['store'=>$product->store_id])->with('success', 'Product Deleted');
         }
         abort(404);
+    }
+
+    public function listForVariations(Request $request)
+    {
+
+        $validator = \Validator::make($request->all(), [
+            'variation_attr' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $error['errors'] = $validator->messages();
+            $error['status'] = 400;
+            return response()->json($error, 400);
+        }
+        $variants = [];
+
+
+        $variants = $this->variationservice->getAllPossibleVariants($request);
+
+        return response()->json(['variants' => $variants, 'status' => 200], 200);
     }
 }

@@ -9,9 +9,6 @@
                     <div class="form-group">
                         <label>Product Attributes</label>
                         <select class="form-control select2" id="attributes" name="p_attributes[]" multiple placeholer="Select Attributes">
-                            @foreach ($attributes as $attr)
-                                <option value="{{$attr->id}}">{{$attr->name}}</option>
-                            @endforeach
                         </select>
                     </div>
                 </div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
+use App\Models\Store;
+use App\Repositories\Repository;
 use App\Http\Requests\Admin\ProductCategoryRequest;
 use DataTables;
 use Bouncer;
@@ -12,31 +14,32 @@ use Auth;
 
 class ProductCategoryController extends Controller
 {
-    function __construct()
+    function __construct(ProductCategory $productcategory)
     {
         $this->middleware('permission:view-product-category', ['index', 'getList']);
         $this->middleware('permission:create-product-category', ['create', 'store']);
         $this->middleware('permission:edit-product-category', ['edit', 'update']);
         $this->middleware('permission:delete-product-category', ['destroy']);
         $this->dir = 'admin.productcategory.';
+        $this->model = new Repository($productcategory);
     }
-    public function index()
+    public function index(Store $store)
     {
-        return view($this->dir . 'index');
+        return view($this->dir . 'index', compact('store'));
     }
 
     public function getList(Request $request)
     {
-
-        $model =  ProductCategory::query();
+        $model = $this->model->query();
+        $model = $model->where('store_id', $request->store);
         return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';
                 if (Bouncer::can('edit-product-category') && (Bouncer::can('all-product-category') || $row->user_id == Auth::id())) {
-                    $actionBtn .= '<a href="' . route('productcategory.edit', ['productcategory' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
+                    $actionBtn .= '<a href="' . route('productcategory.edit', ['store' => $row->store_id, 'productcategory' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>';
                 }
                 if (Bouncer::can('delete-product-category') && (Bouncer::can('all-product-category') || $row->user_id == Auth::id())) {
-                    $actionBtn .= '<form style="display:inline-block" method="POST" action="' . route('productcategory.destroy', ['productcategory' => $row->id]) . '">
+                    $actionBtn .= '<form style="display:inline-block" method="POST" action="' . route('productcategory.destroy', ['store' => $row->store_id, 'productcategory' => $row->id]) . '">
                     <input type="hidden" name="_token" value="' . csrf_token() . '"/>
                     <input type="hidden" name="_method" value="DELETE" />
                 <button class="btn-circle delete btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button></form>';
@@ -51,9 +54,9 @@ class ProductCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Store $store)
     {
-        return view($this->dir . 'create');
+        return view($this->dir . 'create', compact('store'));
     }
 
     /**
@@ -66,9 +69,10 @@ class ProductCategoryController extends Controller
     {
         $cat = ProductCategory::create([
             'name' =>$request->name,
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
+            'store_id' => $request->store
         ]);
-        return redirect()->route('productcategory.index')->with('success', 'Product Category Created');
+        return redirect()->route('productcategory.index', ['store' => $request->store])->with('success', 'Product Category Created');
     }
 
     /**
@@ -88,9 +92,10 @@ class ProductCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(ProductCategory $productcategory)
+    public function edit(Store $store ,$id)
     {
-        return view($this->dir . 'edit', compact('productcategory'));
+        $productcategory = $this->model->show($id);
+        return view($this->dir . 'edit', compact('productcategory', 'store'));
     }
 
     /**
@@ -100,10 +105,12 @@ class ProductCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductCategoryRequest $request, ProductCategory $productcategory)
+    public function update(ProductCategoryRequest $request, Store $store, $id)
     {
-        $productcategory->update($request->all());
-        return redirect()->route('productcategory.index')->with('success', 'Product Category Updated');
+        $this->model->update([
+            'name' =>$request->name,
+        ], $id);
+        return redirect()->route('productcategory.index', ['store' => $request->store])->with('success', 'Product Category Updated');
     }
 
     /**
@@ -112,9 +119,9 @@ class ProductCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductCategory $productcategory)
+    public function destroy(Store $store, $id)
     {
-        $productcategory->delete();
-        return redirect()->route('productcategory.index')->with('success', 'Product Category Deleted');
+        $this->model->delete($id);
+        return redirect()->route('productcategory.index', ['store' => $request->store])->with('success', 'Product Category Deleted');
     }
 }
