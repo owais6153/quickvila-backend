@@ -17,7 +17,7 @@ class StoreBanner extends Model
         'user_id'
     ];
 
-    public function getImageAttribute($attr){
+    public function getThumbnailAttribute($attr){
         return validateImageUrl($attr);
     }
     public function store()
