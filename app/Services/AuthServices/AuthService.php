@@ -35,7 +35,7 @@ class AuthService
     }
     public function verifycode($code, $user_id)
     {
-        $user_code = UserCode::where('code',  $request->code)->where('user_id', $user_id)->first();
+        $user_code = UserCode::where('code',  $code)->where('user_id', $user_id)->first();
         return $user_code;
     }
 }
