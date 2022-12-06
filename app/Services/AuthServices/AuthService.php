@@ -4,6 +4,7 @@ namespace App\Services\AuthServices;
 
 use Auth;
 use App\Models\User;
+use App\Models\UserCode;
 use Hash;
 
 class AuthService
