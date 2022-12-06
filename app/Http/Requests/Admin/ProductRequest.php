@@ -40,7 +40,7 @@ class ProductRequest extends FormRequest
             'description' => 'nullable',
             'store' => 'required|exists:stores,id',
             'gallery.*' => 'nullable|file|mimes:png,jpg,jpeg,gif',
-            'category.*' => 'nullable|numeric',
+            'categories.*' => 'nullable|numeric',
             'product_type' => 'required',
             'status' => 'required',
             'p_attributes' =>  'nullable',

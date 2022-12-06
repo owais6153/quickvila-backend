@@ -67,7 +67,7 @@ class ProductCategoryController extends Controller
      */
     public function store(ProductCategoryRequest $request)
     {
-        $cat = ProductCategory::create([
+        $cat = $this->model->create([
             'name' =>$request->name,
             'user_id' => auth()->id(),
             'store_id' => $request->store
