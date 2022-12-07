@@ -5,14 +5,19 @@ namespace App\Http\Controllers\Api\Store;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Repositories\Repository;
 
 class ProductController extends Controller
 {
+    function __construct(Product $product)
+    {
+        $this->model = new Repository($product);
+    }
     public function index(Request $request)
     {
         $mystore = $request->mystore;
         $data = [
-            'products' => Product::where('store_id', $mystore->id)->get(),
+            'products' => $mystore->products,
             'status' => 200
         ];
         return response()->json($data, 200);
@@ -51,7 +56,7 @@ class ProductController extends Controller
                 $image = $file_name;
             }
             $mystore = $request->mystore;
-            $product = Product::create([
+            $product = $this->model->create([
                 'name' => $request->name,
                 'description' => $request->description,
                 'short_description' => $request->short_description,
@@ -105,7 +110,7 @@ class ProductController extends Controller
             }
 
             $mystore = $request->mystore;
-            $product = Product::where('id', $id)->where('store_id', $mystore->id)->with(['categories'])->first();
+            $product = $mystore->products()->where('id', $id)->with(['categories'])->first();
             if(empty($product)){
                 $error['errors'] = ['product' => ['Product Not Found.']];
                 $error['status'] = 400;
@@ -118,7 +123,7 @@ class ProductController extends Controller
                 $image = $file_name;
             }
 
-            $product->update([
+            $this->model->update([
                 'name' => $request->name,
                 'description' => $request->description,
                 'short_description' => $request->short_description,
@@ -128,7 +133,7 @@ class ProductController extends Controller
                 'is_store_featured' => $request->has('is_store_featured') ? $request->is_store_featured : false ,
                 'sale_price' => $request->sale_price,
                 'image' => ($image != '') ? $image : $product->image,
-            ]);
+            ], $product->id);
 
             if ($request->has('categories')) {
                 $categories  = (array) $request->get('categories'); // related ids
@@ -152,7 +157,7 @@ class ProductController extends Controller
     {
         try{
             $mystore = $request->mystore;
-            $product = Product::where('id', $id)->where('store_id', $mystore->id)->with(['categories'])->first();
+            $product = $mystore->products()->where('id', $id)->with(['categories', 'reviews'])->first();
             if(empty($product)){
                 $error['errors'] = ['product' => ['Product Not Found.']];
                 $error['status'] = 400;
@@ -171,7 +176,7 @@ class ProductController extends Controller
     {
         try{
             $mystore = $request->mystore;
-            $product = Product::where('id', $id)->where('store_id', $mystore->id)->with(['categories'])->first();
+            $product = $mystore->products()->where('id', $id)->with(['categories'])->first();;
             if(empty($product)){
                 $error['errors'] = ['product' => ['Product Not Found.']];
                 $error['status'] = 400;

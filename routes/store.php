@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Store\StoreController;
 use App\Http\Controllers\Api\Store\ProductController;
 use App\Http\Controllers\Api\Store\CategoryController;
+use App\Http\Controllers\Api\Store\AttributeController;
 
 
 
@@ -13,12 +14,24 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
     Route::get('', [StoreController::class, 'index']);
     Route::post('update', [StoreController::class, 'update']);
 
+    // Attributes
+    Route::get('attributes', [AttributeController::class, 'index']);
+    Route::post('attributes/create', [AttributeController::class, 'create']);
+    Route::get('attributes/{attribute:id}', [AttributeController::class, 'show']);
+    Route::post('attributes/{attribute:id}/update', [AttributeController::class, 'update']);
+    Route::delete('attributes/{attribute:id}/destroy', [AttributeController::class, 'destroy']);
+
+    // Options
+
+
+    // Categories
     Route::get('products/categories', [CategoryController::class, 'index']);
     Route::post('products/categories/create', [CategoryController::class, 'create']);
     Route::get('products/categories/{productcategory:id}', [CategoryController::class, 'show']);
     Route::put('products/categories/{productcategory:id}/update', [CategoryController::class, 'update']);
     Route::delete('products/categories/{productcategory:id}/destroy', [CategoryController::class, 'destroy']);
 
+    // Attributes
     Route::get('products', [ProductController::class, 'index']);
     Route::post('products/create', [ProductController::class, 'create']);
     Route::get('products/{product:id}', [ProductController::class, 'show']);
@@ -26,7 +39,5 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
     Route::delete('products/{product:id}/destroy', [ProductController::class, 'destroy']);
 
     Route::get('products/get-possible-variations', [ProductController::class, 'listForVariations']);
-
-
 });
 

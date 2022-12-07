@@ -6,14 +6,23 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\StoreCategory;
-use App\Http\Requests\Admin\StoreRequest;
+use App\Repositories\Repository;
 
 
 class StoreController extends Controller
 {
+
+    function __construct(Store $store)
+    {
+        $this->model = new Repository($store);
+    }
+
     public function index(Request $request){
+
+        $store = $this->model->with('categories');
+
         return response()->json([
-            'mystore' => Store::with('categories')->where('id', $request->mystore->id)->first(),
+            'mystore' => $store->where('id', $request->mystore->id)->first(),
             'categories' => StoreCategory::all(),
             'status' => 200
         ], 200);
@@ -57,7 +66,7 @@ class StoreController extends Controller
                 $cover = $file_name;
             }
 
-            $store->update([
+            $this->model->update([
                 'name' => $request->name,
                 'description' => $request->description,
                 'url' => $request->url,
@@ -66,7 +75,7 @@ class StoreController extends Controller
                 'longitude' => $request->longitude,
                 'logo' => ($logo != '') ? $logo : str_replace(env('FILE_URL'),'',$store->logo),
                 'cover' => ($cover != '') ? $cover : str_replace(env('FILE_URL'),'',$store->cover),
-            ]);
+            ], $store->id);
 
             if ($request->has('categories')) {
                 $categories  = (array) $request->get('categories');
@@ -79,7 +88,6 @@ class StoreController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'mystore' => $store,
                 'message' => 'Store Updated',
             ], 200);
 

@@ -32,10 +32,6 @@ class Store extends Model
         return validateImageUrl($attr);
     }
 
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
     public function categories()
     {
         return $this->belongsToMany(StoreCategory::class, 'pivot_categories', 'pivot_id', 'category_id')->withPivot('type')->wherePivot('type', 'store');
@@ -51,8 +47,21 @@ class Store extends Model
     public function setting(){
         return $this->hasOne(StoreSetting::class, 'store_id', 'id');
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+    public function product_categories()
+    {
+        return $this->hasMany(ProductCategory::class);
+    }
     public function reviews()
     {
         return $this->hasMany(Review::class, 'store_id', 'id');
+    }
+    public function attributes()
+    {
+        return $this->hasMany(Attribute::class, 'store_id', 'id');
     }
 }

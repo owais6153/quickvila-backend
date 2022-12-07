@@ -5,14 +5,19 @@ namespace App\Http\Controllers\Api\Store;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
+use App\Repositories\Repository;
 
 class CategoryController extends Controller
 {
+    function __construct(ProductCategory $ProductCategory)
+    {
+        $this->model = new Repository($ProductCategory);
+    }
     public function index(Request $request)
     {
         $mystore = $request->mystore;
         $data = [
-            'categories' => ProductCategory::where('store_id', $mystore->id)->get(),
+            'categories' =>$mystore->product_categories,
             'status' => 200
         ];
         return response()->json($data, 200);
@@ -31,7 +36,7 @@ class CategoryController extends Controller
             }
 
             $mystore = $request->mystore;
-            $cat = ProductCategory::create([
+            $cat = $this->model->create([
                 'name' =>$request->name,
                 'user_id' => auth()->id(),
                 'store_id' => $mystore->id
@@ -58,16 +63,16 @@ class CategoryController extends Controller
             }
 
             $mystore = $request->mystore;
-            $cat = ProductCategory::where('id', $id)->where('store_id', $mystore->id)->first();
+            $cat = $mystore->product_categories()->where('id', $id)->first();
             if(empty($cat)){
                 $error['errors'] = ['category' => ['Category Not Found.']];
                 $error['status'] = 400;
                 return response()->json($error, 404);
             }
 
-            $cat->update([
+            $this->model->update([
                 'name' =>$request->name,
-            ]);
+            ], $cat->id);
 
             return response()->json(['status' => 200, 'message' => 'Product Category Updated'], 200);
         } catch (\Throwable $th) {
@@ -80,7 +85,7 @@ class CategoryController extends Controller
     {
         try{
             $mystore = $request->mystore;
-            $cat = ProductCategory::where('id', $id)->where('store_id', $mystore->id)->first();
+            $cat =  $mystore->product_categories()->where('id', $id)->first();
             if(empty($cat)){
                 $error['errors'] = ['category' => ['Category Not Found.']];
                 $error['status'] = 400;
@@ -100,7 +105,7 @@ class CategoryController extends Controller
     {
         try{
             $mystore = $request->mystore;
-            $cat = ProductCategory::where('id', $id)->where('store_id', $mystore->id)->first();
+            $cat = $mystore->product_categories()->where('id', $id)->first();
             if(empty($cat)){
                 $error['errors'] = ['category' => ['Category Not Found.']];
                 $error['status'] = 400;
