@@ -28,7 +28,7 @@ class ProductController extends Controller
         $data['average_rating'] = number_format($data['product']->reviews()->avg('rating'), 1);
         $data['status'] = 200;
         $limit = ($request->has('limit')) ? $request->limit : 10;
-        $data['related'] = $this->model->limit($limit)->where('store_id', $product->id)->orderBy('id', 'desc')->get();
+        $data['related'] = $this->model->limit($limit)->where('store_id', $product->store_id)->where('id', '!=', $data['product']->id)->orderBy('id', 'desc')->get();
 
         return response()->json($data, $data['status']);
     }

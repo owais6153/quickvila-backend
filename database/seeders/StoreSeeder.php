@@ -62,18 +62,9 @@ class StoreSeeder extends Seeder
             'store_id' => $store2->id
         ]);
 
-        StoreCategory::create([
-            'name' => 'Medical',
-            'image' => 'https://cdn-icons-png.flaticon.com/512/3063/3063143.png',
-            'user_id' => 1,
-        ]);
-        StoreCategory::create([
-            'name' => 'Apparels',
-            'image' => 'http://cdn.onlinewebfonts.com/svg/img_569713.png',
-            'user_id' => 1,
-        ]);
+
         $store1->categories()->attach([1], ['type' => 'store']);
-        $store2->categories()->attach([1], ['type' => 'store']);
+        $store2->categories()->attach([2], ['type' => 'store']);
 
 
         $user = new User();

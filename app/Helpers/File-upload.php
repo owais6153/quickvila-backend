@@ -8,7 +8,7 @@ function uploadFile(object $file, string $uploadPath, string $oldFile = null)
     $file_path = public_path($oldFile);
 
     if ($file_path) {
-        if (file_exists($oldFile) && strpos($oldFile, noImage()) === false) {
+        if (file_exists($oldFile) && strpos($oldFile, 'uploads/') !== false) {
 
             unlink($file_path);
         }
@@ -30,7 +30,7 @@ function deleteFile(string $fileName)
 
     $file_path = public_path($fileName);
     // dd($file_path);
-    if ($file_path && strpos($file_path, noImage())  === false) {
+    if ($file_path && strpos($file_path, 'uploads/')  !== false) {
         if (file_exists($file_path)) {
             unlink($file_path);
         }
