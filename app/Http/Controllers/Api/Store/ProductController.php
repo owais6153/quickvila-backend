@@ -157,7 +157,7 @@ class ProductController extends Controller
     {
         try{
             $mystore = $request->mystore;
-            $product = $mystore->products()->where('id', $id)->with(['categories', 'reviews'])->first();
+            $product = $mystore->products()->where('id', $id)->with(['categories', 'reviews', 'variations'])->first();
             if(empty($product)){
                 $error['errors'] = ['product' => ['Product Not Found.']];
                 $error['status'] = 400;

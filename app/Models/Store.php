@@ -64,4 +64,8 @@ class Store extends Model
     {
         return $this->hasMany(Attribute::class, 'store_id', 'id');
     }
+    public function attribute_options()
+    {
+        return $this->hasMany(AttributesOption::class, 'store_id', 'id');
+    }
 }

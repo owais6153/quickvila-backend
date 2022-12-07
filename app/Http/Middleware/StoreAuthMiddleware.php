@@ -20,7 +20,7 @@ class StoreAuthMiddleware
 
         $user = $request->user();
         $store = Store::where('owner_id', $user->id)->first();
-        if($store->status != Published()){
+        if(empty($store) || $store->status != Published()){
             $error['errors'] = ['store' => ['Your store is not published yet.']];
             $error['status'] = 400;
             return response()->json($error, 404);

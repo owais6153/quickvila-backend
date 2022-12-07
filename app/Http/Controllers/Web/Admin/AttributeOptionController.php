@@ -67,7 +67,7 @@ class AttributeOptionController extends Controller
             'media' => $request->has('media') ?  $request->media : null,
             'attr_id' => $attribute->id,
             'user_id' => $attribute->user_id,
-            'store_id' => $request->has('store_id') ?  $request->store_id : null,
+            'store_id' => $request->has('store_id') ?  $request->store_id : $attribute->store_id,
         ]);
 
         return redirect()->route('attributeoption.index', ['attribute' => $attribute->id])->with('success', 'Option Created');

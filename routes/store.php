@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Store\StoreController;
 use App\Http\Controllers\Api\Store\ProductController;
 use App\Http\Controllers\Api\Store\CategoryController;
 use App\Http\Controllers\Api\Store\AttributeController;
+use App\Http\Controllers\Api\Store\AttributeOptionController;
 
 
 
@@ -22,7 +23,11 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
     Route::delete('attributes/{attribute:id}/destroy', [AttributeController::class, 'destroy']);
 
     // Options
-
+    Route::get('attributes/{attribute:id}/options', [AttributeOptionController::class, 'index']);
+    Route::post('attributes/{attribute:id}/options/create', [AttributeOptionController::class, 'create']);
+    Route::get('attributes/{attribute:id}/options/{attributeoption:id}', [AttributeOptionController::class, 'show']);
+    Route::post('attributes/{attribute:id}/options/{attributeoption:id}/update', [AttributeOptionController::class, 'update']);
+    Route::delete('attributes/{attribute:id}/options/{attributeoption:id}/destroy', [AttributeOptionController::class, 'destroy']);
 
     // Categories
     Route::get('products/categories', [CategoryController::class, 'index']);
