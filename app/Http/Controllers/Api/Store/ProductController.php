@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Store;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Services\ProductServices\VariationService;
 use App\Repositories\Repository;
 
 class ProductController extends Controller
@@ -12,6 +13,7 @@ class ProductController extends Controller
     function __construct(Product $product)
     {
         $this->model = new Repository($product);
+        $this->variationservice = new VariationService();
     }
     public function index(Request $request)
     {
@@ -69,6 +71,10 @@ class ProductController extends Controller
                 'user_id' =>auth()->id(),
                 'image' => ($image != '') ? $image : noImage(),
             ]);
+
+            if($request->product_type == 'variation'){
+                $this->variationservice->create($request->variations, $product);
+            }
 
             if ($request->has('categories'))
                 $product->categories()->attach($request->categories, ['type' => 'product']);
@@ -135,6 +141,11 @@ class ProductController extends Controller
                 'image' => ($image != '') ? $image : $product->image,
             ], $product->id);
 
+            if($request->product_type == 'variation'){
+                $product->variations()->delete();
+                $this->variationservice->create($request->variations, $product);
+            }
+
             if ($request->has('categories')) {
                 $categories  = (array) $request->get('categories'); // related ids
                 $pivotData = array_fill(0, count($categories), ['type' => 'product']);
@@ -143,6 +154,8 @@ class ProductController extends Controller
             } else {
                 $product->categories()->sync(array(), ['type' => 'product']);
             }
+
+
 
 
             return response()->json(['status' => 200, 'message' => 'Product Updated'], 200);
@@ -190,6 +203,29 @@ class ProductController extends Controller
 
             return response()->json(['status' => 200, 'message' => 'Product Deleted'], 200);
 
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
+    public function listForVariations(Request $request)
+    {
+        try{
+            $validator = \Validator::make($request->all(), [
+                'variation_attr' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $error['errors'] = $validator->messages();
+                $error['status'] = 400;
+                return response()->json($error, 400);
+            }
+            $variants = [];
+
+
+            $variants = $this->variationservice->getAllPossibleVariants($request);
+
+            return response()->json(['variants' => $variants, 'status' => 200], 200);
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
