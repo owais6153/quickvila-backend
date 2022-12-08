@@ -170,14 +170,14 @@ class ProductController extends Controller
     {
         try{
             $mystore = $request->mystore;
-            $product = $mystore->products()->where('id', $id)->with(['categories', 'reviews', 'variations'])->first();
+            $product = $mystore->products()->where('id', $id)->with(['categories', 'variations'])->first();
             if(empty($product)){
                 $error['errors'] = ['product' => ['Product Not Found.']];
                 $error['status'] = 400;
                 return response()->json($error, 404);
             }
 
-            return response()->json(['status' => 200, 'product' => $product], 200);
+            return response()->json(['status' => 200, 'product' => $product, 'reviews' => $product->reviews], 200);
 
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
