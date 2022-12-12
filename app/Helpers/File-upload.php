@@ -22,6 +22,16 @@ function uploadFile(object $file, string $uploadPath, string $oldFile = null)
     return $uploadPath . $fileNameToStore;
 }
 
+
+
+function uploadBase64($base64_string, $output_file) {
+    $img = str_replace('data:image/png;base64,', '', $base64_string);
+    $img = str_replace(' ', '+', $img);
+    $data = base64_decode($img);
+    file_put_contents($output_file, $data);
+}
+
+
 function deleteFile(string $fileName)
 {
     if (strpos($fileName, 'http') !== false) {

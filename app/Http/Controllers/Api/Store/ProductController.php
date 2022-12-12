@@ -57,6 +57,13 @@ class ProductController extends Controller
                 $file_name = uploadFile($imageFile, imagePath());
                 $image = $file_name;
             }
+            if($request->has('image') && $request->has('file_type')){
+                if($request->file_type == 'BASE64'){
+                    $image = imagePath(time().'.png');
+                    uploadBase64($request->image, $image);
+                }
+            }
+
             $mystore = $request->mystore;
             $product = $this->model->create([
                 'name' => $request->name,
@@ -92,7 +99,7 @@ class ProductController extends Controller
         try{
             $validator = \Validator::make($request->all(), [
                 'name' => 'required|min:3|max:255',
-                'image' => 'nullable|file|mimes:png,jpg,jpeg,gif',
+                'image' => 'nullable',
                 'short_description' => 'nullable|max:255',
                 'price' => 'required|numeric|min:1',
                 'sale_price' => 'nullable|numeric|min:1',
@@ -127,6 +134,12 @@ class ProductController extends Controller
                 $imageFile = $request->image;
                 $file_name = uploadFile($imageFile, imagePath());
                 $image = $file_name;
+            }
+            if($request->has('image') && $request->has('file_type')){
+                if($request->file_type == 'BASE64'){
+                    $image = imagePath(time().'.png');
+                    uploadBase64($request->image, $image);
+                }
             }
 
             $this->model->update([
