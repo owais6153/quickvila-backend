@@ -29,7 +29,7 @@ class ProductController extends Controller
         try{
             $validator = \Validator::make($request->all(), [
                 'name' => 'required|min:3|max:255',
-                'image' => 'nullable|file|mimes:png,jpg,jpeg,gif',
+                'image' => 'nullable',
                 'short_description' => 'nullable|max:255',
                 'price' => 'required|numeric|min:1',
                 'sale_price' => 'nullable|numeric|min:1',
