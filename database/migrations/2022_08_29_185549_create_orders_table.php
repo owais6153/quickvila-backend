@@ -16,8 +16,9 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->integer('count')->default(0);
-            $table->integer('tax')->nullable();
-            $table->integer('delivery_charges')->nullable();
+            $table->string('sub_total')->nullable();
+            $table->string('delivery_charges')->nullable();
+            $table->string('tax')->nullable();
             $table->string('total');
             $table->string('address');
             $table->string('latitude');
@@ -25,6 +26,7 @@ class CreateOrdersTable extends Migration
             $table->enum('status', [Completed(), Canceled(), InProcess(), Refunded()])->defaul(InProcess());
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->boolean('check_for_refunds')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

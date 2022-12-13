@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Store\ProductController;
 use App\Http\Controllers\Api\Store\CategoryController;
 use App\Http\Controllers\Api\Store\AttributeController;
 use App\Http\Controllers\Api\Store\AttributeOptionController;
+use App\Http\Controllers\Api\Store\OrderController;
 
 
 
@@ -44,5 +45,14 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
     Route::delete('products/{product:id}/destroy', [ProductController::class, 'destroy']);
 
     Route::post('products/get-possible-variations', [ProductController::class, 'listForVariations']);
+
+
+    // Orders
+    Route::get('active-orders', [OrderController::class, 'activeorders']);
+
+
+    Route::get('testapi', function(Request $request){
+        dd($request->test);
+    });
 });
 

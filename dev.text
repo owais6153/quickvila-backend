@@ -1,12 +1,1 @@
 Delete relations on observer
-
-Service
-    AuthService
-
-Repository Pattern
-    AttributesOptionController
-    AttributesController
-    VideoController
-    Product Cattegory
-    Store Banners
-    TestimonialController

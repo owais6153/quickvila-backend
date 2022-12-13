@@ -17,7 +17,10 @@ class CreateCartsTable extends Migration
             $table->id();
             $table->string('identifier')->unique();
             $table->integer('count')->default(0);
+            $table->string('delivery_charges')->nullable();
+            $table->string('tax')->nullable();
             $table->string('total');
+            $table->string('sub_total')->nullable();;
             $table->string('ip');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');

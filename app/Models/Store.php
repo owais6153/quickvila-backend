@@ -47,7 +47,10 @@ class Store extends Model
     public function setting(){
         return $this->hasOne(StoreSetting::class, 'store_id', 'id');
     }
-
+    public function order_items()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
     public function products()
     {
         return $this->hasMany(Product::class);
