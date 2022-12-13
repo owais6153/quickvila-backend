@@ -7,11 +7,13 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Store;
+use App\Services\ProductServices\VariationService;
 
 class ProductController extends Controller
 {
     function __construct(Product $product){
         $this->model = $product;
+        $this->variationservice = new VariationService();
     }
     public function index(Request $request)
     {
@@ -29,6 +31,9 @@ class ProductController extends Controller
         $data['status'] = 200;
         $limit = ($request->has('limit')) ? $request->limit : 10;
         $data['related'] = $this->model->limit($limit)->where('store_id', $product->store_id)->where('id', '!=', $data['product']->id)->orderBy('id', 'desc')->get();
+
+
+        $data['product_options'] = $this->variationservice->getAllOptions($data['product']->variations);
 
         return response()->json($data, $data['status']);
     }

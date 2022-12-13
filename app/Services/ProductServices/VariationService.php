@@ -109,4 +109,33 @@ class VariationService
 
         return $variants;
     }
+
+    public function getAllOptions($variations)
+    {
+        $options = [];
+        foreach($variations as $variation){
+            $variants = $variation->variants;
+            foreach($variants as $key => $variant){
+                if(!isset($options[$key])) $options[$key] = [];
+
+                $flag = true;
+                foreach($options[$key] as $option){
+                    if(isset($option['name']) && $option['name'] == $variants[$key]['name'])
+                    {
+                        $flag = false;
+                    }
+                }
+                if($flag){
+                    $option = [
+                        'name' => $variants[$key]['name'],
+                        'media' => $variants[$key]['media'],
+                    ];
+                    $options[$key][] = $option;
+                }
+
+            }
+        }
+        return $options;
+
+    }
 }

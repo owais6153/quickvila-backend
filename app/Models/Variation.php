@@ -18,6 +18,6 @@ class Variation extends Model
     ];
     public function getVariantsAttribute($attr)
     {
-        return json_decode($attr);
+        return json_decode($attr, true);
     }
 }
