@@ -59,7 +59,7 @@ class ProductController extends Controller
             }
             if($request->has('image') && $request->has('file_type')){
                 if($request->file_type == 'BASE64'){
-                    $image = imagePath(time().'.png');
+                    $image = __DIR__ . '/' . imagePath(time().'.png');
                     uploadBase64($request->image, $image);
                 }
             }
@@ -137,7 +137,7 @@ class ProductController extends Controller
             }
             if($request->has('image') && $request->has('file_type')){
                 if($request->file_type == 'BASE64'){
-                    $image = imagePath(time().'.png');
+                    $image = __DIR__ . '/' . imagePath(time().'.png');
                     uploadBase64($request->image, $image);
                 }
             }

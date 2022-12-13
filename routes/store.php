@@ -51,8 +51,5 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
     Route::get('active-orders', [OrderController::class, 'activeorders']);
 
 
-    Route::get('testapi', function(Request $request){
-        dd($request->test);
-    });
 });
 
