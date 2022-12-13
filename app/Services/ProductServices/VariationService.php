@@ -92,9 +92,9 @@ class VariationService
 
         return $rez;
     }
-    public function getAllPossibleVariants($request)
+    public function getAllPossibleVariants($variation_attr)
     {
-        $attributes = Attribute::whereIn('id', $request->variation_attr)->with(['options' => function ($q) {
+        $attributes = Attribute::whereIn('id', $variation_attr)->with(['options' => function ($q) {
             $q->select('name', 'id', 'media', 'attr_id');
         }])->whereHas('options')->get()->toArray();
 

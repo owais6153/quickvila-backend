@@ -236,7 +236,7 @@ class ProductController extends Controller
             $variants = [];
 
 
-            $variants = $this->variationservice->getAllPossibleVariants($request);
+            $variants = $this->variationservice->getAllPossibleVariants(explode(',', $request->variation_attr));
 
             return response()->json(['variants' => $variants, 'status' => 200], 200);
         } catch (\Throwable $th) {
