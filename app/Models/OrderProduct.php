@@ -17,7 +17,10 @@ class OrderProduct extends Model
         'is_refund',
         'variations_id'
     ];
-
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
     public function product()
     {
         return $this->belongsTo(Product::class);
