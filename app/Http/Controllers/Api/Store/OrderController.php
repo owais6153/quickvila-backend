@@ -18,35 +18,48 @@ class OrderController extends Controller
 
     public function activeorders(Request $request)
     {
-        $mystore = $request->mystore;
-        $orders = OrderProduct::with(['variation', 'product'])->where('is_refund', false)->where('store_id', $mystore->id)->whereHas('order', function ($q) {
-            $q->where('status', InProcess());
-        })->get();
 
-        if ($orders->count() > 0) {
-            $data = [
-                'orders' => $orders,
-                'status' => 200
-            ];
+        try {
+            $mystore = $request->mystore;
+            $orders = OrderProduct::with(['variation', 'product'])->where('is_refund', false)->where('store_id', $mystore->id)->whereHas('order', function ($q) {
+                $q->where('status', InProcess());
+            })->get();
 
-            return response()->json($data, 200);
-        } else {
-            $data = [
-                'message' => 'No order found',
-                'status' => 404
-            ];
+            if ($orders->count() > 0) {
+                $data = [
+                    'orders' => $orders,
+                    'status' => 200
+                ];
 
-            return response()->json($data, 200);
+                return response()->json($data, 200);
+            } else {
+                $data = [
+                    'message' => 'No order found',
+                    'status' => 404
+                ];
+
+                return response()->json($data, 200);
+            }
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
         }
     }
     public function refund(Request $request, $id)
     {
-        $mystore = $request->mystore;
-        $item = $mystore->order_items->where('id', $id)->first();
-        $item->update([
-            'is_refund' => true,
-        ]);
+        try {
+            $mystore = $request->mystore;
+            $item = $mystore->order_items->where('id', $id)->first();
+            $item->update([
+                'is_refund' => true,
+            ]);
 
-        return response()->json(['status' => 200, 'message' => 'Order refunded, It will take aprox 5mins to fully refund.'], 200);
+            return response()->json(['status' => 200, 'message' => 'Order refunded, It will take aprox 5mins to fully refund.'], 200);
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
     }
 }
