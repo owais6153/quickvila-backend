@@ -24,7 +24,7 @@ class CreateOrdersTable extends Migration
             $table->string('latitude');
             $table->string('longitude');
             $table->enum('status', [Completed(), Canceled(), InProcess(), Refunded()])->defaul(InProcess());
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->boolean('check_for_refunds')->default(false);
             $table->timestamps();

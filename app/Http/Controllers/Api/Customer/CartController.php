@@ -64,15 +64,34 @@ class CartController extends Controller
                 $cartItem = CartProduct::where('cart_id', $cart->id)->where('product_id', $product->id)->where('variations_id', $variation)->first();
                 if(!empty($cartItem)){
                     $qty = $cartItem->qty + 1;
+                    $line_total = 0;
+                    if($variation == null){
+                        $line_total = ($product->sale_price) ? $product->sale_price * $qty : $product->price * $qty;
+                    }
+                    else{
+                        $variant = $product->variations()->where('id', $variation)->first();
+                        $line_total = ($variant->sale_price) ? $variant->sale_price * $qty : $variant->price * $qty;
+                    }
+
                     $cartItem->update([
                         'qty' => $qty,
-                        'line_total' => ($product->sale_price) ? $product->sale_price * $qty : $product->price * $qty,
+                        'line_total' => $line_total,
                     ]);
                 }
                 else{
+
+                    $line_total = 0;
+                    if($variation == null){
+                        $line_total = ($product->sale_price) ? $product->sale_price : $product->price;
+                    }
+                    else{
+                        $variant = $product->variations()->where('id', $variation)->first();
+                        $line_total = ($variant->sale_price) ? $variant->sale_price : $variant->price;
+                    }
+
                     $cartItem = CartProduct::create([
                         'qty' => 1,
-                        'line_total' => ($product->sale_price) ? $product->sale_price : $product->price,
+                        'line_total' => $line_total,
                         'product_id' => $product->id,
                         'cart_id' => $cart->id,
                         'variations_id' => $variation,
@@ -92,9 +111,19 @@ class CartController extends Controller
                     'ip' => $request->ip()
                 ]);
 
+                $line_total = 0;
+                if($variation == null){
+                    $line_total = ($product->sale_price) ? $product->sale_price : $product->price;
+                }
+                else{
+                    $variant = $product->variations()->where('id', $variation)->first();
+                    $line_total = ($variant->sale_price) ? $variant->sale_price : $variant->price;
+                }
+
+
                 $cartItem = CartProduct::create([
                     'qty' => 1,
-                    'line_total' => ($product->sale_price) ? $product->sale_price : $product->price,
+                    'line_total' => $line_total,
                     'product_id' => $product->id,
                     'cart_id' => $cart->id,
                     'variations_id' => $variation,
@@ -183,11 +212,27 @@ class CartController extends Controller
             $cart = $this->getCart($request);
             $identifier = isset($cart->identifier) ? $cart->identifier : false;
             $product = $cartProduct->product;
+
+
+
+
             if($operation == 'increment'){
                 $qty = $cartProduct->qty + 1;
+
+                $line_total = 0;
+                if($cartProduct->product->product_type != "variation"){
+                    $line_total = ($product->sale_price) ? $product->sale_price * $qty : $product->price * $qty;
+                }
+                else{
+                    $variant = $product->variations()->where('id', $cartProduct->variations_id)->first();
+                    $line_total = ($variant->sale_price) ? $variant->sale_price * $qty : $variant->price * $qty;
+                }
+
+
+
                 $cartProduct->update([
                     'qty' => $qty,
-                    'line_total' => ($product->sale_price) ? $product->sale_price * $qty : $product->price * $qty,
+                    'line_total' => $line_total,
                 ]);
                 $cart->update([
                     'count' => $cart->count + 1,
@@ -201,6 +246,16 @@ class CartController extends Controller
             }
             else if($operation == 'decrement'){
                 $qty = $cartProduct->qty - 1;
+
+                $line_total = 0;
+                if($cartProduct->product->product_type != "variation"){
+                    $line_total = ($product->sale_price) ? $product->sale_price * $qty : $product->price * $qty;
+                }
+                else{
+                    $variant = $product->variations()->where('id', $cartProduct->variations_id)->first();
+                    $line_total = ($variant->sale_price) ? $variant->sale_price * $qty : $variant->price * $qty;
+                }
+
                 if($qty == 0){
                     $error['errors'] = ['Quantity' => ['Minimum Quantity Should Be 1']];
                     $error['status'] = 500;
@@ -208,7 +263,7 @@ class CartController extends Controller
                 }
                 $cartProduct->update([
                     'qty' => $qty,
-                    'line_total' => ($product->sale_price) ? $product->sale_price * $qty : $product->price * $qty,
+                    'line_total' => $line_total,
                 ]);
                 $cart->update([
                     'count' => $cart->count - 1,

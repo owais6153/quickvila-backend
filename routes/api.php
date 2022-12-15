@@ -61,7 +61,6 @@ use App\Http\Controllers\Api\Customer\ProductCategoryController;
         Route::get('/logout', [AuthController::class, 'signout']);
 
         // Checkout
-        Route::post('/checkout', [CheckoutController::class, 'checkout']);
 
         //Account
         Route::get('/me', [AccountController::class, 'me']);
@@ -90,6 +89,8 @@ use App\Http\Controllers\Api\Customer\ProductCategoryController;
         Route::put('/cart/update/{cartProduct:id}/{operation}', [CartController::class, 'update']);
         Route::delete('/cart/remove/{cartProduct:id}', [CartController::class, 'remove']);
         Route::delete('/cart/empty', [CartController::class, 'emptyCart']);
+
+        Route::post('/checkout', [CheckoutController::class, 'checkout']);
     });
 
 

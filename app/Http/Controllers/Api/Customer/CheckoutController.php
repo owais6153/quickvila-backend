@@ -37,7 +37,8 @@ class CheckoutController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
                     'store_id' => $item->product->store_id,
-                    'is_refund' => false
+                    'is_refund' => false,
+                    'variation_id' => $item->variation_id,
                 ]);
             }
 
@@ -49,12 +50,17 @@ class CheckoutController extends Controller
             $this->error = $th->getMessage();
             return false;
         }
-
     }
     public function checkout(Request $request){
 
         try{
-            $user = $request->user();
+            if(Auth::check()){
+               $user = $request->user();
+            } else{
+
+            }
+
+
             $is_payment_successfull = true;
             if($is_payment_successfull){
                 $cart  = Cart::where('user_id', $user->id)->first();
