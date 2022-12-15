@@ -13,9 +13,15 @@ class CartProduct extends Model
         'qty',
         'cart_id',
         'product_id',
+        'variations_id'
     ];
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function variation()
+    {
+        return $this->belongsTo(Variation::class, 'variations_id', 'id');
     }
 }

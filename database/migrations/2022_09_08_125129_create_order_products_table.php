@@ -24,6 +24,8 @@ class CreateOrderProductsTable extends Migration
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');
             $table->boolean('is_refund')->default(false);
+            $table->unsignedBigInteger('variation_id')->nullable();
+            $table->foreign('variation_id')->references('id')->on('variations');
             $table->timestamps();
         });
     }

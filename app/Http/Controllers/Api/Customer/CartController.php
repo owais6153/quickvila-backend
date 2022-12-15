@@ -39,7 +39,7 @@ class CartController extends Controller
                 $data['cart'] = [];
             }
             else{
-                $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $data['cart']->identifier)->first();
+                $data['cart'] = Cart::with(['items', 'items.variation', 'items.product'])->where('identifier', $data['cart']->identifier)->first();
             }
             $data['status'] = 200;
             $identifier = isset($cart->identifier) ? $cart->identifier : false;
@@ -55,9 +55,13 @@ class CartController extends Controller
     public function add(Product $product, Request $request)
     {
         try{
+            $variation = null;
+            if($request->has('variation')){
+                $variation = $request->variation;
+            }
             $cart = $this->getCart($request);
             if(!empty($cart)){
-                $cartItem = CartProduct::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
+                $cartItem = CartProduct::where('cart_id', $cart->id)->where('product_id', $product->id)->where('variations_id', $variation)->first();
                 if(!empty($cartItem)){
                     $qty = $cartItem->qty + 1;
                     $cartItem->update([
@@ -70,7 +74,8 @@ class CartController extends Controller
                         'qty' => 1,
                         'line_total' => ($product->sale_price) ? $product->sale_price : $product->price,
                         'product_id' => $product->id,
-                        'cart_id' => $cart->id
+                        'cart_id' => $cart->id,
+                        'variations_id' => $variation,
                     ]);
                 }
                 $cart->update([
@@ -91,7 +96,8 @@ class CartController extends Controller
                     'qty' => 1,
                     'line_total' => ($product->sale_price) ? $product->sale_price : $product->price,
                     'product_id' => $product->id,
-                    'cart_id' => $cart->id
+                    'cart_id' => $cart->id,
+                    'variations_id' => $variation,
                 ]);
                 if(Auth::check()){
                     $cart->update([
@@ -101,7 +107,7 @@ class CartController extends Controller
             }
 
             $identifier = isset($cart->identifier) ? $cart->identifier : false;
-            $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $identifier)->first();
+            $data['cart'] = Cart::with(['items', 'items.product', 'items.variation'])->where('identifier', $identifier)->first();
             $data['status'] = 200;
             $data['message'] = 'Product added to cart';
             return  response()->json($data, 200)->cookie('cart', $identifier);
@@ -151,7 +157,7 @@ class CartController extends Controller
                 $cartProduct->delete();
 
                 $identifier = isset($cart->identifier) ? $cart->identifier : false;
-                $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $identifier)->first();
+                $data['cart'] = Cart::with(['items', 'items.product', 'items.variation'])->where('identifier', $identifier)->first();
                 if(empty($data['cart'])){
                     $data['cart'] = [];
                 }
@@ -168,7 +174,6 @@ class CartController extends Controller
         catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
-
             return response()->json($error, 500);
         }
     }
@@ -189,7 +194,7 @@ class CartController extends Controller
                     'total' => ($product->sale_price) ? $cart->total + $product->sale_price : $cart->total + $product->price
                 ]);
 
-                $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $identifier)->first();
+                $data['cart'] = Cart::with(['items', 'items.product', 'items.variation'])->where('identifier', $identifier)->first();
                 $data['status'] = 200;
                 $data['message'] = 'Quantity Updated';
                 return  response()->json($data, 200);
@@ -210,7 +215,7 @@ class CartController extends Controller
                     'total' => ($product->sale_price) ? $cart->total - $product->sale_price : $cart->total - $product->price
                 ]);
 
-                $data['cart'] = Cart::with(['items', 'items.product'])->where('identifier', $identifier)->first();
+                $data['cart'] = Cart::with(['items', 'items.product', 'items.variation'])->where('identifier', $identifier)->first();
                 $data['status'] = 200;
                 $data['message'] = 'Quantity Updated';
                 return  response()->json($data, 200);
