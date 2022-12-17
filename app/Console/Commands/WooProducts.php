@@ -73,20 +73,36 @@ class WooProducts extends Command
        }
        else{
             foreach($products as $p){
-                    $product = Product::create([
-                        'product_id' => $p->id,
-                        'name' => $p->name,
-                        'short_description' => $p->short_description,
-                        'description' => $p->description,
-                        'store_id' => $store_id,
-                        'image' =>  (isset($p->images) && !empty($p->images)) ? $p->images[0]->src : 'images/no-image.png',
-                        'manage_able' => false,
-                        'status' => Published(),
-                        'user_id' => 1,
-                        'price' => $p->price,
-                        'sale_price' => $p->price,
-                        'product_type' => 'simple',
-                    ]);
+
+                    $product = Product::where('product_id', $p->id)->where('store_id', $store_id)->first();
+                    if(empty($product)){
+                        $product = Product::create([
+                            'product_id' => $p->id,
+                            'name' => $p->name,
+                            'short_description' => $p->short_description,
+                            'description' => $p->description,
+                            'store_id' => $store_id,
+                            'image' =>  (isset($p->images) && !empty($p->images)) ? $p->images[0]->src : 'images/no-image.png',
+                            'manage_able' => false,
+                            'status' => Published(),
+                            'user_id' => 1,
+                            'price' => $p->price,
+                            'sale_price' => $p->price,
+                            'product_type' => 'simple',
+                        ]);
+                    }
+                    else{
+                        $product->update([
+                            'name' => $p->name,
+                            'short_description' => $p->short_description,
+                            'description' => $p->description,
+                            'image' =>  (isset($p->images) && !empty($p->images)) ? $p->images[0]->src : 'images/no-image.png',
+                            'price' => $p->price,
+                            'sale_price' => $p->price,
+                            'product_type' => 'simple',
+                        ]);
+                    }
+
                     $cats = [];
                     foreach($p->categories as $c){
                         $cat = ProductCategory::where('name', $c->name)->where('store_id', $store_id)->first();
