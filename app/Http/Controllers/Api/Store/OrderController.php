@@ -51,6 +51,15 @@ class OrderController extends Controller
         try {
             $mystore = $request->mystore;
             $item = $mystore->order_items->where('id', $id)->first();
+
+            if(empty($item)){
+                $data = [
+                    'message' => 'Order Item not found',
+                    'status' => 404
+                ];
+
+                return response()->json($data, 200);
+            }
             $item->update([
                 'is_refund' => true,
             ]);

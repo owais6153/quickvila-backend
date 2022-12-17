@@ -63,6 +63,33 @@ class StoreSeeder extends Seeder
         ]);
 
 
+
+        $store3 = Store::create([
+            'name' => 'Bismillah Grocery',
+            'url' => 'https://bismillahgrocery.ca/',
+            'address' => 'Karachi',
+            'latitude' => 23,
+            'longitude' => 34,
+            'is_featured' => 1,
+            'logo' => 'https://bismillahgrocery.ca/wp-content/uploads/2020/08/BMAG-150x150-1.png',
+            'cover' => 'https://bismillahgrocery.ca/wp-content/uploads/2020/08/rev-slider_h3-2.jpg',
+            'manage_able' => true,
+            'user_id' => 1,
+            'status' => Published(),
+            'type' => 'default',
+            'description' => "Buy natural, sustainable and chemicalfree products from trusted brands all around the globe."
+        ]);
+
+        StoreSetting::create([
+            'price' => 0,
+            'radius' => 10,
+            'tax' => 0,
+            'store_id' => $store3->id
+        ]);
+
+
+        $store3->categories()->attach([1], ['type' => 'store']);
+
         $store1->categories()->attach([1], ['type' => 'store']);
         $store2->categories()->attach([2], ['type' => 'store']);
 
@@ -94,6 +121,21 @@ class StoreSeeder extends Seeder
         $user->save();
         $user->assign(Store());
         Store::where('id', $store2->id)->update([
+            'owner_id' => $user->id
+        ]);
+
+
+        $user = new User();
+        $user->name =  $store3->name;
+        $user->first_name =  $store3->name;
+        $user->last_name =  $store3->name;
+        $user->password =  Hash::make('secret123');
+        $user->email = 'bismillahgrocery@storevila.com';
+        $user->email_verified_at = date("Y-m-d", time());
+        $user->phone_verified_at = date("Y-m-d", time());
+        $user->save();
+        $user->assign(Store());
+        Store::where('id', $store3->id)->update([
             'owner_id' => $user->id
         ]);
 
