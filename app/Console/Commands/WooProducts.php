@@ -87,7 +87,7 @@ class WooProducts extends Command
                             'status' => Published(),
                             'user_id' => 1,
                             'price' => $p->price,
-                            'sale_price' => $p->price,
+                            'sale_price' => $p->sale_price,
                             'product_type' => 'simple',
                         ]);
                     }
@@ -98,7 +98,7 @@ class WooProducts extends Command
                             'description' => $p->description,
                             'image' =>  (isset($p->images) && !empty($p->images)) ? $p->images[0]->src : 'images/no-image.png',
                             'price' => $p->price,
-                            'sale_price' => $p->price,
+                            'sale_price' => $p->sale_price,
                             'product_type' => 'simple',
                         ]);
                     }
