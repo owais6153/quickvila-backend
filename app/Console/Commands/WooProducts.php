@@ -89,6 +89,7 @@ class WooProducts extends Command
                             'price' => $p->price,
                             'sale_price' => $p->sale_price,
                             'product_type' => 'simple',
+                            'is_store_featured' => $p->featured
                         ]);
                     }
                     else{
@@ -100,6 +101,7 @@ class WooProducts extends Command
                             'price' => $p->price,
                             'sale_price' => $p->sale_price,
                             'product_type' => 'simple',
+                            'is_store_featured' => $p->featured
                         ]);
                     }
 
