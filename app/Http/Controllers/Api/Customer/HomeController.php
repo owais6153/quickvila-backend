@@ -30,6 +30,7 @@ class HomeController extends Controller
         $data['videos'] = Video::limit($limit)->orderBy('sort', 'desc')->get();
         $data['banners'] = StoreBanner::limit(2)->orderBy('id', 'desc')->get();
 
+
         if($request->has('lat') && $request->has('long')){
             $data['nearby_stores'] = $this->storeLocationService->getNearbyStores($request->lat, $request->long);
         }

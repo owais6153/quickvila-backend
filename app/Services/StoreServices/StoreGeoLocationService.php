@@ -12,8 +12,13 @@ class StoreGeoLocationService
                         * POWER(SIN(( {$longitude} - stores.longitude)
                         * pi()/180 / 2), 2) )))
                         as distance, (select radius from `store_settings` where `stores`.`id` = `store_settings`.`store_id`) as radius
-                        from stores WHERE `stores`.`status` = '$status' having distance <= radius order by distance");
+                        , (select count(*) from `products` where `stores`.`id` = `products`.`store_id` and `products`.`deleted_at` is null and `products`.`status` = '$status') as `products_count` from stores WHERE `stores`.`status` = '$status' having distance <= radius order by distance limit 10");
 
         return $nearbystores;
     }
+
+    // public function FunctionName(Type $var = null)
+    // {
+    //     # code...
+    // }
 }
