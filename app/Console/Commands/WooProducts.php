@@ -61,9 +61,6 @@ class WooProducts extends Command
             $this->info('First Time Cron');
         }
 
-
-
-
        $args = ['per_page' => $posts_per_page, 'status'=>'publish', 'page'=>$page, 'type' => 'simple'];
        $products = $woocommerce->get('products', $args);
 
@@ -73,52 +70,51 @@ class WooProducts extends Command
        }
        else{
             foreach($products as $p){
+                $product = Product::where('product_id', $p->id)->where('store_id', $store_id)->first();
+                if(empty($product)){
+                    $product = Product::create([
+                        'product_id' => $p->id,
+                        'name' => $p->name,
+                        'short_description' => $p->short_description,
+                        'description' => $p->description,
+                        'store_id' => $store_id,
+                        'image' =>  (isset($p->images) && !empty($p->images)) ? $p->images[0]->src : 'images/no-image.png',
+                        'manage_able' => false,
+                        'status' => Published(),
+                        'user_id' => 1,
+                        'price' => $p->price,
+                        'sale_price' => $p->sale_price,
+                        'product_type' => 'simple',
+                        'is_store_featured' => $p->featured
+                    ]);
+                }
+                else{
+                    $product->update([
+                        'name' => $p->name,
+                        'short_description' => $p->short_description,
+                        'description' => $p->description,
+                        'image' =>  (isset($p->images) && !empty($p->images)) ? $p->images[0]->src : 'images/no-image.png',
+                        'price' => $p->price,
+                        'sale_price' => $p->sale_price,
+                        'product_type' => 'simple',
+                        'is_store_featured' => $p->featured
+                    ]);
+                }
 
-                    $product = Product::where('product_id', $p->id)->where('store_id', $store_id)->first();
-                    if(empty($product)){
-                        $product = Product::create([
-                            'product_id' => $p->id,
-                            'name' => $p->name,
-                            'short_description' => $p->short_description,
-                            'description' => $p->description,
+                $cats = [];
+                foreach($p->categories as $c){
+                    $cat = ProductCategory::where('name', $c->name)->where('store_id', $store_id)->first();
+                    if(empty($cat)){
+                        $cat = ProductCategory::create([
                             'store_id' => $store_id,
-                            'image' =>  (isset($p->images) && !empty($p->images)) ? $p->images[0]->src : 'images/no-image.png',
-                            'manage_able' => false,
-                            'status' => Published(),
                             'user_id' => 1,
-                            'price' => $p->price,
-                            'sale_price' => $p->sale_price,
-                            'product_type' => 'simple',
-                            'is_store_featured' => $p->featured
+                            'name' => $c->name,
                         ]);
                     }
-                    else{
-                        $product->update([
-                            'name' => $p->name,
-                            'short_description' => $p->short_description,
-                            'description' => $p->description,
-                            'image' =>  (isset($p->images) && !empty($p->images)) ? $p->images[0]->src : 'images/no-image.png',
-                            'price' => $p->price,
-                            'sale_price' => $p->sale_price,
-                            'product_type' => 'simple',
-                            'is_store_featured' => $p->featured
-                        ]);
-                    }
+                    $cats[] = $cat->id;
+                }
 
-                    $cats = [];
-                    foreach($p->categories as $c){
-                        $cat = ProductCategory::where('name', $c->name)->where('store_id', $store_id)->first();
-                        if(empty($cat)){
-                            $cat = ProductCategory::create([
-                                'store_id' => $store_id,
-                                'user_id' => 1,
-                                'name' => $c->name,
-                            ]);
-                        }
-                        $cats[] = $cat->id;
-                    }
-
-                    $product->categories()->attach($cats, ['type' => 'product']);
+                $product->categories()->attach($cats, ['type' => 'product']);
             }
        }
        WPCron::create([
