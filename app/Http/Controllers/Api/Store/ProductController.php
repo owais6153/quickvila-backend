@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Services\ProductServices\VariationService;
 use App\Repositories\Repository;
+use App\Models\Attribute;
 
 class ProductController extends Controller
 {
@@ -237,8 +238,9 @@ class ProductController extends Controller
 
 
             $variants = $this->variationservice->getAllPossibleVariants(explode(',', $request->variation_attr));
+            $options = Attribute::whereIn('id', explode(',', $request->variation_attr))->with('options')->get();
 
-            return response()->json(['variants' => $variants, 'status' => 200], 200);
+            return response()->json(['options' => $options, 'variants' => $variants, 'status' => 200], 200);
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
