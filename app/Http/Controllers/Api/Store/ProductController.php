@@ -238,9 +238,16 @@ class ProductController extends Controller
 
 
             $variants = $this->variationservice->getAllPossibleVariants(explode(',', $request->variation_attr));
-            $options = Attribute::whereIn('id', explode(',', $request->variation_attr))->whereHas('options')->with('options')->get();
+            $options = Attribute::whereIn('id', explode(',', $request->variation_attr))->whereHas('options')->get();
+            $op = [];
 
-            return response()->json(['options' => $options, 'variants' => $variants, 'status' => 200], 200);
+            foreach($options as $option){
+                $op[$option->name] = $option->options;
+            }
+
+
+
+            return response()->json(['options' => $op, 'variants' => $variants, 'status' => 200], 200);
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
