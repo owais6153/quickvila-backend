@@ -18,6 +18,22 @@ class VariationService
             ]);
         }
     }
+
+    public function createFromJson($variations, Product $product)
+    {
+
+        $va = json_decode($variations, true);
+        foreach($va as $variation){
+            Variation::create([
+                'name' => $variation['name'],
+                'price' => $variation['price'],
+                'sale_price' => (isset($variation['sale_price'])) ?  $variation['sale_price'] : null,
+                'variants' => json_encode($variation['options']),
+                'product_id' => $product->id,
+            ]);
+        }
+    }
+
     public function generateVariations($array)
     {
         if (empty($array)) {

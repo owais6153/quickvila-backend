@@ -39,12 +39,7 @@ class ProductController extends Controller
                 'product_type' => 'required',
                 'status' => 'required',
                 'p_attributes' =>  'nullable',
-                // Variations
                 'variations' => 'required_if:product_type,variation',
-                'variations.*.name' => 'required_if:product_type,variation|max:255',
-                'variations.*.price' => 'required_if:product_type,variation|numeric|min:1',
-                'variations.*.sale_price' => 'nullable|numeric|min:1',
-                'variations.*.variants' => 'required_if:product_type,variation',
             ]);
 
             if ($validator->fails()) {
@@ -81,7 +76,8 @@ class ProductController extends Controller
             ]);
 
             if($request->product_type == 'variation'){
-                $this->variationservice->create($request->variations, $product);
+
+                $this->variationservice->createFromJson($request->variations, $product);
             }
 
             if ($request->has('categories'))
@@ -109,12 +105,7 @@ class ProductController extends Controller
                 'product_type' => 'required',
                 'status' => 'required',
                 'p_attributes' =>  'nullable',
-                // Variations
                 'variations' => 'required_if:product_type,variation',
-                'variations.*.name' => 'required_if:product_type,variation|max:255',
-                'variations.*.price' => 'required_if:product_type,variation|numeric|min:1',
-                'variations.*.sale_price' => 'nullable|numeric|min:1',
-                'variations.*.variants' => 'required_if:product_type,variation',
             ]);
 
             if ($validator->fails()) {
@@ -157,7 +148,7 @@ class ProductController extends Controller
 
             if($request->product_type == 'variation'){
                 $product->variations()->delete();
-                $this->variationservice->create($request->variations, $product);
+                $this->variationservice->createFromJson($request->variations, $product);
             }
 
             if ($request->has('categories')) {
