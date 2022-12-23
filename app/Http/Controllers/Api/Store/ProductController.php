@@ -28,25 +28,25 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         try{
-            $validator = \Validator::make($request->all(), [
-                'name' => 'required|min:3|max:255',
-                'image' => 'nullable',
-                'short_description' => 'nullable|max:255',
-                'price' => 'required|numeric|min:1',
-                'sale_price' => 'nullable|numeric|min:1',
-                'description' => 'nullable',
-                'categories.*' => 'nullable|numeric',
-                'product_type' => 'required',
-                'status' => 'required',
-                'p_attributes' =>  'nullable',
-                'variations' => 'required_if:product_type,variation',
-            ]);
+            // $validator = \Validator::make($request->all(), [
+            //     'name' => 'required|min:3|max:255',
+            //     'image' => 'nullable',
+            //     'short_description' => 'nullable|max:255',
+            //     'price' => 'required|numeric|min:1',
+            //     'sale_price' => 'nullable|numeric|min:1',
+            //     'description' => 'nullable',
+            //     'categories.*' => 'nullable|numeric',
+            //     'product_type' => 'required',
+            //     'status' => 'required',
+            //     'p_attributes' =>  'nullable',
+            //     'variations' => 'required_if:product_type,variation',
+            // ]);
 
-            if ($validator->fails()) {
-                $error['errors'] = $validator->messages();
-                $error['status'] = 400;
-                return response()->json($error, 400);
-            }
+            // if ($validator->fails()) {
+            //     $error['errors'] = $validator->messages();
+            //     $error['status'] = 400;
+            //     return response()->json($error, 400);
+            // }
             $image = "";
             if ($request->hasFile('image')) {
                 $imageFile = $request->image;
@@ -94,25 +94,25 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         try{
-            $validator = \Validator::make($request->all(), [
-                'name' => 'required|min:3|max:255',
-                'image' => 'nullable',
-                'short_description' => 'nullable|max:255',
-                'price' => 'required|numeric|min:1',
-                'sale_price' => 'nullable|numeric|min:1',
-                'description' => 'nullable',
-                'categories.*' => 'nullable|numeric',
-                'product_type' => 'required',
-                'status' => 'required',
-                'p_attributes' =>  'nullable',
-                'variations' => 'required_if:product_type,variation',
-            ]);
+            // $validator = \Validator::make($request->all(), [
+            //     'name' => 'required|min:3|max:255',
+            //     'image' => 'nullable',
+            //     'short_description' => 'nullable|max:255',
+            //     'price' => 'required|numeric|min:1',
+            //     'sale_price' => 'nullable|numeric|min:1',
+            //     'description' => 'nullable',
+            //     'categories.*' => 'nullable|numeric',
+            //     'product_type' => 'required',
+            //     'status' => 'required',
+            //     'p_attributes' =>  'nullable',
+            //     'variations' => 'required_if:product_type,variation',
+            // ]);
 
-            if ($validator->fails()) {
-                $error['errors'] = $validator->messages();
-                $error['status'] = 400;
-                return response()->json($error, 400);
-            }
+            // if ($validator->fails()) {
+            //     $error['errors'] = $validator->messages();
+            //     $error['status'] = 400;
+            //     return response()->json($error, 400);
+            // }
 
             $mystore = $request->mystore;
             $product = $mystore->products()->where('id', $id)->with(['categories'])->first();
