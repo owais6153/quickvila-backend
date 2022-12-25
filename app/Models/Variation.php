@@ -22,4 +22,8 @@ class Variation extends Model
     {
         return json_decode($attr, true);
     }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
