@@ -18,6 +18,8 @@ class CreateVariationsTable extends Migration
             $table->string('name');
             $table->string('price');
             $table->string('sale_price')->nullable();
+            $table->string('price_to_display')->nullable();
+            $table->string('sale_price_to_display')->nullable();
             $table->longText('variants');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

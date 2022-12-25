@@ -8,38 +8,26 @@ use App\Models\Cart;
 use App\Models\Product;
 use App\Models\CartProduct;
 use Illuminate\Support\Facades\Auth;
+use App\Services\CartServices\CartService;
 
 
 class CartController extends Controller
 {
-    public function getCart(Request $request)
-    {
-        if(Auth::check()){
-            $user_id = $request->user()->id;
-            $cart =  Cart::where('user_id', $user_id)->first();
-            if(empty($cart) && $request->has('identifier')){
-                $cart =  Cart::where('identifier', $request->identifier)->first();
-                if(!empty($cart))
-                    $cart->update(['user_id', $user_id]);
-            }
-            return $cart;
-        }
-        else{
-            if($request->has('identifier')){
-                return Cart::where('identifier', $request->identifier)->first();
-            }
-        }
-        return [];
+
+    function __construct(){
+        $this->service = new CartService();
     }
+
+
     public function index(Request $request)
     {
         try{
-            $data['cart'] = $this->getCart($request);
+            $data['cart'] = $this->service->getCart($request);
             if(empty($data['cart'])){
                 $data['cart'] = [];
             }
             else{
-                $data['cart'] = Cart::with(['items', 'items.variation', 'items.product'])->where('identifier', $data['cart']->identifier)->first();
+                $data['cart'] = $this->service->getDetailedCart($data['cart']->identifier);
             }
             $data['status'] = 200;
             $identifier = isset($cart->identifier) ? $cart->identifier : false;
@@ -59,7 +47,7 @@ class CartController extends Controller
             if($request->has('variation')){
                 $variation = $request->variation;
             }
-            $cart = $this->getCart($request);
+            $cart = $this->service->getCart($request);
             if(!empty($cart)){
                 $cartItem = CartProduct::where('cart_id', $cart->id)->where('product_id', $product->id)->where('variations_id', $variation)->first();
                 if(!empty($cartItem)){
@@ -136,7 +124,7 @@ class CartController extends Controller
             }
 
             $identifier = isset($cart->identifier) ? $cart->identifier : false;
-            $data['cart'] = Cart::with(['items', 'items.product', 'items.variation'])->where('identifier', $identifier)->first();
+            $data['cart'] = $this->service->getDetailedCart($identifier);
             $data['status'] = 200;
             $data['message'] = 'Product added to cart';
             return  response()->json($data, 200)->cookie('cart', $identifier);
@@ -150,7 +138,7 @@ class CartController extends Controller
     }
     public function emptyCart(Request $request){
         try{
-            $cart = $this->getCart($request);
+            $cart = $this->service->getCart($request);
 
             if(!empty($cart)){
                 if($cart->items->count()){
@@ -176,7 +164,7 @@ class CartController extends Controller
     {
         try{
             $item_id = $cartProduct->cart_id;
-            $cart = $this->getCart($request);
+            $cart = $this->service->getCart($request);
             if(!empty($cart)){
 
                 $cart->update([
@@ -186,7 +174,7 @@ class CartController extends Controller
                 $cartProduct->delete();
 
                 $identifier = isset($cart->identifier) ? $cart->identifier : false;
-                $data['cart'] = Cart::with(['items', 'items.product', 'items.variation'])->where('identifier', $identifier)->first();
+                $data['cart'] = $this->service->getDetailedCart($identifier);
                 if(empty($data['cart'])){
                     $data['cart'] = [];
                 }
@@ -209,7 +197,7 @@ class CartController extends Controller
     public function update(CartProduct $cartProduct, $operation, Request $request)
     {
         try{
-            $cart = $this->getCart($request);
+            $cart = $this->service->getCart($request);
             $identifier = isset($cart->identifier) ? $cart->identifier : false;
             $product = $cartProduct->product;
 
@@ -239,7 +227,7 @@ class CartController extends Controller
                     'total' => ($product->sale_price) ? $cart->total + $product->sale_price : $cart->total + $product->price
                 ]);
 
-                $data['cart'] = Cart::with(['items', 'items.product', 'items.variation'])->where('identifier', $identifier)->first();
+                $data['cart'] = $this->service->getDetailedCart($identifier);
                 $data['status'] = 200;
                 $data['message'] = 'Quantity Updated';
                 return  response()->json($data, 200);
@@ -270,7 +258,7 @@ class CartController extends Controller
                     'total' => ($product->sale_price) ? $cart->total - $product->sale_price : $cart->total - $product->price
                 ]);
 
-                $data['cart'] = Cart::with(['items', 'items.product', 'items.variation'])->where('identifier', $identifier)->first();
+                $data['cart'] = $this->service->getDetailedCart($identifier);
                 $data['status'] = 200;
                 $data['message'] = 'Quantity Updated';
                 return  response()->json($data, 200);

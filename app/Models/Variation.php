@@ -14,6 +14,8 @@ class Variation extends Model
         'product_id',
         'price',
         'sale_price',
+        'price_to_display',
+        'sale_price_to_display',
         'variants',
     ];
     public function getVariantsAttribute($attr)

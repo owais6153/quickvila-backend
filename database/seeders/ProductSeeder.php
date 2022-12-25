@@ -20,6 +20,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Watch',
             'price' => 250,
+            'price_to_display' => 260,
             'short_description' => 'Good Bag',
             'description' => 'Good watch',
             'store_id' => 2,
@@ -33,6 +34,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Bag',
             'price' => 350,
+            'price_to_display' => 360,
             'short_description' => 'Good Bag',
             'description' => 'Good Bag',
             'store_id' => 2,
@@ -47,6 +49,7 @@ class ProductSeeder extends Seeder
             'name' => 'perfume',
             'short_description' => 'Good Bag',
             'price' => 100,
+            'price_to_display' => 110,
             'store_id' => 2,
             'description' => 'Good perfume',
             'image' => 'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1868&q=80',

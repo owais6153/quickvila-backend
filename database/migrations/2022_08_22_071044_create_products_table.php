@@ -22,6 +22,8 @@ class CreateProductsTable extends Migration
             $table->string('short_description')->nullable();
             $table->string('price');
             $table->string('sale_price')->nullable();
+            $table->string('price_to_display')->nullable();
+            $table->string('sale_price_to_display')->nullable();
             $table->enum('product_type', ['simple', 'variation'])->default('simple');
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');

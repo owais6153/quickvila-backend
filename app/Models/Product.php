@@ -19,6 +19,8 @@ class Product extends Model
         'user_id',
         'price',
         'sale_price',
+        'price_to_display',
+        'sale_price_to_display',
         'product_type',
         'product_id',
         'is_site_featured',
