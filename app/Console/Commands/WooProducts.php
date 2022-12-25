@@ -51,7 +51,7 @@ class WooProducts extends Command
         );
 
         $WPCron = WPCron::where('error',  null)->orderBy('created_at', 'desc')->first();
-        $posts_per_page = 10;
+        $posts_per_page = 60;
         $page = 1;
         $store_id = 3;
 
