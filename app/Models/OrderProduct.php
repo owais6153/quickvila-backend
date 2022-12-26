@@ -14,8 +14,8 @@ class OrderProduct extends Model
         'order_id',
         'product_id',
         'store_id',
-        'is_refund',
-        'variations_id'
+        'status',
+        'variation_id'
     ];
     public function order()
     {
@@ -27,6 +27,6 @@ class OrderProduct extends Model
     }
     public function variation()
     {
-        return $this->belongsTo(Variation::class, 'variations_id', 'id');
+        return $this->belongsTo(Variation::class, 'variation_id', 'id');
     }
 }

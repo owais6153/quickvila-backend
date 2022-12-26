@@ -21,13 +21,10 @@ class CreateOrdersTable extends Migration
             $table->string('delivery_charges')->nullable();
             $table->string('tax')->nullable();
             $table->string('total');
-            $table->string('address1');
-            $table->string('address2');
-            $table->string('latitude');
-            $table->string('longitude');
+            $table->string('note')->nullable();
             $table->enum('status', [Completed(), Canceled(), InProcess(), Refunded()])->defaul(InProcess());
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('customer_id');
+            $table->foreign('customer_id')->references('id')->on('customers');
             $table->boolean('check_for_refunds')->default(false);
             $table->timestamps();
             $table->softDeletes();

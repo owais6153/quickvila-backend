@@ -11,14 +11,15 @@ class Order extends Model
 
     public $fillable = [
         'count',
-        'tax',
+        'sub_total',
+        'platform_charges',
         'delivery_charges',
+        'tax',
         'total',
-        'latitude',
-        'longitude',
         'status',
-        'user_id',
-        'address'
+        'customer_id',
+        'check_for_refunds',
+        'note'
     ];
     public function items()
     {
@@ -26,7 +27,7 @@ class Order extends Model
     }
     public function customer()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
 }

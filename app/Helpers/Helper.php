@@ -55,6 +55,10 @@ function Refunded()
 {
     return 'refunded';
 }
+function Pending()
+{
+    return 'pending';
+}
 
 
 

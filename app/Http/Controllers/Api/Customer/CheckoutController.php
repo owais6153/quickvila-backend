@@ -7,8 +7,10 @@ use App\Models\Cart;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\CartProduct;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 
 class CheckoutController extends Controller
@@ -16,19 +18,31 @@ class CheckoutController extends Controller
 
     public $order;
     public $error;
-    public function add_new_order(Cart $cart, User $user){
+    public function add_new_order(Cart $cart, Request $request){
         try{
+
+            $customer = Customer::updateOrCreate([
+                'phone' => $request->phone,
+            ],
+            [
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address1' => $request->address1,
+                'address2' => $request->address2,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'user_id' => Auth::check() ? $request->user()->id : null
+            ]);
 
             $order = Order::create([
                 'count' => $cart->count,
-                'tax' => '0',
-                'delivery_charges' => '0',
+                'sub_total' => $cart->sub_total,
+                'platform_charges' => $cart->platform_charges,
+                'tax' => $cart->tax,
                 'total' => $cart->total,
-                'latitude' => '24',
-                'longitude' => '24',
                 'status' => InProcess(),
-                'address' => InProcess(),
-                'user_id' => $cart->user_id,
+                'customer_id' => $customer->id
             ]);
             foreach($cart->items as $item){
                 $orderItem = OrderProduct::create([
@@ -37,7 +51,6 @@ class CheckoutController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
                     'store_id' => $item->product->store_id,
-                    'is_refund' => false,
                     'variation_id' => $item->variation_id,
                 ]);
             }
@@ -54,20 +67,14 @@ class CheckoutController extends Controller
     public function checkout(Request $request){
 
         try{
-            if(Auth::check()){
-               $user = $request->user();
-            } else{
-
-            }
-
 
             $is_payment_successfull = true;
             if($is_payment_successfull){
-                $cart  = Cart::where('user_id', $user->id)->first();
+                $cart  = Cart::where('identifier', $request->identifier)->first();
                 if(!empty($cart)){
 
                     if($cart->items->count()){
-                       $newOrder =  $this->add_new_order($cart, $user);
+                       $newOrder =  $this->add_new_order($cart, $request);
                        if($newOrder === true){
                             $cart->items()->delete();
                             $cart->delete();
