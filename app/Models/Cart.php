@@ -13,7 +13,11 @@ class Cart extends Model
         'count',
         'user_id',
         'identifier',
-        'ip'
+        'ip',
+        'sub_total',
+        'delivery_charges',
+        'tax',
+        'platform_charges'
     ];
     public function items()
     {

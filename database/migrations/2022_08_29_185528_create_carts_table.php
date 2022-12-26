@@ -19,6 +19,7 @@ class CreateCartsTable extends Migration
             $table->integer('count')->default(0);
             $table->string('sub_total')->nullable();
             $table->string('delivery_charges')->nullable();
+            $table->string('platform_charges')->nullable();
             $table->string('tax')->nullable();
             $table->string('total');
             $table->string('ip');
