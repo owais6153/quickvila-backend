@@ -13,7 +13,7 @@ class VariationOberver
      * @param  \App\Models\Variation  $variation
      * @return void
      */
-    function __construct(Product $product)
+    function __construct()
     {
         $this->service = new PricingService();
     }

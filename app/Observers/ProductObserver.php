@@ -8,7 +8,7 @@ use App\Services\ProductServices\PricingService;
 class ProductObserver
 {
 
-    function __construct(Product $product)
+    function __construct()
     {
         $this->service = new PricingService();
     }
