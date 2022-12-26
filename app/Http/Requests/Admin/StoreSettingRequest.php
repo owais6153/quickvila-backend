@@ -26,7 +26,6 @@ class StoreSettingRequest extends FormRequest
         return [
             'price' => 'required|integer',
             'radius' => 'required|integer',
-            'tax' => 'required|integer',
             'price_condition' => 'required|max:255',
         ];
     }

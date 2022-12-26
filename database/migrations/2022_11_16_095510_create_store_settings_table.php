@@ -17,7 +17,6 @@ class CreateStoreSettingsTable extends Migration
             $table->id();
             $table->integer('radius')->nullable();
             $table->string('price')->default(0);
-            $table->string('tax')->default(0);
             $table->enum('price_condition', ['percentage', 'price'])->default('percentage');
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores')->onDelete('cascade');

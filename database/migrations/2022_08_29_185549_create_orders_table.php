@@ -17,10 +17,12 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->integer('count')->default(0);
             $table->string('sub_total')->nullable();
+            $table->string('platform_charges')->nullable();
             $table->string('delivery_charges')->nullable();
             $table->string('tax')->nullable();
             $table->string('total');
-            $table->string('address');
+            $table->string('address1');
+            $table->string('address2');
             $table->string('latitude');
             $table->string('longitude');
             $table->enum('status', [Completed(), Canceled(), InProcess(), Refunded()])->defaul(InProcess());

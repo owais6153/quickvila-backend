@@ -11,7 +11,6 @@ class StoreSetting extends Model
     public $fillable = [
         'radius',
         'price',
-        'tax',
         'price_condition',
         'store_id',
     ];

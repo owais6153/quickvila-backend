@@ -52,13 +52,11 @@ class StoreSeeder extends Seeder
         StoreSetting::create([
             'price' => 0,
             'radius' => 10,
-            'tax' => 0,
             'store_id' => $store1->id
         ]);
         StoreSetting::create([
             'price' => 0,
             'radius' => 10,
-            'tax' => 0,
             'store_id' => $store2->id
         ]);
 
@@ -83,7 +81,6 @@ class StoreSeeder extends Seeder
         StoreSetting::create([
             'price' => 0,
             'radius' => 10,
-            'tax' => 0,
             'store_id' => $store3->id
         ]);
 

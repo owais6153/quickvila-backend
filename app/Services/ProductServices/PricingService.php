@@ -17,11 +17,17 @@ class PricingService
                 if($product->sale_price != null){
                     $product->sale_price_to_display = $product->sale_price + $additionalPrices;
                 }
+                else{
+                    $product->sale_price_to_display = null;
+                }
             }
             else{
                 $product->price_to_display = $product->price + (($product->price / 100) * $additionalPrices);
                 if($product->sale_price != null){
                     $product->sale_price_to_display = $product->sale_price + (($product->sale_price / 100) * $additionalPrices);
+                }
+                else{
+                    $product->sale_price_to_display = null;
                 }
             }
         }
@@ -47,11 +53,17 @@ class PricingService
                 if($variation->sale_price != null){
                     $variation->sale_price_to_display = $variation->sale_price + $additionalPrices;
                 }
+                else{
+                    $variation->sale_price_to_display = null;
+                }
             }
             else{
                 $variation->price_to_display = $variation->price + (($variation->price / 100) * $additionalPrices);
                 if($variation->sale_price != null){
                     $variation->sale_price_to_display = $variation->sale_price + (($variation->sale_price / 100) * $additionalPrices);
+                }
+                else{
+                    $variation->sale_price_to_display = null;
                 }
             }
         }

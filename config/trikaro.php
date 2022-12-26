@@ -112,8 +112,11 @@ return [
             'currency' => 'USD',
             'currency_symbol' => '$',
         ],
+        'tax' => [
+            'platform_fees' => '10',
+            'tax' => '5',
+        ],
         'store' => [
-            'tax' => '20',
             'default_price' => '0',
             'default_price_condition' => '0',
             'default_radius' => '10',

@@ -9,6 +9,11 @@ use App\Models\CartProduct;
 class CartService
 {
 
+    protected $setting = false;
+    function __construct()
+    {
+        $this->setting = getSetting('tax');
+    }
     public function getCartWithIdentifier($identifier)
     {
         return Cart::with(['items', 'items.variation', 'items.product'])->where('identifier', $identifier)->first();
@@ -43,23 +48,44 @@ class CartService
         }
     }
 
-    public function createEmptyNewCart($ip)
+    public function getPlatformCahrges($subtotal)
     {
-        $identifier = time();
-        $cart = Cart::create([
-            'count' => 0,
-            'sub_total' => 0,
-            'total' => 0,
-            'identifier' => $identifier,
-            'ip' => $ip,
-            'delivery_charges' => 0,
-            'tax' => 0
-        ]);
-
-        return $cart;
+        $pf = ($subtotal / 100) * $this->setting['platform_fees'];
+        if($pf > 4){
+            $pf = 4;
+        }
+        if($pf < 2){
+            $pf = 2;
+        }
+        return $pf;
     }
 
+    public function getDeliveryCharges($cart)
+    {
+        return 0;
+    }
+    public function getTax($subtotal, $pf, $dc)
+    {
+        $t = $subtotal + $pf + $dc;
+        $t = ($t / 100) * $this->setting['tax'];
+        return $t;
+    }
 
+    public function updateTaxAndCharges(Cart $cart)
+    {
+        $subtotal = $cart->sub_total;
+        $total = $cart->total;
+        $platform_fee = $this->getPlatformCahrges($subtotal);
+        $delivery_fee = $this->getDeliveryCharges($cart);
+        $tax = $this->getTax($subtotal,$platform_fee, $delivery_fee);
+
+        $cart->update([
+            'platform_charges' => $platform_fee,
+            'tax' => $tax,
+            'delivery_charges' => $delivery_fee,
+            'total' => $delivery_fee + $platform_fee + $tax + $subtotal,
+        ]);
+    }
 
     public function addToCart(Product $product, Request $request)
     {
@@ -88,12 +114,12 @@ class CartService
                     'qty' => $qty,
                     'line_total' => $line_total,
                 ]);
-
                 $cart->update([
                     'count' => $cart->count + 1,
                     'total' =>   $cart->total + $item_price,
                     'sub_total' =>   $cart->sub_total + $item_price,
                 ]);
+                $this->updateTaxAndCharges($cart);
             }
             else{
 
@@ -119,6 +145,8 @@ class CartService
                     'total' =>   $cart->total + $line_total,
                     'sub_total' =>   $cart->sub_total + $line_total,
                 ]);
+
+                $this->updateTaxAndCharges($cart);
             }
 
         }
@@ -153,6 +181,8 @@ class CartService
                 'cart_id' => $cart->id,
                 'variations_id' => $variation,
             ]);
+
+            $this->updateTaxAndCharges($cart);
         }
 
         $this->ifAuth($cart);
@@ -172,6 +202,7 @@ class CartService
     public function remove(CartProduct $cartProduct, Request $request)
     {
         $cart = $this->getCart($request);
+        $this->ifAuth($cart);
         if(!empty($cart)){
             $cart->update([
                 'count' => $cart->count - $cartProduct->qty,
@@ -179,11 +210,15 @@ class CartService
                 'sub_total' => $cart->sub_total - $cartProduct->line_total,
             ]);
             $cartProduct->delete();
+
+            $this->updateTaxAndCharges($cart);
         }
+
     }
     public function updateCart(CartProduct $cartProduct, $operation, Request $request)
     {
         $cart = $this->getCart($request);
+        $this->ifAuth($cart);
         $identifier = isset($cart->identifier) ? $cart->identifier : false;
         $product = $cartProduct->product;
 
@@ -213,6 +248,7 @@ class CartService
                 'sub_total' =>  $cart->sub_total + $item_price
             ]);
 
+            $this->updateTaxAndCharges($cart);
 
         }
         else if($operation == 'decrement'){
@@ -242,6 +278,8 @@ class CartService
                     'total' =>  $cart->total - $item_price,
                     'sub_total' =>  $cart->sub_total - $item_price
                 ]);
+
+            $this->updateTaxAndCharges($cart);
             }
 
         }

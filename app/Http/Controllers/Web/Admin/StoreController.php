@@ -109,7 +109,6 @@ class StoreController extends Controller
         $storeSetting = StoreSetting::where('store_id', $store->id)->update([
             'price' => $request->price,
             'radius' => $request->radius,
-            'tax' => $request->tax,
             'price_condition' => $request->price_condition,
         ]);
 
@@ -156,7 +155,6 @@ class StoreController extends Controller
             'store_id' => $store->id,
             'price' => $this->setting['default_price'],
             'radius' => $this->setting['default_radius'],
-            'tax' => $this->setting['tax'],
             'price_condition' => $this->setting['default_price_condition'],
         ]);
 

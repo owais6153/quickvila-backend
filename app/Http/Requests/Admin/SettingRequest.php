@@ -42,6 +42,9 @@ class SettingRequest extends FormRequest
             'setting.username' => 'exclude_unless:key,email|required',
             'setting.password' => 'exclude_unless:key,email|required',
             'setting.encryption' => 'exclude_unless:key,email|required',
+            // Tax
+            'setting.platform_fees' => 'exclude_unless:key,tax|required',
+            'setting.tax' => 'exclude_unless:key,tax|required',
         ];
     }
 }

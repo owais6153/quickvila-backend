@@ -34,13 +34,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Store Tax</label>
-                                    <input type="number" name="tax" placeholder="Store Tax" class="form-control"
-                                        value="{{ old('tax', $storeSetting->tax) }}">
-                                </div>
-                            </div>
+
 
                             <div class="col-md-6">
                                 <div class="form-group">
