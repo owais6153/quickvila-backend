@@ -85,7 +85,8 @@ class WooProducts extends Command
                         'price' => $p->price,
                         'sale_price' => $p->sale_price,
                         'product_type' => 'simple',
-                        'is_store_featured' => $p->featured
+                        'is_store_featured' => $p->featured,
+                        "is_taxable" => $p->tax_status == 'taxable' ? true: false,
                     ]);
                 }
                 else{
@@ -97,7 +98,8 @@ class WooProducts extends Command
                         'price' => $p->price,
                         'sale_price' => $p->sale_price,
                         'product_type' => 'simple',
-                        'is_store_featured' => $p->featured
+                        'is_store_featured' => $p->featured,
+                        "is_taxable" => $p->tax_status == 'taxable' ? true: false,
                     ]);
                 }
 

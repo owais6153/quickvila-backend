@@ -26,7 +26,7 @@ class Product extends Model
         'is_site_featured',
         'is_store_featured',
         'status',
-        'is_tax_free',
+        'is_taxable',
     ];
 
     public function getImageAttribute($attr)

@@ -117,6 +117,14 @@
                                         for="is_site_featured">Make it featured on front pages</label>
                                 </div>
                             @endcan
+
+                            <div class="custom-control custom-checkbox small">
+                                <input type="checkbox" class="custom-control-input" name="is_taxable"
+                                    value="1" id="is_taxable"
+                                    {{ old('is_taxable', $product->is_taxable) ? 'checked=checked' : '' }}>
+                                <label class="custom-control-label"
+                                    for="is_taxable">Allow tax on this product</label>
+                            </div>
                         </div>
                     </div>
                 </div>

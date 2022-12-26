@@ -73,6 +73,7 @@ class ProductController extends Controller
                 'sale_price' => $request->sale_price,
                 'user_id' =>auth()->id(),
                 'image' => ($image != '') ? $image : noImage(),
+                'is_taxable' => $request->has('is_taxable'),
             ]);
 
             if($request->product_type == 'variation'){

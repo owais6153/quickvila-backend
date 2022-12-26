@@ -23,8 +23,12 @@ class HomeController extends Controller
     {
         $limit = ($request->has('limit')) ? $request->limit : 10;
         $data['store_categories'] = StoreCategory::limit($limit)->orderBy('id', 'desc')->get();
-        $data['stores_purchased_from'] = Store::withCount(['products'])->where('status', Published())->limit($limit)->orderBy('id', 'desc')->get();
-        $data['featured_stores'] = Store::withCount(['products'])->where('status', Published())->where('is_featured', 1)->limit($limit)->orderBy('id', 'desc')->get();
+        $data['stores_purchased_from'] = Store::withCount(['products' => function ($q){
+            $q->where('status', Published());
+        }])->where('status', Published())->limit($limit)->orderBy('id', 'desc')->get();
+        $data['featured_stores'] = Store::withCount(['products' => function ($q){
+            $q->where('status', Published());
+        }])->where('status', Published())->where('is_featured', 1)->limit($limit)->orderBy('id', 'desc')->get();
         $data['featured_products'] = Product::limit($limit)->where('is_site_featured', 1)->where('status', Published())->orderBy('id', 'desc')->get();
         $data['testimonials'] = Testimonial::limit($limit)->orderBy('sort', 'desc')->get();
         $data['videos'] = Video::limit($limit)->orderBy('sort', 'desc')->get();

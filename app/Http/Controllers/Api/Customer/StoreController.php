@@ -29,7 +29,9 @@ class StoreController extends Controller
     public function show($id)
     {
         $store = $this->model->where('id', $id)->where('status', Published());
-        $store = $store->withCount(['products'])->with(['categories'])->first();
+        $store = $store->withCount(['products' => function ($q){
+            $q->where('status', Published());
+        }])->with(['categories'])->first();
         $data['store'] = $store;
         $data['ratings'] = $store->reviews()->avg('rating');
         $data['top_selling_products'] = $store->products()->where('status', Published())->limit(10)->orderBy('id', 'desc')->get();

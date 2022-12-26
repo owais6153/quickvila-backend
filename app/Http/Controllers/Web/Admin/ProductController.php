@@ -105,6 +105,7 @@ class ProductController extends Controller
             'sale_price' => $request->sale_price,
             'user_id' => $request->user_id,
             'image' => ($image != '') ? $image : noImage(),
+            'is_taxable' => $request->has('is_taxable'),
         ]);
 
         if ($request->has('categories'))
@@ -172,6 +173,7 @@ class ProductController extends Controller
             'price' => $product->manage_able ? $request->price : $product->price,
             'sale_price' => $product->manage_able ? $request->sale_price :  $product->sale_price,
             'image' => ($image != '') ? $image : str_replace(env('FILE_URL'), '', $product->image),
+            'is_taxable' => $request->has('is_taxable'),
         ], $product->id);
 
         if ($request->has('categories')) {
