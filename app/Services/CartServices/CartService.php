@@ -43,7 +43,7 @@ class CartService
     {
         if(Auth::check() && $cart->user_id == null){
             $cart->update([
-                'user_id' => auth()->id,
+                'user_id' => auth()->id(),
             ]);
         }
     }
