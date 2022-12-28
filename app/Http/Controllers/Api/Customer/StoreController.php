@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\StoreCategory;
+use App\Services\StoreServices\StoreGeoLocationService;
 
 
 class StoreController extends Controller
@@ -13,14 +14,21 @@ class StoreController extends Controller
     function __construct(Store $store)
     {
         $this->model = $store;
+        $this->storeLocationService = new StoreGeoLocationService();
     }
     public function index(Request $request)
     {
         $stores = $this->model->query()->where('status', Published());
+
+        if($request->has('lat') && $request->has('long')){
+            $ids = $this->storeLocationService->getNearbyStoresID($request->lat, $request->long);
+            $stores=$stores->whereIn('id', $ids)->orderBy('id', 'desc');
+        }
+
         $paginate = ($request->has('paginate')) ? $request->paginate : 15;
         $stores = $stores->withCount(['products' => function($q){
             $q->where('status', Published());
-        }])->orderBy('id', 'desc')->paginate($paginate);
+        }])->paginate($paginate);
         $data['stores'] = $stores;
         $data['categories'] = StoreCategory::all();
         $data['status'] = 200;

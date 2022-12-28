@@ -17,8 +17,15 @@ class StoreGeoLocationService
         return $nearbystores;
     }
 
-    // public function FunctionName(Type $var = null)
-    // {
-    //     # code...
-    // }
+    public function getNearbyStoresID($latitude, $longitude)
+    {
+        $nearbystores = $this->getNearbyStores($latitude, $longitude);
+
+        $ids=[];
+        foreach($nearbystores as $nearbystore){
+            $ids[]= $nearbystore->id;
+        }
+
+        return $ids;
+    }
 }

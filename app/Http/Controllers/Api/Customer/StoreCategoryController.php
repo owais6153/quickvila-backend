@@ -6,9 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\StoreCategory;
 use App\Models\Store;
+use App\Services\StoreServices\StoreGeoLocationService;
 
 class StoreCategoryController extends Controller
 {
+    function __construct()
+    {
+        $this->storeLocationService = new StoreGeoLocationService();
+    }
     public function index()
     {
         $data['categories'] = StoreCategory::all();
@@ -20,7 +25,15 @@ class StoreCategoryController extends Controller
         $limit = ($request->has('limit')) ? $request->limit : 10;
         $stores = Store::whereHas('categories', function ($q) use($request){
             $q->whereIn('store_categories.id', $request->categories);
-        })->where('status', Published())->orderBy('id', 'desc')->paginate($limit);
+        })->where('status', Published());
+
+
+        if($request->has('lat') && $request->has('long')){
+            $ids = $this->storeLocationService->getNearbyStoresID($request->lat, $request->long);
+            $stores=$stores->whereIn('id', $ids)->orderBy('id', 'desc');
+        }
+
+        $stores = $stores->orderBy('id', 'desc')->paginate($limit);
 
 
         $data['stores'] = $stores;
