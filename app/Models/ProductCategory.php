@@ -15,4 +15,9 @@ class ProductCategory extends Model
         'user_id',
         'store_id'
     ];
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'pivot_categories', 'category_id', 'pivot_id')->withPivot('type')->wherePivot('type', 'product');
+    }
 }

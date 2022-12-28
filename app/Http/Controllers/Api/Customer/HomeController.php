@@ -46,7 +46,11 @@ class HomeController extends Controller
     {
         $data['products'] = Product::query();
         if($term){
-            $data['products'] = $data['products']->where('name', 'LIKE', "%$term%");
+            $data['products'] = $data['products']->where('name', 'LIKE', "%$term%")->orWhere(function($q) use($term){
+                $q->whereHas('store', function($q) use($term){
+                    $q->where('name', 'LIKE', "%$term%")->where('status', Published());
+                });
+            });
         }
 
         $paginate = ($request->has('paginate')) ? $request->paginate : 20;

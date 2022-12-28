@@ -18,7 +18,7 @@ class ProductCategoryController extends Controller
     }
     public function products(Request $request)
     {
-        $limit = ($request->has('limit')) ? $request->limit : 10;
+        $limit = ($request->has('limit')) ? $request->limit : 20;
         $products = Product::whereHas('categories', function ($q) use($request){
             $q->whereIn('product_categories.id', $request->categories);
         })->where('status', Published())->orderBy('id', 'desc')->paginate($limit);
