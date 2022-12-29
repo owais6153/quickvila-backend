@@ -21,7 +21,7 @@ class OrderController extends Controller
 
         try {
             $mystore = $request->mystore;
-            $orders = OrderProduct::with(['variation', 'product'])->where('is_refund', false)->where('store_id', $mystore->id)->whereHas('order', function ($q) {
+            $orders = OrderProduct::with(['variation', 'product'])->where('status', Pending())->where('store_id', $mystore->id)->whereHas('order', function ($q) {
                 $q->where('status', InProcess());
             })->get();
 
