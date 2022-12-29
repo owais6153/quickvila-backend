@@ -61,7 +61,7 @@ class OrderController extends Controller
                 return response()->json($data, 200);
             }
             $item->update([
-                'is_refund' => true,
+                'status' => Refunded(),
             ]);
 
             return response()->json(['status' => 200, 'message' => 'Order refunded, It will take aprox 5mins to fully refund.'], 200);
