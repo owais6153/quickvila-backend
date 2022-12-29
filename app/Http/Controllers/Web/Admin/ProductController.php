@@ -90,6 +90,16 @@ class ProductController extends Controller
             $file_name = uploadFile($imageFile, imagePath());
             $image = $file_name;
         }
+        $gallery = [];
+        if ($request->hasFile('gallery')) {
+            $files = $request->file('gallery');
+            foreach($files as $img){
+                $galleryImage = $img;
+                $galleryImageName = uploadFile($galleryImage, imagePath());
+                $gallery[] = $galleryImageName;
+            }
+        }
+
 
 
         $product = $this->model->create([
@@ -106,6 +116,7 @@ class ProductController extends Controller
             'user_id' => $request->user_id,
             'image' => ($image != '') ? $image : noImage(),
             'is_taxable' => $request->has('is_taxable'),
+            'gallery' => !empty($gallery) ? json_encode( $gallery) : null,
         ]);
 
         if ($request->has('categories'))
@@ -160,6 +171,16 @@ class ProductController extends Controller
             $file_name = uploadFile($imageFile, imagePath());
             $image = $file_name;
         }
+        // dd($request->gallery);
+        $gallery = [];
+        if ($request->hasFile('gallery')) {
+            $files = $request->file('gallery');
+            foreach($files as $img){
+                $galleryImage = $img;
+                $galleryImageName = uploadFile($galleryImage, imagePath());
+                $gallery[] = $galleryImageName;
+            }
+        }
 
         $this->model->update([
             'name' => $request->name,
@@ -174,6 +195,7 @@ class ProductController extends Controller
             'sale_price' => $product->manage_able ? $request->sale_price :  $product->sale_price,
             'image' => ($image != '') ? $image : str_replace(env('FILE_URL'), '', $product->image),
             'is_taxable' => $request->has('is_taxable'),
+            'gallery' => !empty($gallery) ? json_encode( $gallery) : json_encode($product->gallery),
         ], $product->id);
 
         if ($request->has('categories')) {

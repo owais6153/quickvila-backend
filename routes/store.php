@@ -50,7 +50,6 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
     // Orders
     Route::get('active-orders', [OrderController::class, 'activeorders']);
     Route::get('active-orders/{id}/refund', [OrderController::class, 'refund']);
-
-
+    Route::get('active-orders/{id}/accept', [OrderController::class, 'accept']);
 });
 

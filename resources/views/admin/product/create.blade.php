@@ -69,6 +69,25 @@
                             </div>
                             @include('admin.product.variation.create')
 
+                            <div class="col-12">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Gallery</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="col-md-12">
+                                            <div class="form-group uploader">
+                                                <label>Upload Logo</label>
+                                                <input type="file" multiple name="gallery[]" />
+                                                <div class="image-uploader"
+                                                    style="background-image: url('{{ asset('images/camera.png') }}')">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-md-12 mt-3">
                                 <div class="form-group">
                                     <input type="submit" name="" value="Save" placeholder="Product Name"

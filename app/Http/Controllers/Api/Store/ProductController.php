@@ -40,6 +40,8 @@ class ProductController extends Controller
                 'status' => 'required',
                 'p_attributes' =>  'nullable',
                 'variations' => 'required_if:product_type,variation',
+                'gallery' =>  'nullable',
+                'gallery.*'=>'nullable|file|mimes:png,jpg,jpeg,gif',
             ]);
 
             if ($validator->fails()) {
@@ -53,12 +55,19 @@ class ProductController extends Controller
                 $file_name = uploadFile($imageFile, imagePath());
                 $image = $file_name;
             }
-            if($request->has('image') && $request->has('file_type')){
-                if($request->file_type == 'BASE64'){
-                    $image = __DIR__ . '/' . imagePath(time().'.png');
-                    uploadBase64($request->image, $image);
+
+            $gallery = [];
+            if ($request->hasFile('gallery')) {
+                $files = $request->file('gallery');
+                foreach($files as $img){
+                    $galleryImage = $img;
+                    $galleryImageName = uploadFile($galleryImage, imagePath());
+                    $gallery[] = $galleryImageName;
                 }
             }
+
+
+
 
             $mystore = $request->mystore;
             $product = $this->model->create([
@@ -74,6 +83,7 @@ class ProductController extends Controller
                 'user_id' =>auth()->id(),
                 'image' => ($image != '') ? $image : noImage(),
                 'is_taxable' => $request->has('is_taxable'),
+                'gallery' => !empty($gallery) ? json_encode( $gallery) : null,
             ]);
 
             if($request->product_type == 'variation'){
@@ -107,6 +117,8 @@ class ProductController extends Controller
                 'status' => 'required',
                 'p_attributes' =>  'nullable',
                 'variations' => 'required_if:product_type,variation',
+                'gallery' =>  'nullable',
+                'gallery.*'=>'nullable|file|mimes:png,jpg,jpeg,gif',
             ]);
 
             if ($validator->fails()) {
@@ -128,10 +140,13 @@ class ProductController extends Controller
                 $file_name = uploadFile($imageFile, imagePath());
                 $image = $file_name;
             }
-            if($request->has('image') && $request->has('file_type')){
-                if($request->file_type == 'BASE64'){
-                    $image = __DIR__ . '/' . imagePath(time().'.png');
-                    uploadBase64($request->image, $image);
+            $gallery = [];
+            if ($request->hasFile('gallery')) {
+                $files = $request->file('gallery');
+                foreach($files as $img){
+                    $galleryImage = $img;
+                    $galleryImageName = uploadFile($galleryImage, imagePath());
+                    $gallery[] = $galleryImageName;
                 }
             }
 
@@ -145,6 +160,7 @@ class ProductController extends Controller
                 'is_store_featured' => $request->has('is_store_featured') ? $request->is_store_featured : false ,
                 'sale_price' => $request->sale_price,
                 'image' => ($image != '') ? $image : $product->image,
+                'gallery' => !empty($gallery) ? json_encode( $gallery) : json_encode($product->gallery),
             ], $product->id);
 
             if($request->product_type == 'variation'){

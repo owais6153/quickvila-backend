@@ -25,13 +25,13 @@ class CreateProductsTable extends Migration
             $table->string('price_to_display')->nullable();
             $table->string('sale_price_to_display')->nullable();
             $table->enum('product_type', ['simple', 'variation'])->default('simple');
+            $table->longText('gallery')->nullable();
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');
             $table->boolean('manage_able')->default(true);
             $table->boolean('is_taxable')->default(true);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('gallery')->nullable();
             $table->boolean('is_site_featured')->default(false);
             $table->boolean('is_store_featured')->default(false);
             $table->enum('status', [Published(), Draft()])->default(Draft());

@@ -44,6 +44,8 @@ class ProductRequest extends FormRequest
             'product_type' => 'required',
             'status' => 'required',
             'p_attributes' =>  'nullable',
+            'gallery' =>  'nullable',
+            'gallery.*'=>'nullable|file|mimes:png,jpg,jpeg,gif',
             // Variations
             'variations' => 'required_if:product_type,variation',
             'variations.*.name' => 'required_if:product_type,variation|max:255',

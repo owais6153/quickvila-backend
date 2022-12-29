@@ -27,7 +27,19 @@ class Product extends Model
         'is_store_featured',
         'status',
         'is_taxable',
+        'gallery',
     ];
+    public function getGalleryAttribute($attr)
+    {
+        $gallery = [];
+        if($attr != null){
+            $images = json_decode($attr, true);
+            foreach($images as $image){
+                $gallery[] = validateImageUrl($image);
+            }
+        }
+        return $gallery;
+    }
 
     public function getImageAttribute($attr)
     {

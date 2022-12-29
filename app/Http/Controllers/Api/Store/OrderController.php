@@ -71,4 +71,29 @@ class OrderController extends Controller
             return response()->json($error, 500);
         }
     }
+    public function accept(Request $request, $id)
+    {
+        try {
+            $mystore = $request->mystore;
+            $item = $mystore->order_items->where('id', $id)->first();
+
+            if(empty($item)){
+                $data = [
+                    'message' => 'Order Item not found',
+                    'status' => 404
+                ];
+
+                return response()->json($data, 200);
+            }
+            $item->update([
+                'status' => InProcess(),
+            ]);
+
+            return response()->json(['status' => 200, 'message' => 'Order refunded, It will take aprox 5mins to fully refund.'], 200);
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
 }
