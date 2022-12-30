@@ -10331,6 +10331,7 @@ body.sidebar-toggled footer.sticky-footer {
     min-height: 100px;
     border: dashed 1px;
     display: flex;
+    flex-wrap: wrap;
     gap: 2px;
     justify-content: center;
     align-items: center;
