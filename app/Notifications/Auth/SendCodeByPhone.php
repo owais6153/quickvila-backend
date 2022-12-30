@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Auth;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,7 +11,7 @@ use Twilio\Rest\Client;
 use Config;
 
 
-class SendCodeByPhone extends Notification
+class SendCodeByPhone extends Notification implements ShouldQueue
 {
     use Queueable;
 

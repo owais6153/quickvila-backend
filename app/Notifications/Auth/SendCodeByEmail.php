@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Auth;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 use Config;
 
-class SendCodeByEmail extends Notification
+class SendCodeByEmail extends Notification implements ShouldQueue
 {
     use Queueable;
 
