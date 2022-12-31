@@ -15,12 +15,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRolesAndAbilities;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'first_name',
         'last_name',
@@ -30,17 +24,15 @@ class User extends Authenticatable
         'password',
         'email_verified_at',
         'phone_verified_at',
+        'phone',
         'address',
+        'latitude',
+        'longitude',
         'dob',
         'avatar',
-        'identity_card'
+        'identity_card',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -54,8 +46,6 @@ class User extends Authenticatable
     public function getAvatarAttribute($attr){
         return validateImageUrl($attr);
     }
-
-
     public function sendCodeByEmail()
     {
         $this->notify(new SendCodeByEmail());

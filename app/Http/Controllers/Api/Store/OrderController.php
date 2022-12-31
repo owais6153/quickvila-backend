@@ -16,14 +16,14 @@ class OrderController extends Controller
         $this->model = new Repository($order);
     }
 
-    public function activeorders(Request $request)
+    public function neworders(Request $request)
     {
 
         try {
             $mystore = $request->mystore;
-            $orders = OrderProduct::with(['variation', 'product'])->where('status', Pending())->where('store_id', $mystore->id)->whereHas('order', function ($q) {
-                $q->where('status', InProcess());
-            })->get();
+            $orders = Order::with(['customer'])->whereHas('items', function ($q) use($mystore) {
+                $q->where('status', Pending())->where('store_id', $mystore->id);
+            })->where('status', InProcess())->get();
 
             if ($orders->count() > 0) {
                 $data = [
@@ -34,7 +34,7 @@ class OrderController extends Controller
                 return response()->json($data, 200);
             } else {
                 $data = [
-                    'message' => 'No order found',
+                    'errors' => ['orders' => ['Orderss not found']],
                     'status' => 404
                 ];
 
@@ -46,6 +46,128 @@ class OrderController extends Controller
             return response()->json($error, 500);
         }
     }
+    public function show(Request $request, $id)
+    {
+        try {
+            $mystore = $request->mystore;
+            $order =  Order::with(['customer', 'items' => function($q) use($mystore) {
+                $q->where('store_id', $mystore->id);
+            }])->where('id', $id)->whereHas('items', function ($q) use($mystore) {
+                $q->where('store_id', $mystore->id);
+            })->first();
+            if(empty($order)){
+                $data = [
+                    'errors' => ['order' => ['Order not found']],
+                    'status' => 404
+                ];
+                return response()->json($data, 200);
+            }else{
+                $data = [
+                    'order' => $order,
+                    'status' => 200
+                ];
+                return response()->json($data, 200);
+            }
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+
+    }
+    public function complete(Request $request, $id)
+    {
+        try {
+            $mystore = $request->mystore;
+            $items = $mystore->order_items()->where('order_id', $id)->get();
+            if($items->count() < 1){
+                $data = [
+                    'errors' => ['order' => ['Order not found']],
+                    'status' => 404
+                ];
+                return response()->json($data, 200);
+            }else{
+                foreach($items as $item){
+                    $item->update([
+                        'status' => Completed()
+                    ]);
+                }
+
+                $data = [
+                    'message' => 'Order Completed',
+                    'status' => 200
+                ];
+                return response()->json($data, 200);
+            }
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
+    public function cancel(Request $request, $id)
+    {
+        try {
+            $mystore = $request->mystore;
+            $items = $mystore->order_items()->where('order_id', $id)->get();
+            if($items->count() < 1){
+                $data = [
+                    'errors' => ['order' => ['Order not found']],
+                    'status' => 404
+                ];
+                return response()->json($data, 200);
+            }else{
+                foreach($items as $item){
+                    $item->update([
+                        'status' => Refunded()
+                    ]);
+                }
+
+                $data = [
+                    'message' => 'Order Completed',
+                    'status' => 200
+                ];
+                return response()->json($data, 200);
+            }
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
+
+    public function active(Request $request)
+    {
+        try {
+            $mystore = $request->mystore;
+            $orders = Order::with(['customer'])->whereHas('items', function ($q) use($mystore) {
+                $q->where('status', InProcess())->where('store_id', $mystore->id);
+            })->where('status', InProcess())->get();
+            if ($orders->count() > 0) {
+                $data = [
+                    'orders' => $orders,
+                    'status' => 200
+                ];
+
+                return response()->json($data, 200);
+            } else {
+                $data = [
+                    'errors' => ['order' => ['Order not found']],
+                    'status' => 404
+                ];
+
+                return response()->json($data, 200);
+            }
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+
+    }
+
+
+
     public function refund(Request $request, $id)
     {
         try {
@@ -54,7 +176,7 @@ class OrderController extends Controller
 
             if(empty($item)){
                 $data = [
-                    'message' => 'Order Item not found',
+                    'errors' => ['order' => ['Order not found']],
                     'status' => 404
                 ];
 
@@ -64,7 +186,7 @@ class OrderController extends Controller
                 'status' => Refunded(),
             ]);
 
-            return response()->json(['status' => 200, 'message' => 'Order refunded, It will take aprox 5mins to fully refund.'], 200);
+            return response()->json(['status' => 200, 'message' => 'Order Item refunded, It will take aprox 5mins to fully refund.'], 200);
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;
@@ -79,7 +201,7 @@ class OrderController extends Controller
 
             if(empty($item)){
                 $data = [
-                    'message' => 'Order Item not found',
+                    'errors' => ['order' => ['Order not found']],
                     'status' => 404
                 ];
 
@@ -89,7 +211,7 @@ class OrderController extends Controller
                 'status' => InProcess(),
             ]);
 
-            return response()->json(['status' => 200, 'message' => 'Order refunded, It will take aprox 5mins to fully refund.'], 200);
+            return response()->json(['status' => 200, 'message' => 'Order Item Accepeted'], 200);
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
             $error['status'] = 500;

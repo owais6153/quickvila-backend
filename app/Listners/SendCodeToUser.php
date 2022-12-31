@@ -33,7 +33,6 @@ class SendCodeToUser
         $user->codes()->delete();
         $user_code = UserCode::create([
             'code' => rand(100000, 999999),
-            'expires_at' => date('Y-m-d'),
             'user_id' => $user->id,
             'type' => $this->setting['default_verification_method'],
         ]);

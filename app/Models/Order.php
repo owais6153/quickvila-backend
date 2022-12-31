@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 class Order extends Model
 {
     use HasFactory, SoftDeletes;
@@ -16,18 +17,24 @@ class Order extends Model
         'delivery_charges',
         'tax',
         'total',
+        'user_id',
         'status',
-        'customer_id',
+        'prescription',
         'check_for_refunds',
-        'note'
+        'order_no',
+        'note',
+        'tip'
     ];
+    public function getCreatedAtAttribute($attr){
+        return Carbon::parse($attr)->diffForHumans();
+    }
     public function items()
     {
         return $this->hasMany(OrderProduct::class, 'order_id', 'id');
     }
     public function customer()
     {
-        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
 }

@@ -83,7 +83,7 @@
                                     <label>Type</label>
                                     <select name="type" class="form-control">
                                         <option value="default" {{ old('status', $store->type) == 'default' ? 'selected=selected':'' }}>Default</option>
-                                        <option value="adult" {{ old('status',  $store->type) == 'adult' ? 'selected=selected':'' }}>Adult</option>
+                                        <option value="vape" {{ old('status',  $store->type) == 'vape' ? 'selected=selected':'' }}>Vape</option>
                                         <option value="pharmacy" {{ old('status',  $store->type) == 'pharmacy' ? 'selected=selected':'' }}>Pharmacy</option>
                                     </select>
 

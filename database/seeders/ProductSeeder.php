@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Variation;
 use App\Models\Product;
 use App\Models\Review;
 
@@ -46,7 +47,7 @@ class ProductSeeder extends Seeder
             'status' => Published(),
         ]);
         Product::create([
-            'name' => 'perfume',
+            'name' => 'Arthur Dotson',
             'short_description' => 'Good Bag',
             'price' => 100,
             'price_to_display' => 110,
@@ -54,10 +55,50 @@ class ProductSeeder extends Seeder
             'description' => 'Good perfume',
             'image' => 'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1868&q=80',
             'manage_able' => true,
+            'product_type' => 'variation',
             'user_id' => 1,
             'is_site_featured' => true,
             'is_store_featured' => true,
             'status' => Published(),
+        ]);
+
+
+        Variation::create([
+            'name' => 'Arthur Dotson - Size: Small - Color: Red',
+            'price' => '110',
+            'variants' => '{"Size":{"name":"Small","id":4,"media":null,"attr_id":1},"Color":{"name":"Red","id":1,"media":"#ff0000","attr_id":2}}',
+            'product_id' => 3,
+        ]);
+        Variation::create([
+            'name' => 'Arthur Dotson - Size: Large - Color: Red',
+            'price' => '110',
+            'variants' => '{"Size":{"name":"Large","id":5,"media":null,"attr_id":1},"Color":{"name":"Red","id":1,"media":"#ff0000","attr_id":2}}',
+            'product_id' => 3,
+        ]);
+
+        Variation::create([
+            'name' => 'Arthur Dotson - Size: Small - Color: Black',
+            'price' => '110',
+            'variants' => '{"Size":{"name":"Small","id":4,"media":null,"attr_id":1},"Color":{"name":"Black","id":2,"media":"#2f2d2d","attr_id":2}}',
+            'product_id' => 3,
+        ]);
+        Variation::create([
+            'name' => 'Arthur Dotson - Size: Large - Color: Black',
+            'price' => '110',
+            'variants' => '{"Size":{"name":"Large","id":5,"media":null,"attr_id":1},"Color":{"name":"Black","id":2,"media":"#2f2d2d","attr_id":2}}',
+            'product_id' => 3,
+        ]);
+        Variation::create([
+            'name' => 'Arthur Dotson - Size: Small - Color: Blue',
+            'price' => '110',
+            'variants' => '{"Size":{"name":"Small","id":4,"media":null,"attr_id":1},"Color":{"name":"Blue","id":3,"media":"#2b00ff","attr_id":2}}',
+            'product_id' => 3,
+        ]);
+        Variation::create([
+            'name' => 'Arthur Dotson - Size: Large - Color: Blue',
+            'price' => '110',
+            'variants' => '{"Size":{"name":"Large","id":5,"media":null,"attr_id":1},"Color":{"name":"Blue","id":3,"media":"#2b00ff","attr_id":2}}',
+            'product_id' => 3,
         ]);
         Review::create([
             'rating' => 4,

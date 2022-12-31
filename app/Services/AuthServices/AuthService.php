@@ -28,6 +28,9 @@ class AuthService
         $user->last_name = $request->last_name;
         $user->email = $request->email;
         $user->phone = $request->phone;
+        $user->address = $request->address;
+        $user->latitude = $request->latitude;
+        $user->longitude = $request->longitude;
         $user->password = Hash::make($request->password);
         $user->save();
         $user->assign($role);
@@ -35,7 +38,8 @@ class AuthService
     }
     public function verifycode($code, $user_id)
     {
-        $user_code = UserCode::where('code',  $code)->where('user_id', $user_id)->first();
+        $this->setting = getSetting('general');
+        $user_code = UserCode::where('code',  $code)->where('user_id', $user_id)->where('type', $this->setting['default_verification_method'])->first();
         return $user_code;
     }
 }

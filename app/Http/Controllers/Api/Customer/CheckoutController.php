@@ -21,19 +21,8 @@ class CheckoutController extends Controller
     public function add_new_order(Cart $cart, Request $request){
         try{
 
-            $customer = Customer::updateOrCreate([
-                'phone' => $request->phone,
-            ],
-            [
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'address1' => $request->address1,
-                'address2' => $request->address2,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'user_id' => Auth::check() ? $request->user()->id : null
-            ]);
+
+            $user_id = $request->user()->id;
 
             $order = Order::create([
                 'count' => $cart->count,
@@ -41,8 +30,10 @@ class CheckoutController extends Controller
                 'platform_charges' => $cart->platform_charges,
                 'tax' => $cart->tax,
                 'total' => $cart->total,
+                'tip' => $request->tip,
+                'order_no' => $cart->identifier,
                 'status' => InProcess(),
-                'customer_id' => $customer->id
+                'user_id' => $user_id
             ]);
             foreach($cart->items as $item){
                 $orderItem = OrderProduct::create([
@@ -67,10 +58,11 @@ class CheckoutController extends Controller
     public function checkout(Request $request){
 
         try{
+            $user_id = $request->user()->id;
 
             $is_payment_successfull = true;
             if($is_payment_successfull){
-                $cart  = Cart::where('identifier', $request->identifier)->first();
+                $cart  = Cart::where('identifier', $request->identifier)->orWhere('user_id', $user_id)->first();
                 if(!empty($cart)){
 
                     if($cart->items->count()){

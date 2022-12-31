@@ -30,7 +30,7 @@ class CreateStoresTable extends Migration
             $table->unsignedBigInteger('owner_id')->nullable();
             $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('status', [Published(), Draft()])->default(Draft());
-            $table->enum('type', ['pharmacy', 'adult', 'default'])->default('default');
+            $table->enum('type', ['pharmacy', 'vape', 'default'])->default('default');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -11,7 +11,6 @@ class UserCode extends Model
     public $timestamps = false;
     protected $fillable = [
         'code',
-        'expires_at',
         'user_id',
         'type',
     ];

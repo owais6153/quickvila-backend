@@ -16,7 +16,6 @@ class CreateUserCodesTable extends Migration
         Schema::create('user_codes', function (Blueprint $table) {
             $table->id();
             $table->string("code");
-            $table->date("expires_at");
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->enum("type", ['phone', 'email'])->default('email');

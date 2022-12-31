@@ -23,7 +23,7 @@ class CreateOrderProductsTable extends Migration
             $table->foreign('product_id')->references('id')->on('products');
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');
-            $table->enum('status', [Pending(), InProcess(), Refunded()])->defaul(Pending());
+            $table->enum('status', [Pending(), InProcess(), Refunded(), Completed()])->defaul(Pending());
             $table->unsignedBigInteger('variation_id')->nullable();
             $table->foreign('variation_id')->references('id')->on('variations');
             $table->timestamps();

@@ -14,6 +14,8 @@ class AccountController extends Controller
                 'name' => 'required|min:3',
                 'nickname' => 'nullable|min:3',
                 'address' => 'nullable|min:3',
+                'latitude' => 'nullable|between:-90,90',
+                'longitude' => 'nullable|between:-180,180',
                 'dob' => 'nullable|date|date_format:Y-m-d',
             ]);
             if ($validator->fails()) {
@@ -32,6 +34,12 @@ class AccountController extends Controller
                 $fields['address'] = $request->address;
             if($request->has('dob'))
                 $fields['dob'] = $request->dob;
+            if($request->has('address'))
+                $fields['address'] = $request->address;
+            if($request->has('latitude'))
+                $fields['latitude'] = $request->latitude;
+            if($request->has('longitude'))
+                $fields['longitude'] = $request->longitude;
             if(!empty($fields))
                 $user->update($fields);
 

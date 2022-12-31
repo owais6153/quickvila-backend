@@ -48,8 +48,12 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
 
 
     // Orders
-    Route::get('active-orders', [OrderController::class, 'activeorders']);
-    Route::get('active-orders/{id}/refund', [OrderController::class, 'refund']);
-    Route::get('active-orders/{id}/accept', [OrderController::class, 'accept']);
+    Route::get('orders/new', [OrderController::class, 'neworders']);
+    Route::get('orders/active', [OrderController::class, 'active']);
+    Route::get('orders/{order:id}', [OrderController::class, 'show']);
+    Route::get('orders/{order:id}/complete', [OrderController::class, 'complete']);
+    Route::get('orders/{order:id}/cancel', [OrderController::class, 'cancel']);
+    Route::get('orders/items/{id}/refund', [OrderController::class, 'refund']);
+    Route::get('orders/items/{id}/accept', [OrderController::class, 'accept']);
 });
 

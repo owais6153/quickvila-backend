@@ -67,6 +67,7 @@ use App\Http\Controllers\Api\Customer\ProductCategoryController;
         Route::post('/account/update', [AccountController::class, 'update']);
         Route::get('/orders', [CartController::class, 'index']);
 
+        Route::post('/checkout', [CheckoutController::class, 'checkout']);
 
         // Route::get('/account', [CartController::class, 'index']);
         // Route::get('/account/password/update', [CartController::class, 'index']);
@@ -90,7 +91,6 @@ use App\Http\Controllers\Api\Customer\ProductCategoryController;
         Route::delete('/cart/remove/{cartProduct:id}', [CartController::class, 'remove']);
         Route::delete('/cart/empty', [CartController::class, 'emptyCart']);
 
-        Route::post('/checkout', [CheckoutController::class, 'checkout']);
     });
 
 

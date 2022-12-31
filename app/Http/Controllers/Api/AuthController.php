@@ -78,6 +78,9 @@ class AuthController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required',
                 'confirm_password' => 'required|same:password',
+                'address' => 'nullable|min:3',
+                'latitude' => 'nullable|between:-90,90',
+                'longitude' => 'nullable|between:-180,180',
             ]);
 
             if ($validator->fails()) {

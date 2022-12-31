@@ -110,7 +110,7 @@
                                     <label>Type</label>
                                     <select name="type" class="form-control">
                                         <option value="default" {{ old('status') == 'default' ? 'selected=selected':'' }}>Default</option>
-                                        <option value="adult" {{ old('status') == 'adult' ? 'selected=selected':'' }}>Adult</option>
+                                        <option value="vape" {{ old('status') == 'vape' ? 'selected=selected':'' }}>Vape</option>
                                         <option value="pharmacy" {{ old('status') == 'pharmacy' ? 'selected=selected':'' }}>Pharmacy</option>
                                     </select>
                                </div>
