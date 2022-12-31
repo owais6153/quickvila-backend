@@ -42,7 +42,7 @@ class CheckoutController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
                     'store_id' => $item->product->store_id,
-                    'variation_id' => $item->variation_id,
+                    'variation_id' => $item->variations_id,
                 ]);
             }
 
