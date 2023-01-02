@@ -21,7 +21,7 @@ class OrderController extends Controller
 
         try {
             $mystore = $request->mystore;
-            $orders = Order::with(['customer'])->whereHas('items', function ($q) use($mystore) {
+            $orders = Order::with(['customer'])->whereHas('items', function ($q) use ($mystore) {
                 $q->where('status', Pending())->where('store_id', $mystore->id);
             })->where('status', InProcess())->get();
 
@@ -50,18 +50,18 @@ class OrderController extends Controller
     {
         try {
             $mystore = $request->mystore;
-            $order =  Order::with(['customer', 'items' => function($q) use($mystore) {
+            $order =  Order::with(['customer', 'items' => function ($q) use ($mystore) {
                 $q->where('store_id', $mystore->id);
-            }])->where('id', $id)->whereHas('items', function ($q) use($mystore) {
+            }, 'items.product', 'items.variations'])->where('id', $id)->whereHas('items', function ($q) use ($mystore) {
                 $q->where('store_id', $mystore->id);
             })->first();
-            if(empty($order)){
+            if (empty($order)) {
                 $data = [
                     'errors' => ['order' => ['Order not found']],
                     'status' => 404
                 ];
                 return response()->json($data, 200);
-            }else{
+            } else {
                 $data = [
                     'order' => $order,
                     'status' => 200
@@ -73,21 +73,20 @@ class OrderController extends Controller
             $error['status'] = 500;
             return response()->json($error, 500);
         }
-
     }
     public function complete(Request $request, $id)
     {
         try {
             $mystore = $request->mystore;
             $items = $mystore->order_items()->where('order_id', $id)->get();
-            if($items->count() < 1){
+            if ($items->count() < 1) {
                 $data = [
                     'errors' => ['order' => ['Order not found']],
                     'status' => 404
                 ];
                 return response()->json($data, 200);
-            }else{
-                foreach($items as $item){
+            } else {
+                foreach ($items as $item) {
                     $item->update([
                         'status' => Completed()
                     ]);
@@ -110,14 +109,14 @@ class OrderController extends Controller
         try {
             $mystore = $request->mystore;
             $items = $mystore->order_items()->where('order_id', $id)->get();
-            if($items->count() < 1){
+            if ($items->count() < 1) {
                 $data = [
                     'errors' => ['order' => ['Order not found']],
                     'status' => 404
                 ];
                 return response()->json($data, 200);
-            }else{
-                foreach($items as $item){
+            } else {
+                foreach ($items as $item) {
                     $item->update([
                         'status' => Refunded()
                     ]);
@@ -140,7 +139,7 @@ class OrderController extends Controller
     {
         try {
             $mystore = $request->mystore;
-            $orders = Order::with(['customer'])->whereHas('items', function ($q) use($mystore) {
+            $orders = Order::with(['customer'])->whereHas('items', function ($q) use ($mystore) {
                 $q->where('status', InProcess())->where('store_id', $mystore->id);
             })->where('status', InProcess())->get();
             if ($orders->count() > 0) {
@@ -163,7 +162,6 @@ class OrderController extends Controller
             $error['status'] = 500;
             return response()->json($error, 500);
         }
-
     }
 
 
@@ -174,7 +172,7 @@ class OrderController extends Controller
             $mystore = $request->mystore;
             $item = $mystore->order_items->where('id', $id)->first();
 
-            if(empty($item)){
+            if (empty($item)) {
                 $data = [
                     'errors' => ['order' => ['Order not found']],
                     'status' => 404
@@ -199,7 +197,7 @@ class OrderController extends Controller
             $mystore = $request->mystore;
             $item = $mystore->order_items->where('id', $id)->first();
 
-            if(empty($item)){
+            if (empty($item)) {
                 $data = [
                     'errors' => ['order' => ['Order not found']],
                     'status' => 404
