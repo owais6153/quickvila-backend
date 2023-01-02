@@ -52,7 +52,7 @@ class OrderController extends Controller
             $mystore = $request->mystore;
             $order =  Order::with(['customer', 'items' => function ($q) use ($mystore) {
                 $q->where('store_id', $mystore->id);
-            }, 'items.product', 'items.product.variations'])->where('id', $id)->whereHas('items', function ($q) use ($mystore) {
+            }, 'items.product', 'items.variation'])->where('id', $id)->whereHas('items', function ($q) use ($mystore) {
                 $q->where('store_id', $mystore->id);
             })->first();
             if (empty($order)) {
