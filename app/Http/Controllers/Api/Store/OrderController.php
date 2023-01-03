@@ -163,8 +163,63 @@ class OrderController extends Controller
             return response()->json($error, 500);
         }
     }
+    public function refunded_orders(Request $request)
+    {
+        try {
+            $mystore = $request->mystore;
+            $orders = Order::with(['customer'])->whereHas('items', function ($q) use ($mystore) {
+                $q->where('status', Refunded())->where('store_id', $mystore->id);
+            })->get();
+            if ($orders->count() > 0) {
+                $data = [
+                    'orders' => $orders,
+                    'status' => 200
+                ];
 
+                return response()->json($data, 200);
+            } else {
+                $data = [
+                    'errors' => ['order' => ['Order not found']],
+                    'status' => 404
+                ];
 
+                return response()->json($data, 404);
+            }
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
+
+    public function index(Request $request)
+    {
+        try {
+            $mystore = $request->mystore;
+            $orders = Order::with(['customer'])->whereHas('items', function ($q) use ($mystore) {
+                $q->where('store_id', $mystore->id);
+            })->get();
+            if ($orders->count() > 0) {
+                $data = [
+                    'orders' => $orders,
+                    'status' => 200
+                ];
+
+                return response()->json($data, 200);
+            } else {
+                $data = [
+                    'errors' => ['order' => ['Order not found']],
+                    'status' => 404
+                ];
+
+                return response()->json($data, 404);
+            }
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
 
     public function refund(Request $request, $id)
     {
