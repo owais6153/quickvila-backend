@@ -38,7 +38,7 @@ class OrderController extends Controller
                     'status' => 404
                 ];
 
-                return response()->json($data, 200);
+                return response()->json($data, 404);
             }
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
@@ -60,7 +60,7 @@ class OrderController extends Controller
                     'errors' => ['order' => ['Order not found']],
                     'status' => 404
                 ];
-                return response()->json($data, 200);
+                return response()->json($data, 404);
             } else {
                 $data = [
                     'order' => $order,
@@ -84,7 +84,7 @@ class OrderController extends Controller
                     'errors' => ['order' => ['Order not found']],
                     'status' => 404
                 ];
-                return response()->json($data, 200);
+                return response()->json($data, 404);
             } else {
                 foreach ($items as $item) {
                     $item->update([
@@ -114,7 +114,7 @@ class OrderController extends Controller
                     'errors' => ['order' => ['Order not found']],
                     'status' => 404
                 ];
-                return response()->json($data, 200);
+                return response()->json($data, 404);
             } else {
                 foreach ($items as $item) {
                     $item->update([
@@ -155,7 +155,7 @@ class OrderController extends Controller
                     'status' => 404
                 ];
 
-                return response()->json($data, 200);
+                return response()->json($data, 404);
             }
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
@@ -178,7 +178,7 @@ class OrderController extends Controller
                     'status' => 404
                 ];
 
-                return response()->json($data, 200);
+                return response()->json($data, 404);
             }
             $item->update([
                 'status' => Refunded(),
@@ -203,7 +203,7 @@ class OrderController extends Controller
                     'status' => 404
                 ];
 
-                return response()->json($data, 200);
+                return response()->json($data, 404);
             }
             $item->update([
                 'status' => InProcess(),
