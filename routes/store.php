@@ -59,4 +59,5 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
     Route::get('orders/{order:id}/cancel', [OrderController::class, 'cancel']);
     Route::get('orders/items/{id}/refund', [OrderController::class, 'refund']);
     Route::get('orders/items/{id}/accept', [OrderController::class, 'accept']);
+    Route::get('orders/items/{id}/refund-accepted', [OrderController::class, 'refund_completed_item']);
 });

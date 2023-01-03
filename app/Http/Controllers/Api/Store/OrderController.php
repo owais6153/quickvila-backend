@@ -246,6 +246,31 @@ class OrderController extends Controller
             return response()->json($error, 500);
         }
     }
+    public function refund_completed_item(Request $request, $id)
+    {
+        try {
+            $mystore = $request->mystore;
+            $item = $mystore->order_items->where('id', $id)->first();
+
+            if (empty($item)) {
+                $data = [
+                    'errors' => ['order' => ['Order not found']],
+                    'status' => 404
+                ];
+
+                return response()->json($data, 404);
+            }
+            $item->update([
+                'status' => Refunded(),
+            ]);
+
+            return response()->json(['status' => 200, 'message' => 'Order Item refunded'], 200);
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+    }
     public function accept(Request $request, $id)
     {
         try {
