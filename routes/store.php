@@ -51,6 +51,7 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
     Route::get('orders/new', [OrderController::class, 'neworders']);
     Route::get('orders/active', [OrderController::class, 'active']);
     Route::get('orders/{order:id}', [OrderController::class, 'show']);
+    Route::get('orders/search/{orderno}', [OrderController::class, 'search']);
     Route::get('orders/{order:id}/complete', [OrderController::class, 'complete']);
     Route::get('orders/{order:id}/cancel', [OrderController::class, 'cancel']);
     Route::get('orders/items/{id}/refund', [OrderController::class, 'refund']);

@@ -30,6 +30,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->longText('identity_card')->nullable();
+            $table->boolean('is_identity_card_verified')->default(false);
+            $table->longText('health_card')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

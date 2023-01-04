@@ -218,4 +218,33 @@ class OrderController extends Controller
             return response()->json($error, 500);
         }
     }
+    public function search_order(Request $request)
+    {
+        try {
+            $mystore = $request->mystore;
+            $order =  Order::with(['customer', 'items' => function($q) use($mystore) {
+                $q->where('store_id', $mystore->id);
+            }])->where('order_no', $request->orderno)->whereHas('items', function ($q) use($mystore) {
+                $q->where('store_id', $mystore->id);
+            })->first();
+            if(empty($order)){
+                $data = [
+                    'errors' => ['order' => ['Order not found']],
+                    'status' => 404
+                ];
+                return response()->json($data, 200);
+            }else{
+                $data = [
+                    'order' => $order,
+                    'status' => 200
+                ];
+                return response()->json($data, 200);
+            }
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+
+    }
 }
