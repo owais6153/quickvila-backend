@@ -296,7 +296,7 @@ class OrderController extends Controller
             return response()->json($error, 500);
         }
     }
-    public function search_order(Request $request)
+    public function search(Request $request)
     {
         try {
             $mystore = $request->mystore;
