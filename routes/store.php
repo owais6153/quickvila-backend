@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Store\StoreController;
@@ -48,6 +49,9 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
 
 
     // Orders
+
+    Route::get('orders', [OrderController::class, 'index']);
+    Route::get('orders/refunded', [OrderController::class, 'refunded_orders']);
     Route::get('orders/new', [OrderController::class, 'neworders']);
     Route::get('orders/active', [OrderController::class, 'active']);
     Route::get('orders/{order:id}', [OrderController::class, 'show']);
@@ -56,5 +60,5 @@ Route::middleware(['auth:sanctum', 'iAmStoreOwner'])->group(function () {
     Route::get('orders/{order:id}/cancel', [OrderController::class, 'cancel']);
     Route::get('orders/items/{id}/refund', [OrderController::class, 'refund']);
     Route::get('orders/items/{id}/accept', [OrderController::class, 'accept']);
+    Route::get('orders/items/{id}/refund-accepted', [OrderController::class, 'refund_completed_item']);
 });
-
