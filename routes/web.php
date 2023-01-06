@@ -14,6 +14,7 @@ use App\Http\Controllers\Web\Admin\UserController;
 use App\Http\Controllers\Web\Admin\AttributesController;
 use App\Http\Controllers\Web\Admin\AttributeOptionController;
 use App\Http\Controllers\Web\Admin\StoreBannerController;
+use App\Http\Controllers\FCMController;
 
 
 // Static Pages
@@ -30,6 +31,12 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middle
 
 // Admin Area
 Route::middleware(['auth', 'permission:admin-area'])->group(function () {
+
+    Route::post('register-token', [FCMController::class, 'registerToken'])->name('register-token');
+    Route::get('send', [FCMController::class, 'sendNotification'])->name('send');
+
+
+
     Route::get('/', [AuthController::class, 'index'])->name('admin.dashboard');
 
     // Stores

@@ -58,6 +58,24 @@ class CheckoutController extends Controller
     public function checkout(Request $request){
 
         try{
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required|min:3',
+                'phone' => 'required|numeric|min:10',
+                'email' => 'required|email',
+                'address1' => 'required|min:3',
+                'address2' => 'required|min:3',
+                'latitude' => 'required|between:-90,90',
+                'longitude' => 'required|between:-180,180',
+                'note' => 'nullable',
+                'tip' => 'nullable|numeric',
+            ]);
+
+            if ($validator->fails()) {
+                $error['errors'] = $validator->messages();
+                $error['status'] = 400;
+                return response()->json($error, 400);
+            }
+
             $user_id = $request->user()->id;
 
             $is_payment_successfull = true;

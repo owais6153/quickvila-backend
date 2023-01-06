@@ -11,6 +11,7 @@ use App\Notifications\Auth\SendCodeByPhone;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Notifications\Store\NewOrder as StoreNewOrder;
 
 class User extends Authenticatable
 {
@@ -54,6 +55,10 @@ class User extends Authenticatable
     {
         $this->notify(new SendCodeByPhone());
     }
+    public function storeNewOrder()
+    {
+        $this->notify(new StoreNewOrder());
+    }
 
     // Relations
     public function orders()
@@ -67,5 +72,9 @@ class User extends Authenticatable
     public function codes()
     {
         return $this->hasMany(UserCode::class, 'user_id', 'id');
+    }
+    public function devicetokens()
+    {
+        return $this->hasMany(DeviceToken::class, 'user_id', 'id');
     }
 }

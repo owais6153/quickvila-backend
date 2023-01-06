@@ -3,7 +3,7 @@ namespace App\Notifications\Channels;
 
 use Illuminate\Notifications\Notification;
 
-class TwilioSMSChannel
+class FirebaseChannel
 {
     /**
      * Send the given notification.
@@ -14,7 +14,6 @@ class TwilioSMSChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        $message = $notification->toTwilioSMS($notifiable);
-
+        $message = $notification->toFirebase($notifiable);
     }
 }

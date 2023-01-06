@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Notifications\Auth;
+namespace App\Notifications\Rider;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Notifications\Channels\TwilioSMSChannel;
+use App\Notifications\Channels\TwilioWhatsappChannel;
 use Twilio\Rest\Client;
 use Config;
 
-
-class SendCodeByPhone extends Notification implements ShouldQueue
+class NewOrder extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -34,7 +33,7 @@ class SendCodeByPhone extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return TwilioSMSChannel::class;
+        return TwilioWhatsappChannel::class;
     }
 
     /**
@@ -43,17 +42,22 @@ class SendCodeByPhone extends Notification implements ShouldQueue
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toTwilioSMS($notifiable)
+    public function toTwilioWhatsapp($notifiable)
     {
         if($this->settings['should_send']){
             $account_sid = $this->settings['sid'];
             $auth_token = $this->settings['token'];
             $number = $this->settings['number'];
-            $service_id = $this->settings['messaging_service'];
             $client = new Client($account_sid, $auth_token);
-            $code = $notifiable->codes->where('type', 'phone')->first();
-            $client->messages->create($notifiable->phone,
-                    ['messagingServiceSid' => $service_id, 'body' => "Your Quickvila account verification code is: $code->code, Please ignore this message if you did'nt request this code."] );
+            $sendTo = $notifiable->phone;
+
+            $message = $client->messages
+            ->create("whatsapp:$number", // to
+                     array(
+                         "from" => "whatsapp:$sendTo",
+                         "body" => "Your Yummy Cupcakes Company order of 1 dozen frosted cupcakes has shipped and should be delivered on July 10, 2019. Details: http://www.yummycupcakes.com/"
+                     )
+            );
         }
     }
 

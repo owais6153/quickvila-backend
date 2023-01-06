@@ -176,7 +176,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Srmklive\PayPal\Providers\PayPalServiceProvider::class,
+        Appy\FcmHttpV1\FcmProvider::class,
         App\Providers\SettingProvider::class
+
 
     ],
 

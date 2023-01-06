@@ -25,7 +25,7 @@ class CartService
             $user_id = $request->user()->id;
             $cart =  Cart::with(['items', 'items.variation', 'items.product'])->where('user_id', $user_id)->first();
             if(empty($cart) && $request->has('identifier')){
-                $cart =  Cart::with(['items', 'items.variation', 'items.product'])->where('identifier', $request->identifier)->first();
+                $cart = $this->getCartWithIdentifier($request->identifier);
                 if(!empty($cart))
                     $cart->update(['user_id', $user_id]);
             }
@@ -33,7 +33,7 @@ class CartService
         }
         else{
             if($request->has('identifier')){
-                return Cart::with(['items', 'items.variation', 'items.product'])->where('identifier', $request->identifier)->first();
+                return $this->getCartWithIdentifier($request->identifier);
             }
         }
         return [];
@@ -151,7 +151,7 @@ class CartService
 
         }
         else{
-            $identifier = time();
+            $identifier = uniqid();
 
             $line_total = 0;
             if($variation == null){

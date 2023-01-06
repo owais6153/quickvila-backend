@@ -61,6 +61,18 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
+                <label>Whatsapp Number</label>
+                <input type="text" name="setting[whatsapp]" placeholder="Number" class="form-control"
+                @if(old('setting.whatsapp'))
+                value="{{old('setting.whatsapp')}}"
+                @elseif (isset($setting['whatsapp']))
+                value="{{$setting['whatsapp']}}"
+                @endif
+                    >
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
                 <label>Messagin Service</label>
                 <input type="text" name="setting[messaging_service]" placeholder="Password" class="form-control"
                 @if(old('setting.messaging_service'))

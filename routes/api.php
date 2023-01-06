@@ -97,7 +97,6 @@ use App\Http\Controllers\Api\Customer\ProductCategoryController;
 
 
 
-
     Route::any('{any}', function(){
         $error['errors'] = ['route' => ["API route or method is not valid."]];
         $error['status'] = 404;

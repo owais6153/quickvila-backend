@@ -34,6 +34,7 @@ class SettingRequest extends FormRequest
             'setting.sid' => 'exclude_unless:key,sms|required',
             'setting.token' => 'exclude_unless:key,sms|required',
             'setting.number' => 'exclude_unless:key,sms|required',
+            'setting.whatsapp' => 'exclude_unless:key,sms|required',
             'setting.messaging_service' => 'exclude_unless:key,sms|required',
             // EMAIL
             'setting.should_send' => 'exclude_unless:key,email|required',

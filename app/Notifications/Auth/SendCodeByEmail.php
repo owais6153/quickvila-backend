@@ -51,6 +51,7 @@ class SendCodeByEmail extends Notification implements ShouldQueue
                     ->greeting("Hi $notifiable->name!")
                     ->line("Please verify your account")
                     ->line(new HtmlString("<h3>Your Verification Code is: <br><span style='font-size: 25px; color: #f00'>$code->code</span></h3>"))
+                    ->line("Please ignore this email if you did'nt request this code.")
                     ->line('Thank you for using our application!');
         }
     }
