@@ -55,7 +55,7 @@ class NewOrder extends Notification
         $client = new Client();
         $data = [
             "message" => [
-                "token" => $notifiable->devicetokens->first(),
+                "token" => $notifiable->devicetokens->first()->token,
                 "webpush" => [
                     "notification" => [
                         "title" => 'New Order Received',
