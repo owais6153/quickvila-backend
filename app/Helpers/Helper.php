@@ -59,6 +59,11 @@ function Pending()
 {
     return 'pending';
 }
+function PendingPayment()
+{
+    return 'pending-payment';
+}
+
 
 
 

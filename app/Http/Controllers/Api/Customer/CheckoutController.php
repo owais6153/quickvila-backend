@@ -11,6 +11,14 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use Illuminate\Support\Facades\Auth;
+use PayPal\Api\Amount;
+use PayPal\Api\Item;
+use PayPal\Api\ItemList;
+use PayPal\Api\Payer;
+use PayPal\Api\Payment;
+use PayPal\Api\RedirectUrls;
+use PayPal\Api\Details;
+use PayPal\Api\Transaction;
 use Exception;
 
 class CheckoutController extends Controller
@@ -31,8 +39,9 @@ class CheckoutController extends Controller
                 'tax' => $cart->tax,
                 'total' => $cart->total,
                 'tip' => $request->tip,
+                'delivery_charges' => $cart->delivery_charges,
                 'order_no' => $cart->identifier,
-                'status' => InProcess(),
+                'status' => PendingPayment(),
                 'user_id' => $user_id
             ]);
             foreach($cart->items as $item){
@@ -49,6 +58,75 @@ class CheckoutController extends Controller
             $this->order = $order;
 
             return true;
+        }
+        catch (\Throwable $th) {
+            $this->error = $th->getMessage();
+            return false;
+        }
+    }
+    public function paynow()
+    {
+        try{
+            $order = $this->order;
+            $apiContext = app('paypal');
+
+            $payer = new Payer();
+            $payer->setPaymentMethod('paypal');
+            $items = [];
+
+            foreach($order->items as $item){
+                $paypalitem = new Item();
+                $paypalitem->setName($item->variation_id != null ? $item->variation->name : $item->product->name)
+                ->setCurrency(env('PAYPAL_CURRENCY'))
+                ->setQuantity($item->qty)
+                ->setPrice(($item->line_total / $item->qty));
+                $items [] = $paypalitem;
+            }
+
+            $taxitem = new Item();
+            $taxitem->setName('Tax & Charges')->setCurrency(env('PAYPAL_CURRENCY'))
+            ->setQuantity(1)
+            ->setPrice($order->tax + $order->platform_charges + $order->tip + $order->delivery_charges);
+            $items[] = $taxitem;
+
+            $itemList = new ItemList();
+            $itemList->setItems($items);
+
+            // $details = new Details();
+            // $details->setTax(($order->tax + $order->platform_charges + $order->tip + $order->delivery_charges));
+
+            $amount = new Amount();
+            $amount->setCurrency(env('PAYPAL_CURRENCY'))
+                ->setTotal(($order->tax + $order->platform_charges + $order->tip + $order->sub_total + $order->delivery_charges))
+                // ->setDetails($details)
+                ;
+
+
+            $transaction = new Transaction();
+            $transaction->setAmount($amount)
+                ->setItemList($itemList)
+                ->setDescription("ORDER NO# " . $order->order_no)
+                ->setInvoiceNumber($order->order_no);
+
+            $redirectUrls = new RedirectUrls();
+            $redirectUrls->setReturnUrl('http://quickvila.store/payment-suceess')
+                ->setCancelUrl('http://quickvila.store/payment-cancel');
+
+
+            $payment = new Payment();
+            $payment->setIntent('sale')
+                ->setPayer($payer)
+                ->setRedirectUrls($redirectUrls)
+                ->setTransactions([$transaction]);
+
+            $payment->create($apiContext);
+            $this->paymentLink = $payment->getApprovalLink();
+            $order->update([
+                'payment_id' => $payment->getId(),
+            ]);
+
+            return true;
+
         }
         catch (\Throwable $th) {
             $this->error = $th->getMessage();
@@ -78,22 +156,27 @@ class CheckoutController extends Controller
 
             $user_id = $request->user()->id;
 
-            $is_payment_successfull = true;
-            if($is_payment_successfull){
+
                 $cart  = Cart::where('identifier', $request->identifier)->orWhere('user_id', $user_id)->first();
                 if(!empty($cart)){
-
                     if($cart->items->count()){
                        $newOrder =  $this->add_new_order($cart, $request);
                        if($newOrder === true){
+
+                        $is_payment_successfull = $this->paynow();
+
+                        if($is_payment_successfull){
                             $cart->items()->delete();
                             $cart->delete();
 
                             $data = array(
                                 'order' => $this->order,
+                                'payment_link' => $this->paymentLink,
                                 'status' => 200
                             );
                             return response()->json($data, 200);
+                        }
+                        throw new Exception($this->error, 503);
                        }
 
                        throw new Exception($this->error, 503);
@@ -105,9 +188,7 @@ class CheckoutController extends Controller
 
 
                 throw new Exception('Cart Not Found Against This User', 404);
-            }
 
-            throw new Exception('Payment Failed', 401);
         }
         catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
@@ -115,5 +196,48 @@ class CheckoutController extends Controller
 
             return response()->json($error, 500);
         }
+    }
+    public function paymentSuccess(Request $request)
+    {
+        $apiContext = app('paypal');
+
+        // retrieve the payment ID from the request
+        $paymentId = $request->paymentId;
+
+        // retrieve the payment object
+        $payment = Payment::get($paymentId, $apiContext);
+        $amount = $payment->getTransactions()[0]->getAmount();
+        $chargedAmount = $amount->getTotal();
+        $order = Order::where('payment_id', $paymentId)->first();
+        // check the payment status
+        if ($payment->getState() == 'approved') {
+            // the payment was successful
+            // you can process the order now
+            $order->update([
+                'status' => InProcess(),
+            ]);
+        } else {
+            // the payment failed
+            // you can redirect the user back to the checkout page or show an error message
+            $order->update([
+                'status' => Canceled(),
+            ]);
+        }
+
+        return response()->json(['message' => 'Order status updated', 'status' => 200, 'chargedAmount' => $chargedAmount], 200);
+
+    }
+    public function paymentCancel(Request $request)
+    {
+        $apiContext = app('paypal');
+
+        // retrieve the payment ID from the request
+        $paymentId = $request->paymentId;
+        $order = Order::where('payment_id', $paymentId)->first();
+        $order->update([
+            'status' => Canceled(),
+        ]);
+
+        return response()->json(['message' => 'Order status updated', 'status' => 200], 200);
     }
 }
