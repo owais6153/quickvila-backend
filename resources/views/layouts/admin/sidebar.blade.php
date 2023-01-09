@@ -85,12 +85,20 @@
        All Users
     </div>
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('user.index') }}" ><i class="fas fa-user"></i>
-            <span>
-                All Users
-            </span>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#users" aria-expanded="true"
+            aria-controls="settings"><i class="fas fa-user"></i>
+            <span>Users</span>
         </a>
+        <div id="users" class="collapse" aria-labelledby="" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                @can('view-user')
+                <a class="collapse-item" href="{{ route('user.index') }}">All Users</a>
+                <a class="collapse-item" href="{{ route('user.requests') }}">Verification Requests</a>
+                @endcan
+            </div>
+        </div>
     </li>
+
     @endif
 
 

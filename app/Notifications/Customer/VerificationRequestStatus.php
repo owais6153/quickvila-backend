@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
 
 class VerificationRequestStatus extends Notification implements ShouldQueue
 {
@@ -57,7 +58,7 @@ class VerificationRequestStatus extends Notification implements ShouldQueue
         return (new MailMessage)
                     ->subject($subject . ' - ' .  env('MAIL_FROM_NAME'))
                     ->line('Hi ' . $notifiable->name . '!')
-                    ->line($msg)
+                    ->line(new HtmlString($msg))
                     ->line('Thank you for using our application!');
     }
 
