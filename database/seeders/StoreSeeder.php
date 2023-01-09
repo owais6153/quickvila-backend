@@ -135,6 +135,5 @@ class StoreSeeder extends Seeder
         Store::where('id', $store3->id)->update([
             'owner_id' => $user->id
         ]);
-
     }
 }
