@@ -95,8 +95,8 @@ class StoreSeeder extends Seeder
         $user->name =  $store1->name;
         $user->first_name =  $store1->name;
         $user->last_name =  $store1->name;
-        $user->password =  Hash::make('storepwd123');
-        $user->email = 'nike@quickvila.com';
+        $user->password =  Hash::make('secret123');
+        $user->email = 'nike@storevila.com';
         $user->email_verified_at = date("Y-m-d", time());
         $user->phone_verified_at = date("Y-m-d", time());
         $user->save();
@@ -111,8 +111,8 @@ class StoreSeeder extends Seeder
         $user->name =  $store2->name;
         $user->first_name =  $store2->name;
         $user->last_name =  $store2->name;
-        $user->password =  Hash::make('storepwd123');
-        $user->email = 'mart@quickvila.com';
+        $user->password =  Hash::make('secret123');
+        $user->email = 'mart@storevila.com';
         $user->email_verified_at = date("Y-m-d", time());
         $user->phone_verified_at = date("Y-m-d", time());
         $user->save();
@@ -126,8 +126,8 @@ class StoreSeeder extends Seeder
         $user->name =  $store3->name;
         $user->first_name =  $store3->name;
         $user->last_name =  $store3->name;
-        $user->password =  Hash::make('storepwd123');
-        $user->email = 'bismillahgrocery@quickvila.com';
+        $user->password =  Hash::make('secret123');
+        $user->email = 'bismillahgrocery@storevila.com';
         $user->email_verified_at = date("Y-m-d", time());
         $user->phone_verified_at = date("Y-m-d", time());
         $user->save();
