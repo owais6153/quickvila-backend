@@ -23,7 +23,8 @@ class Order extends Model
         'check_for_refunds',
         'order_no',
         'note',
-        'tip'
+        'tip',
+        'payment_id'
     ];
     public function getCreatedAtAttribute($attr){
         return Carbon::parse($attr)->diffForHumans();

@@ -25,10 +25,11 @@ class CreateOrdersTable extends Migration
             $table->string('tip')->nullable();
             $table->string('note')->nullable();
             $table->longText('prescription')->nullable();
-            $table->enum('status', [Completed(), Canceled(), InProcess(), Refunded()])->defaul(InProcess());
+            $table->enum('status', [Completed(), Canceled(), InProcess(), Refunded(), PendingPayment()])->defaul(PendingPayment());
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->boolean('check_for_refunds')->default(false);
+            $table->longText('payment_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

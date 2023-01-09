@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Store;
+use App\Http\Requests\Admin\CancelRequest;
 use DataTables;
 use Bouncer;
 
@@ -31,15 +32,44 @@ class UserController extends Controller
         }
 
         return DataTables::eloquent($model)
+
+            ->toJson();
+    }
+    public function verficationRequests()
+    {
+        return view($this->dir . 'requests');
+    }
+
+    public function verficationRequestsGet(Request $request)
+    {
+        $model =  User::where('id', '!=', '1');
+        $model = $model->whereIs(Customer())->where('identity_card', '!=', null)->where('is_identity_card_verified', false);
+
+        return DataTables::eloquent($model)
             ->addColumn('action', function ($row) {
                 $actionBtn = '';
-                if (Bouncer::can('view-order')) {
-                    $actionBtn .= '<a href="' . route('order.show', ['order' => $row->id]) . '" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-eye"></i></a>';
+                if (Bouncer::can('view-user')) {
+                    $actionBtn .= '<a href="" data-image="'.asset($row->identity_card).'" class="identitycard mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-eye"></i></a>';
+                    $actionBtn .= '<a href="'.route('user.requests.accept', ['user' => $row->id]).'" class="mr-1 btn btn-circle btn-sm btn-info"><i class="fas fa-check"></i></a>';
+                    $actionBtn .= '<a href="" data-id="'.$row->id.'" class="cancelRequest mr-1 btn btn-circle btn-sm btn-danger"><i class="fas fa-trash"></i></a>';
                 }
                 return $actionBtn;
             })
             ->rawColumns(['action'])
             ->toJson();
+    }
+    public function acceptRequest(User $user)
+    {
+        $user->update(['is_identity_card_verified' => true]);
+        $user->verificationRequestStatusChange();
+        return redirect()->route('user.requests')->with('success', 'User Account Verified');
+    }
+    public function cancelRequest(CancelRequest $request, User $user)
+    {
+        deleteFile($user->identity_card);
+        $user->update(['is_identity_card_verified' => false, 'identity_card' => null]);
+        $user->verificationRequestStatusChange($request->reason);
+        return redirect()->route('user.requests')->with('success', 'User Verification Request Rejected');
     }
     public function create()
     {

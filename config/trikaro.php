@@ -105,10 +105,6 @@ return [
         ]
     ],
     'setting' => [ //Default Settingss
-        'hidden' => [
-            'currency' => 'USD',
-            'currency_symbol' => '$',
-        ],
         'general' => [
             'default_verification_method' => 'email',
         ],
@@ -139,11 +135,12 @@ return [
         ],
         'payment' => [
             'paypal_mode' => env('PAYPAL_MODE'),
-            'paypal_account' => env('PAYPAL_SANDBOX_ACCOUNT'),
-            'paypal_secret_key' => env('PAYPAL_SANDBOX_API_SECRET'),
-            'paypal_client_id' => env('PAYPAL_SANDBOX_CLIENT_ID'),
+            'paypal_account' => env('PAYPAL_ACCOUNT'),
+            'paypal_secret' => env('PAYPAL_API_SECRET'),
+            'paypal_client_id' => env('PAYPAL_CLIENT_ID'),
             'paypal_currency' => env('PAYPAL_CURRENCY'),
-            'paypal_api_credentials' => env('PAYPAL_SANDBOX_API_CERTIFICATE'),
+            'success_url' => env('PAYPAL_SUCCESS_PAGE'),
+            'cancel_url' => env('PAYPAL_CANCEL_PAGE'),
         ],
     ]
 ];

@@ -93,6 +93,10 @@ Route::middleware(['auth', 'permission:admin-area'])->group(function () {
 
     Route::resource('user', UserController::class);
     Route::get('user-list', [UserController::class, 'getList'])->name('user.list');
+    Route::get('users/verfication-requests', [UserController::class, 'verficationRequests'])->name('user.requests');
+    Route::get('users/verfication-requests/get', [UserController::class, 'verficationRequestsGet'])->name('user.requests.get');
+    Route::get('users/{user:id}/accept', [UserController::class, 'acceptRequest'])->name('user.requests.accept');
+    Route::get('users/{user:id}/cancel', [UserController::class, 'cancelRequest'])->name('user.requests.cancel');
 
     // Settings
     Route::get('setting/{key}', [SettingController::class,  'index'])->name('setting.index');

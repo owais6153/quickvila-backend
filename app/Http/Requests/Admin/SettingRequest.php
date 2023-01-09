@@ -46,6 +46,16 @@ class SettingRequest extends FormRequest
             // Tax
             'setting.platform_fees' => 'exclude_unless:key,tax|required',
             'setting.tax' => 'exclude_unless:key,tax|required',
+            // Payment
+            'setting.paypal_mode' => 'exclude_unless:key,payment|required',
+            'setting.paypal_account' => 'exclude_unless:key,payment|required',
+            'setting.paypal_secret' => 'exclude_unless:key,payment|required',
+            'setting.paypal_client_id' => 'exclude_unless:key,payment|required',
+            'setting.paypal_currency' => 'exclude_unless:key,payment|required',
+            'setting.success_url' => 'exclude_unless:key,payment|required',
+            'setting.cancel_url' => 'exclude_unless:key,payment|required',
+
+
         ];
     }
 }

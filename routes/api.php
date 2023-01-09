@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\Customer\AddressController;
 use App\Http\Controllers\Api\Customer\AccountController;
 use App\Http\Controllers\Api\Customer\StoreCategoryController;
 use App\Http\Controllers\Api\Customer\ProductCategoryController;
+use App\Http\Controllers\FCMController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,6 +43,10 @@ use App\Http\Controllers\Api\Customer\ProductCategoryController;
 
 
 
+    Route::get('paymentSuccess', [CheckoutController::Class, 'paymentSuccess']);
+    Route::get('paymentCancel', [CheckoutController::Class, 'paymentCancel']);
+
+
 
     // Order Detail
     Route::get('/orders/{order:id}', [OrderController::class, 'show']);
@@ -53,6 +58,15 @@ use App\Http\Controllers\Api\Customer\ProductCategoryController;
 
     // Authenticated Users Only
     Route::middleware(['auth:sanctum'])->group(function () {
+
+
+
+        Route::post('register-token', [FCMController::class, 'registerToken']);
+        Route::get('send', [FCMController::class, 'sendNotification']);
+
+
+
+
         // Auth
         Route::post('/forget/code-verify', [AuthController::class, 'forgetCodeVerify'])->middleware('throttle:5,10');
         Route::post('/forget/update', [AuthController::class, 'forgetUpdatePwd']);
@@ -64,6 +78,8 @@ use App\Http\Controllers\Api\Customer\ProductCategoryController;
 
         //Account
         Route::get('/me', [AccountController::class, 'me']);
+
+        Route::post('/account/verify-identity', [AccountController::class, 'verifyIdentity']);
         Route::post('/account/update', [AccountController::class, 'update']);
         Route::get('/orders', [CartController::class, 'index']);
 

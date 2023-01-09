@@ -123,7 +123,7 @@ class OrderController extends Controller
                 }
 
                 $data = [
-                    'message' => 'Order Completed',
+                    'message' => 'Order Canceled',
                     'status' => 200
                 ];
                 return response()->json($data, 200);
