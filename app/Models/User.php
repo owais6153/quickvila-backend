@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\Auth\SendCodeByEmail;
 use App\Notifications\Auth\SendCodeByPhone;
+use App\Notifications\Admin\NewVerificationRequest;
+use App\Notifications\Customer\VerificationRequestStatus;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,6 +34,7 @@ class User extends Authenticatable
         'dob',
         'avatar',
         'identity_card',
+        'is_identity_card_verified',
     ];
 
     protected $hidden = [
@@ -46,6 +49,15 @@ class User extends Authenticatable
     ];
     public function getAvatarAttribute($attr){
         return validateImageUrl($attr);
+    }
+    public function newVerificationRequestNotificaton()
+    {
+        $this->notify(new NewVerificationRequest());
+    }
+
+    public function verificationRequestStatusChange($reason = "")
+    {
+        $this->notify(new VerificationRequestStatus($reason));
     }
     public function sendCodeByEmail()
     {

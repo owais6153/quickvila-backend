@@ -70,6 +70,8 @@ class CheckoutController extends Controller
             $order = $this->order;
             $apiContext = app('paypal');
 
+            $paymentsettings = getSetting('payment');
+
             $payer = new Payer();
             $payer->setPaymentMethod('paypal');
             $items = [];
@@ -77,14 +79,14 @@ class CheckoutController extends Controller
             foreach($order->items as $item){
                 $paypalitem = new Item();
                 $paypalitem->setName($item->variation_id != null ? $item->variation->name : $item->product->name)
-                ->setCurrency(env('PAYPAL_CURRENCY'))
+                ->setCurrency($paymentsettings['paypal_currency'])
                 ->setQuantity($item->qty)
                 ->setPrice(($item->line_total / $item->qty));
                 $items [] = $paypalitem;
             }
 
             $taxitem = new Item();
-            $taxitem->setName('Tax & Charges')->setCurrency(env('PAYPAL_CURRENCY'))
+            $taxitem->setName('Tax & Delivery Charges')->setCurrency($paymentsettings['paypal_currency'])
             ->setQuantity(1)
             ->setPrice($order->tax + $order->platform_charges + $order->tip + $order->delivery_charges);
             $items[] = $taxitem;
@@ -96,7 +98,7 @@ class CheckoutController extends Controller
             // $details->setTax(($order->tax + $order->platform_charges + $order->tip + $order->delivery_charges));
 
             $amount = new Amount();
-            $amount->setCurrency(env('PAYPAL_CURRENCY'))
+            $amount->setCurrency($paymentsettings['paypal_currency'])
                 ->setTotal(($order->tax + $order->platform_charges + $order->tip + $order->sub_total + $order->delivery_charges))
                 // ->setDetails($details)
                 ;
@@ -109,9 +111,8 @@ class CheckoutController extends Controller
                 ->setInvoiceNumber($order->order_no);
 
             $redirectUrls = new RedirectUrls();
-            $redirectUrls->setReturnUrl('http://quickvila.store/payment-suceess')
-                ->setCancelUrl('http://quickvila.store/payment-cancel');
-
+            $redirectUrls->setReturnUrl($paymentsettings['success_url'])
+                ->setCancelUrl($paymentsettings['cancel_url']);
 
             $payment = new Payment();
             $payment->setIntent('sale')
@@ -201,24 +202,17 @@ class CheckoutController extends Controller
     {
         $apiContext = app('paypal');
 
-        // retrieve the payment ID from the request
         $paymentId = $request->paymentId;
 
-        // retrieve the payment object
         $payment = Payment::get($paymentId, $apiContext);
         $amount = $payment->getTransactions()[0]->getAmount();
         $chargedAmount = $amount->getTotal();
         $order = Order::where('payment_id', $paymentId)->first();
-        // check the payment status
         if ($payment->getState() == 'approved') {
-            // the payment was successful
-            // you can process the order now
             $order->update([
                 'status' => InProcess(),
             ]);
         } else {
-            // the payment failed
-            // you can redirect the user back to the checkout page or show an error message
             $order->update([
                 'status' => Canceled(),
             ]);
@@ -231,7 +225,6 @@ class CheckoutController extends Controller
     {
         $apiContext = app('paypal');
 
-        // retrieve the payment ID from the request
         $paymentId = $request->paymentId;
         $order = Order::where('payment_id', $paymentId)->first();
         $order->update([

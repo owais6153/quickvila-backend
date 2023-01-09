@@ -78,6 +78,8 @@ use App\Http\Controllers\FCMController;
 
         //Account
         Route::get('/me', [AccountController::class, 'me']);
+
+        Route::post('/account/verify-identity', [AccountController::class, 'verifyIdentity']);
         Route::post('/account/update', [AccountController::class, 'update']);
         Route::get('/orders', [CartController::class, 'index']);
 

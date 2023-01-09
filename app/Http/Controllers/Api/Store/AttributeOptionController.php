@@ -23,7 +23,7 @@ class AttributeOptionController extends Controller
         ];
         return response()->json($data, 200);
     }
-    public function create(Request $request)
+    public function create(Request $request, Attribute $attribute)
     {
         try{
             $validator = \Validator::make($request->all(), [
@@ -40,9 +40,9 @@ class AttributeOptionController extends Controller
             $mystore = $request->mystore;
             $this->model->create([
                 'name' => $request->name,
-                'media' => $request->media,
+                'media' => $attribute->type == 'color' ? $request->media : null,
                 'user_id' => auth()->id(),
-                'attr_id' => $request->attribute,
+                'attr_id' => $attribute->id,
                 'store_id' => $mystore->id,
             ]);
 
@@ -85,7 +85,7 @@ class AttributeOptionController extends Controller
             }
             $this->model->update([
                 'name' => $request->name,
-                'media' => $request->media,
+                'media' => $attribute->type == 'color' ? $request->media : null,
             ], $option->id);
             return response()->json(['status' => 200, 'message' => 'Attribute Option Updated'], 200);
 

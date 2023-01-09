@@ -152,6 +152,7 @@
                 <a class="collapse-item" href="{{ route('setting.index', ['key' => 'sms']) }}">SMS</a>
                 <a class="collapse-item" href="{{ route('setting.index', ['key' => 'store']) }}">Store</a>
                 <a class="collapse-item" href="{{ route('setting.index', ['key' => 'tax']) }}">Tax</a>
+                <a class="collapse-item" href="{{ route('setting.index', ['key' => 'payment']) }}">Payment</a>
             </div>
         </div>
     </li>

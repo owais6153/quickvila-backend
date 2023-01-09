@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Customer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class AccountController extends Controller
 {
@@ -69,5 +70,42 @@ class AccountController extends Controller
             $error['status'] = 500;
             return response()->json($error, 500);
         }
+    }
+    public function verifyIdentity(Request $request)
+    {
+
+        try {
+            $validator = \Validator::make($request->all(), [
+                'identity_card' => 'required|file|mimes:png,jpg,jpeg',
+            ]);
+            if ($validator->fails()) {
+                $error['errors'] = $validator->messages();
+                $error['status'] = 400;
+                return response()->json($error, 400);
+            }
+
+            $user = $request->user();
+            $image = "";
+            if ($request->hasFile('identity_card')) {
+                $imageFile = $request->identity_card;
+                $file_name = uploadFile($imageFile, imagePath());
+                $image = $file_name;
+            }
+
+            if($image != ''){
+                $user->update(['identity_card' => $image]);
+                $admin = User::find(1);
+                $admin->newVerificationRequestNotificaton();
+
+                return response()->json(['user' => $user, 'status' => 200], 200);
+            }
+
+
+        } catch (\Throwable $th) {
+            $error['errors'] = ['error' => [$th->getMessage()]];
+            $error['status'] = 500;
+            return response()->json($error, 500);
+        }
+
     }
 }

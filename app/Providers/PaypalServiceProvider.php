@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 
 class PaypalServiceProvider extends ServiceProvider
@@ -24,24 +25,30 @@ class PaypalServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-            $this->app->singleton('paypal', function () {
-            $apiContext = new \PayPal\Rest\ApiContext(
-                new \PayPal\Auth\OAuthTokenCredential(
-                    env('PAYPAL_CLIENT_ID'),
-                    env('PAYPAL_API_SECRET')
-                )
-            );
+        if (Schema::hasTable('settings')) {
+            $paymentsettings = getSetting('payment');
 
-            $apiContext->setConfig(
-                array(
-                    'mode' => env('PAYPAL_MODE'),
-                    'log.LogEnabled' => true,
-                    'log.FileName' => storage_path('logs/paypal.log'),
-                    'log.LogLevel' => env('APP_ENV') ==  'local'?  'DEBUG' : 'INFO',
-                )
-            );
+            $this->app->singleton('paypal', function () use($paymentsettings) {
+                $apiContext = new \PayPal\Rest\ApiContext(
+                    new \PayPal\Auth\OAuthTokenCredential(
+                        $paymentsettings['paypal_client_id'],
+                        $paymentsettings['paypal_secret']
+                    )
+                );
 
-            return $apiContext;
-        });
+                $apiContext->setConfig(
+                    array(
+                        'mode' => $paymentsettings['paypal_mode'],
+                        'log.LogEnabled' => true,
+                        'log.FileName' => storage_path('logs/paypal.log'),
+                        'log.LogLevel' => env('APP_ENV') ==  'local'?  'DEBUG' : 'INFO',
+                    )
+                );
+
+                return $apiContext;
+            });
+
+        }
+
     }
 }
