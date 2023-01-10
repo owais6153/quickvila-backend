@@ -29,5 +29,12 @@ class RolePermissionSeeder extends Seeder
                 Bouncer::allow(Manager())->to($managerPermission);
             }
         }
+
+        $storePermissions = config('trikaro.permissions.store');
+        foreach ($storePermissions as $storePer) {
+            foreach ($storePer as $storePermission) {
+                Bouncer::allow(Store())->to($storePermission);
+            }
+        }
     }
 }

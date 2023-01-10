@@ -102,6 +102,32 @@ return [
                 'Edit Attribute ' => 'edit-attribute',
                 'Delete Attribute' => 'delete-attribute',
             ],
+        ],
+        'store' => [
+            'Basic Permissions' => [
+                'Admin Area' => 'admin-area',
+            ],
+            'Product Permissions' => [
+                'View Products' => 'view-product',
+                'Create Product' => 'create-product',
+                'Edit Product ' => 'edit-product',
+                'Delete Product' => 'delete-product',
+            ],
+            'Product Category Permissions' => [
+                'View Product Categories' => 'view-product-category',
+                'Create Product Category' => 'create-product-category',
+                'Edit Product Category ' => 'edit-product-category',
+                'Delete Product Category' => 'delete-product-category',
+            ],
+            'Store Permissions' => [
+                'Edit Store ' => 'edit-store',
+            ],
+            'Attribute Permissions' => [
+                'View Attributes' => 'view-attribute',
+                'Create Attribute' => 'create-attribute',
+                'Edit Attribute ' => 'edit-attribute',
+                'Delete Attribute' => 'delete-attribute',
+            ],
         ]
     ],
     'setting' => [ //Default Settingss

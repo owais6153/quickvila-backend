@@ -64,6 +64,8 @@
                 </div>
             </div>
             <div class="col-md-3">
+
+                @can('setting-store')
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Addition Store Info</h6>
@@ -88,7 +90,6 @@
                                     </select>
 
                             </div>
-                            @can('setting-store')
                                 <div class="custom-control custom-checkbox small">
                                     <input type="checkbox" class="custom-control-input" name="is_featured"
                                         value="1" id="is_featured"
@@ -96,10 +97,10 @@
                                     <label class="custom-control-label"
                                         for="is_featured">Make it featured on front pages</label>
                                 </div>
-                            @endcan
                         </div>
                     </div>
                 </div>
+                @endcan
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Store Media</h6>

@@ -57,7 +57,7 @@ class VerificationRequestStatus extends Notification implements ShouldQueue
         }
         return (new MailMessage)
                     ->subject($subject . ' - ' .  env('MAIL_FROM_NAME'))
-                    ->line('Hi ' . $notifiable->name . '!')
+                    ->greeting('Hi ' . $notifiable->name . '!')
                     ->line(new HtmlString($msg))
                     ->line('Thank you for using our application!');
     }

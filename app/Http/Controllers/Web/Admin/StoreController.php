@@ -94,6 +94,7 @@ class StoreController extends Controller
      */
     public function create()
     {
+
         $categories = StoreCategory::all();
         return view($this->dir . 'create', compact('categories'));
     }
@@ -101,11 +102,14 @@ class StoreController extends Controller
 
     public function setting(Store $store)
     {
+
         $storeSetting = $store->setting;
         return view($this->dir . 'setting', compact('storeSetting'));
+
     }
     public function updateSetting(Store $store, StoreSettingRequest $request)
     {
+
         $storeSetting = StoreSetting::where('store_id', $store->id)->update([
             'price' => $request->price,
             'radius' => $request->radius,
@@ -123,6 +127,7 @@ class StoreController extends Controller
      */
     public function store(StoreRequest $request)
     {
+
         $logo = $cover = "";
         if ($request->hasFile('logo')) {
 
@@ -176,6 +181,9 @@ class StoreController extends Controller
      */
     public function edit(Store $store)
     {
+        if(Bouncer::is(auth()->user())->an(Store()) && auth()->user()->store->id != $store->id)
+            abort(404);
+
         $categories = StoreCategory::all();
         return view($this->dir . 'edit', compact('store', 'categories'));
     }
@@ -189,6 +197,10 @@ class StoreController extends Controller
      */
     public function update(Request $request, Store $store)
     {
+        if(Bouncer::is(auth()->user())->an(Store()) && auth()->user()->store->id != $store->id)
+            abort(404);
+
+
         $logo = $cover = "";
         if ($request->hasFile('logo')) {
 
@@ -212,9 +224,9 @@ class StoreController extends Controller
             'longitude' => $request->longitude,
             'logo' => ($logo != '') ? $logo : str_replace(env('FILE_URL'),'',$store->logo),
             'cover' => ($cover != '') ? $cover : str_replace(env('FILE_URL'),'',$store->cover),
-            'type' => $request->type,
-            'status' => $request->status,
-            'is_featured' => $request->has('is_featured')
+            'type' =>(!Bouncer::is(auth()->user())->an(Store())) ?  $request->type : $store->type,
+            'status' =>(!Bouncer::is(auth()->user())->an(Store())) ?  $request->status : $store->status,
+            'is_featured' =>(!Bouncer::is(auth()->user())->an(Store())) ?  $request->has('is_featured') : $store->is_featured,
         ]);
 
         if ($request->has('categories')) {
@@ -227,7 +239,7 @@ class StoreController extends Controller
         }
 
 
-        return redirect()->route('store.index')->with('success', 'Store Updated');
+        return redirect()->back()->with('success', 'Store Updated');
     }
 
     /**
