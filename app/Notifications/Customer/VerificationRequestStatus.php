@@ -52,7 +52,7 @@ class VerificationRequestStatus extends Notification implements ShouldQueue
         else{
             $msg = 'Your request for identity card verification is rejected';
             $subject = 'Your request for identity card verification is rejected.';
-            if($this->reason != '') $msg .= 'for the reason given below. <h4>Reason</h4> ' . $this->reason;
+            if($this->reason != '') $msg .= ' for the reason given below. <h4>Reason: ' . $this->reason . '</h4>';
             else $msg .= '.';
         }
         return (new MailMessage)

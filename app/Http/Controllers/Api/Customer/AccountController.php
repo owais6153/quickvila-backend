@@ -8,6 +8,10 @@ use App\Models\User;
 
 class AccountController extends Controller
 {
+    function __construct()
+    {
+        $this->setting = getSetting('general');
+    }
     public function update(Request $request)
     {
         try {
@@ -64,6 +68,7 @@ class AccountController extends Controller
             $user = $request->user();
             $data['status'] = 200;
             $data['me'] = $user;
+            $data['verified'] = $this->setting['default_verification_method'] == 'email' ? $user->email_verified_at : $user->phone_verified_at;
             return  response()->json($data, 200);
         } catch (\Throwable $th) {
             $error['errors'] = ['error' => [$th->getMessage()]];
