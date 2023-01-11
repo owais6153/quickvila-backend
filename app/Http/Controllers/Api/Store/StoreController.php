@@ -37,9 +37,9 @@ class StoreController extends Controller
                 'cover' => 'nullable|file|mimes:png,jpg,jpeg,gif',
                 'description' => 'nullable',
                 'url' => 'nullable|min:5',
-                'address' => 'nullable|min:3',
-                'latitude' => 'required|between:-90,90',
-                'longitude' => 'required|between:-180,180',
+                // 'address' => 'nullable|min:3',
+                // 'latitude' => 'required|between:-90,90',
+                // 'longitude' => 'required|between:-180,180',
                 'category.*' => 'nullable|numeric',
             ]);
 
