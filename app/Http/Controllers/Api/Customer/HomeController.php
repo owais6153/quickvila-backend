@@ -33,10 +33,11 @@ class HomeController extends Controller
         $data['testimonials'] = Testimonial::limit($limit)->orderBy('sort', 'desc')->get();
         $data['videos'] = Video::limit($limit)->orderBy('sort', 'desc')->get();
         $data['banners'] = StoreBanner::limit(2)->orderBy('id', 'desc')->get();
-
-
         if($request->has('lat') && $request->has('long')){
-            $data['nearby_stores'] = $this->storeLocationService->getNearbyStores($request->lat, $request->long);
+            $ids = $this->storeLocationService->getNearbyStoresID($request->lat, $request->long);
+            $data['nearby_stores'] = Store::withCount(['products' => function ($q){
+                $q->where('status', Published());
+            }])->whereIn('id', $ids)->get();
         }
 
         $data['status'] = 200;
